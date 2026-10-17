@@ -4,24 +4,28 @@ _Last updated: 2026-10-17 (session 2)_
 
 ## Where we are
 
-Milestones 1 (storage foundation) and 2 (adding albums) are done. The UI is
-still a temporary shell (`src/App.svelte`): header with save/download/import,
-the add-album form (`src/components/AddAlbum.svelte`) and a plain album list.
+Milestones 1–3 are done: storage, adding albums, and the iTunes 10 window.
 
-- Add album: paste a Spotify link or URI → oEmbed fills title + 640px cover.
-  Artist, year and genres are typed by hand. Genre chips (first = primary)
-  with autocomplete and "create genre?", "Compilation" button, duplicate
-  warning on the same Spotify URI. Works with no link too.
-- Lookup code: `src/lib/spotify.ts`, tested in `src/lib/spotify.test.ts`
-  with a stubbed `fetch`.
-- 34 unit tests pass, `svelte-check` is clean.
-- Clicked through in Firefox: paste link → lookup → create genre → add →
-  duplicate warning all work, no console errors.
+- Window (`src/App.svelte` + `src/components/`): toolbar with Save/Export/Import
+  where the playback controls were, the LCD display (selected album, or the
+  unsaved-changes count), List/Grid switcher and search; source list (Music,
+  Recently Added = last 30 days, Playlists = tags); Genres | Artists | Albums
+  column browser; sortable striped list or cover grid; status bar with "+"
+  and the album count. Look and colors live in `src/app.css`.
+- Keyboard: arrows move the selection (columns, list, grid), Enter opens in
+  Spotify, Delete/Backspace removes (with a confirm). Double-click opens too.
+- "+" opens the add form as a sheet (`AddAlbum.svelte`); title + cover come
+  from a pasted Spotify link (oEmbed), everything else is typed by hand.
+- Browse logic (search, columns, sorting) is pure and tested in `src/lib/browse.ts`.
+  Sorting ignores a leading "The", like iTunes. Missing values sort last.
+- View and sort preferences are kept in localStorage.
+- 41 unit tests pass, `svelte-check` is clean. Clicked through in Firefox.
 
 ## Next step
 
-Milestone 3: the iTunes 10 window (source list, column browser, list and
-grid views, search, double-click to open in Spotify). See `PLAN.md`.
+Milestone 4: Get Info dialog (⌘I) for editing, multi-selection and bulk
+edits, inline star ratings, genre management. See `PLAN.md`. Until then
+there's no way to edit an album or set tags (so playlists stay empty).
 
 ## Decisions
 

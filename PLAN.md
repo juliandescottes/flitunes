@@ -21,18 +21,18 @@ See `docs/spec.md` for the details behind each item.
 - [x] Genre picker: autocomplete existing genres, or "create genre?" for a new name
 - [x] Duplicate warning (same Spotify URI already in the library)
 
-## Milestone 3: iTunes 10 window
+## Milestone 3: iTunes 10 window ✅
 
 Reference: iTunes 10 (2010). See `docs/spec.md` §5.
 
-- [ ] Window chrome: top bar with LCD display, view switcher, search field; status bar
-- [ ] Source list: Music, Recently Added, Playlists (tags)
-- [ ] Column browser: Genres | Artists | Albums, with "All (N)" rows
-- [ ] List view: sortable columns (Name, Artist, Year, Genre, Rating, Date Added)
-- [ ] Album grid view
-- [ ] Instant search
-- [ ] Double-click / Enter opens the album in Spotify
-- [ ] "Add to Library…" opens the add form as a sheet
+- [x] Window chrome: top bar with LCD display, view switcher, search field; status bar
+- [x] Source list: Music, Recently Added, Playlists (tags)
+- [x] Column browser: Genres | Artists | Albums, with "All (N)" rows
+- [x] List view: sortable columns (Name, Artist, Year, Genre, Rating, Date Added)
+- [x] Album grid view
+- [x] Instant search
+- [x] Double-click / Enter opens the album in Spotify
+- [x] "Add to Library…" opens the add form as a sheet
 
 ## Milestone 4: Get Info & editing
 
@@ -45,7 +45,7 @@ Reference: iTunes 10 (2010). See `docs/spec.md` §5.
 ## Phase 2
 
 - [ ] Smart playlists (rule editor)
-- [ ] Keyboard navigation (arrows, type-ahead)
+- [ ] Type-ahead in lists (arrows, Enter and Delete already work)
 - [ ] Cover Flow
 - [ ] More import paths (several Spotify links at once, CSV)
 - [ ] "Refresh cover" for dead cover URLs

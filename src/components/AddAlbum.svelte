@@ -3,10 +3,14 @@
   // (oEmbed). Everything else is entered by hand.
   import { untrack } from "svelte";
   import type { Library } from "../lib/library.svelte.ts";
-  import { findGenreByName, VARIOUS_ARTISTS } from "../lib/model.ts";
+  import { findGenreByName, VARIOUS_ARTISTS, type Album } from "../lib/model.ts";
   import { fetchSpotifyAlbumInfo, parseSpotifyAlbumId, spotifyUri } from "../lib/spotify.ts";
 
-  let { library }: { library: Library } = $props();
+  let {
+    library,
+    onadded,
+    oncancel,
+  }: { library: Library; onadded: (album: Album) => void; oncancel: () => void } = $props();
 
   let link = $state("");
   let title = $state("");
@@ -85,7 +89,7 @@
       return;
     }
     try {
-      await library.addAlbum({
+      const album = await library.addAlbum({
         title,
         artists: artists.split(";"),
         year: parsedYear,
@@ -94,14 +98,20 @@
         cover: cover.trim() || null,
       });
       reset();
+      onadded(album);
     } catch (e) {
       error = (e as Error).message;
     }
   }
+
+  function cancel() {
+    reset();
+    oncancel();
+  }
 </script>
 
 <form class="add" onsubmit={submit}>
-  <h2>Add album</h2>
+  <h2>Add to Library</h2>
 
   <label class="wide">
     Spotify link
@@ -191,22 +201,21 @@
   {#if error}<p class="hint error">{error}</p>{/if}
 
   <div class="row actions">
-    <button>{duplicates.length > 0 ? "Add anyway" : "Add album"}</button>
-    <button type="button" class="link" onclick={reset}>Clear</button>
+    <button type="button" class="aqua" onclick={cancel}>Cancel</button>
+    <button class="aqua default">{duplicates.length > 0 ? "Add Anyway" : "Add"}</button>
   </div>
 </form>
 
 <style>
   .add {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 12px 16px;
-    margin: 16px 0;
-    max-width: 760px;
+    padding: 14px 18px;
   }
   h2 {
-    margin: 0 0 8px;
-    font-size: 1.1em;
+    margin: 0 0 10px;
+    font-size: 13px;
+  }
+  input {
+    font: inherit;
   }
   label,
   .genres {
@@ -230,8 +239,8 @@
   }
   .cover img,
   .placeholder {
-    width: 160px;
-    height: 160px;
+    width: 140px;
+    height: 140px;
     object-fit: cover;
     border-radius: 4px;
   }
@@ -274,7 +283,8 @@
     color: #a60;
   }
   .actions {
-    margin-top: 8px;
+    margin-top: 12px;
+    justify-content: flex-end;
   }
   .link {
     border: none;

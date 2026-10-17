@@ -52,7 +52,7 @@ export function findGenreByName(genres: Genre[], name: string): Genre | undefine
   return id ? genres.find((g) => g.id === id || slugify(g.name) === id) : undefined;
 }
 
-/** Sort key for the album's artist: artistSort if set, else the first artist. */
-export function artistSortKey(album: Album): string {
-  return (album.artistSort ?? album.artists[0] ?? "").toLocaleLowerCase();
+/** Name for sorting, ignoring a leading "The " like iTunes: "The Beatles" → "Beatles". */
+export function sortableName(name: string): string {
+  return name.replace(/^the\s+/i, "");
 }
