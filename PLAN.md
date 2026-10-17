@@ -34,13 +34,13 @@ Reference: iTunes 10 (2010). See `docs/spec.md` §5.
 - [x] Double-click / Enter opens the album in Spotify
 - [x] "Add to Library…" opens the add form as a sheet
 
-## Milestone 4: Get Info & editing
+## Milestone 4: Get Info & editing ✅
 
-- [ ] Get Info dialog (⌘I): Info and Artwork tabs, edit all fields, delete
-- [ ] Multi-selection + Get Info for bulk genre/tags/rating
-- [ ] Inline star ratings in the list
-- [ ] Genre management (rename, delete, merge)
-- [ ] Unsaved-changes reminder polish
+- [x] Get Info dialog (⌘I): Info and Artwork tabs, edit all fields, delete
+- [x] Multi-selection + Get Info for bulk genre/tags/rating
+- [x] Inline star ratings in the list
+- [x] Genre management (rename, delete, merge)
+- [x] Unsaved-changes reminder polish
 
 ## Phase 2
 

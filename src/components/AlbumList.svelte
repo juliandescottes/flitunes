@@ -1,24 +1,34 @@
 <script lang="ts">
-  // iTunes list view: striped rows, sortable column headers.
+  // iTunes list view: striped rows, sortable column headers, inline ratings.
   import { genreName, type SortDir, type SortKey } from "../lib/browse.ts";
   import type { Album } from "../lib/model.ts";
+  import StarRating from "./StarRating.svelte";
 
   let {
     albums,
     genreNames,
-    selectedId = $bindable(),
+    selected,
+    cursor,
     sortKey,
     sortDir,
     onsort,
+    onpick,
     onopen,
+    onrate,
+    onmenu,
   }: {
     albums: Album[];
     genreNames: Map<string, string>;
-    selectedId: string | null;
+    selected: Set<string>;
+    /** The row last clicked or reached with the keyboard; kept in view. */
+    cursor: string | null;
     sortKey: SortKey;
     sortDir: SortDir;
     onsort: (key: SortKey) => void;
+    onpick: (id: string, event: MouseEvent) => void;
     onopen: (album: Album) => void;
+    onrate: (album: Album, rating: number | null) => void;
+    onmenu: (event: MouseEvent, album: Album) => void;
   } = $props();
 
   const columns: { key: SortKey; label: string; class: string }[] = [
@@ -31,15 +41,14 @@
   ];
 
   const dateFormat = new Intl.DateTimeFormat(undefined, { dateStyle: "short", timeStyle: "short" });
-  const stars = (rating: number | null) => (rating ? "★".repeat(rating) : "");
 
   let body: HTMLTableSectionElement;
   $effect(() => {
-    if (selectedId) body.querySelector(`[data-id="${selectedId}"]`)?.scrollIntoView({ block: "nearest" });
+    if (cursor) body.querySelector(`[data-id="${cursor}"]`)?.scrollIntoView({ block: "nearest" });
   });
 </script>
 
-<div class="scroller" tabindex="0" role="grid" aria-label="Albums">
+<div class="scroller" tabindex="0" role="grid" aria-label="Albums" aria-multiselectable="true">
   <table>
     <thead>
       <tr>
@@ -55,12 +64,14 @@
     </thead>
     <tbody bind:this={body}>
       {#each albums as album (album.id)}
+        {@const isSelected = selected.has(album.id)}
         <tr
           data-id={album.id}
-          class:selected={album.id === selectedId}
-          aria-selected={album.id === selectedId}
-          onmousedown={() => (selectedId = album.id)}
+          class:selected={isSelected}
+          aria-selected={isSelected}
+          onmousedown={(e) => e.button === 0 && onpick(album.id, e)}
           ondblclick={() => onopen(album)}
+          oncontextmenu={(e) => onmenu(e, album)}
         >
           <td class="name">
             {album.title}
@@ -71,7 +82,9 @@
           <td class="artist">{album.artists.join(", ")}</td>
           <td class="year">{album.year ?? ""}</td>
           <td class="genre">{genreName(album, genreNames) ?? ""}</td>
-          <td class="rating">{stars(album.rating)}</td>
+          <td class="rating" class:show-dots={isSelected}>
+            <StarRating value={album.rating} onchange={(r) => onrate(album, r)} />
+          </td>
           <td class="added">{dateFormat.format(new Date(album.addedAt))}</td>
         </tr>
       {/each}
@@ -88,6 +101,7 @@
     background: repeating-linear-gradient(#fff 0 18px, var(--stripe) 18px 36px);
     background-attachment: local;
     background-position: 0 18px;
+    user-select: none;
   }
   table {
     width: 100%;
@@ -161,9 +175,6 @@
   .scroller:focus-within tbody tr.selected td {
     background: var(--select);
     color: #fff;
-  }
-  td.rating {
-    letter-spacing: 1px;
   }
   .go {
     display: none;

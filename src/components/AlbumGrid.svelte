@@ -4,32 +4,40 @@
 
   let {
     albums,
-    selectedId = $bindable(),
+    selected,
+    cursor,
+    onpick,
     onopen,
+    onmenu,
   }: {
     albums: Album[];
-    selectedId: string | null;
+    selected: Set<string>;
+    /** The item last clicked or reached with the keyboard; kept in view. */
+    cursor: string | null;
+    onpick: (id: string, event: MouseEvent) => void;
     onopen: (album: Album) => void;
+    onmenu: (event: MouseEvent, album: Album) => void;
   } = $props();
 
   let grid: HTMLDivElement;
   $effect(() => {
-    if (selectedId) grid.querySelector(`[data-id="${selectedId}"]`)?.scrollIntoView({ block: "nearest" });
+    if (cursor) grid.querySelector(`[data-id="${cursor}"]`)?.scrollIntoView({ block: "nearest" });
   });
 </script>
 
-<div class="grid" bind:this={grid} tabindex="0" role="listbox" aria-label="Albums">
+<div class="grid" bind:this={grid} tabindex="0" role="listbox" aria-label="Albums" aria-multiselectable="true">
   {#each albums as album (album.id)}
     <!-- The listbox holds the focus; options are selected with the mouse or arrow keys. -->
     <!-- svelte-ignore a11y_interactive_supports_focus -->
     <div
       class="item"
       data-id={album.id}
-      class:selected={album.id === selectedId}
+      class:selected={selected.has(album.id)}
       role="option"
-      aria-selected={album.id === selectedId}
-      onmousedown={() => (selectedId = album.id)}
+      aria-selected={selected.has(album.id)}
+      onmousedown={(e) => e.button === 0 && onpick(album.id, e)}
       ondblclick={() => onopen(album)}
+      oncontextmenu={(e) => onmenu(e, album)}
     >
       <div class="cover">
         {#if album.cover}
@@ -56,6 +64,7 @@
     align-content: start;
     outline: none;
     background: #fff;
+    user-select: none;
   }
   .item {
     text-align: center;

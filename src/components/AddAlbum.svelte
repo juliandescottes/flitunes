@@ -3,8 +3,10 @@
   // (oEmbed). Everything else is entered by hand.
   import { untrack } from "svelte";
   import type { Library } from "../lib/library.svelte.ts";
-  import { findGenreByName, VARIOUS_ARTISTS, type Album } from "../lib/model.ts";
+  import { VARIOUS_ARTISTS, type Album } from "../lib/model.ts";
   import { fetchSpotifyAlbumInfo, parseSpotifyAlbumId, spotifyUri } from "../lib/spotify.ts";
+  import ChipInput from "./ChipInput.svelte";
+  import { genreChips, parseYear, playlistChips, splitArtists } from "./fields.ts";
 
   let {
     library,
@@ -17,8 +19,8 @@
   let artists = $state("");
   let year = $state("");
   let genres = $state<string[]>([]);
+  let tags = $state<string[]>([]);
   let cover = $state("");
-  let newGenre = $state("");
 
   let busy = $state(false);
   let error = $state<string | null>(null);
@@ -29,7 +31,6 @@
   const albumId = $derived(parseSpotifyAlbumId(link));
   const linkInvalid = $derived(link.trim() !== "" && albumId === null);
   const duplicates = $derived(albumId ? library.findBySpotify(spotifyUri(albumId)) : []);
-  const genreName = (id: string) => library.genres.find((g) => g.id === id)?.name ?? id;
 
   // Look up a newly pasted link once.
   $effect(() => {
@@ -54,26 +55,10 @@
     }
   }
 
-  async function addGenre(name: string) {
-    name = name.trim();
-    if (!name) return;
-    error = null;
-    try {
-      const genre = findGenreByName(library.genres, name) ?? (await library.addGenre(name));
-      if (!genres.includes(genre.id)) genres = [...genres, genre.id];
-      newGenre = "";
-    } catch (e) {
-      error = (e as Error).message;
-    }
-  }
-
-  function makePrimary(id: string) {
-    genres = [id, ...genres.filter((g) => g !== id)];
-  }
-
   function reset() {
-    link = title = artists = year = cover = newGenre = "";
+    link = title = artists = year = cover = "";
     genres = [];
+    tags = [];
     error = null;
     lookedUp = null;
     request++;
@@ -83,17 +68,13 @@
   async function submit(event: SubmitEvent) {
     event.preventDefault();
     error = null;
-    const parsedYear = year.trim() ? Number(year) : null;
-    if (parsedYear !== null && !Number.isInteger(parsedYear)) {
-      error = "Year must be a number";
-      return;
-    }
     try {
       const album = await library.addAlbum({
         title,
-        artists: artists.split(";"),
-        year: parsedYear,
+        artists: splitArtists(artists),
+        year: parseYear(year),
         genres,
+        tags,
         spotify: albumId ? spotifyUri(albumId) : null,
         cover: cover.trim() || null,
       });
@@ -155,40 +136,13 @@
         <input bind:value={year} inputmode="numeric" size="6" />
       </label>
 
-      <div class="genres">
+      <div class="field">
         Genres <span class="sub">(the first one is primary)</span>
-        <div class="row">
-          {#each genres as id, i (id)}
-            <span class="chip" class:primary={i === 0}>
-              {#if i > 0}
-                <button type="button" class="link" title="Make primary" onclick={() => makePrimary(id)}>{genreName(id)}</button>
-              {:else}
-                {genreName(id)}
-              {/if}
-              <button type="button" class="link" aria-label="Remove" onclick={() => (genres = genres.filter((g) => g !== id))}>×</button>
-            </span>
-          {/each}
-          <input
-            list="genre-names"
-            placeholder="Add genre"
-            size="12"
-            bind:value={newGenre}
-            onkeydown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                addGenre(newGenre);
-              }
-            }}
-          />
-          <datalist id="genre-names">
-            {#each library.genres as g (g.id)}<option value={g.name}></option>{/each}
-          </datalist>
-          {#if newGenre.trim()}
-            <button type="button" onclick={() => addGenre(newGenre)}>
-              {findGenreByName(library.genres, newGenre) ? "Add" : `Create “${newGenre.trim()}”`}
-            </button>
-          {/if}
-        </div>
+        <ChipInput bind:values={genres} primary {...genreChips(library)} />
+      </div>
+      <div class="field">
+        Playlists
+        <ChipInput bind:values={tags} {...playlistChips(library)} />
       </div>
 
       <label>
@@ -218,7 +172,7 @@
     font: inherit;
   }
   label,
-  .genres {
+  .field {
     display: flex;
     flex-direction: column;
     gap: 2px;
@@ -258,15 +212,6 @@
   }
   .row input {
     flex: 1;
-  }
-  .chip {
-    background: #eef;
-    border-radius: 12px;
-    padding: 2px 8px;
-  }
-  .chip.primary {
-    background: #ccf;
-    font-weight: 600;
   }
   .sub {
     color: #666;

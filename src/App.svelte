@@ -1,17 +1,19 @@
 <script lang="ts">
   // The iTunes 10 window: toolbar, source list, column browser, list or grid
-  // view, and status bar.
+  // view, and status bar, plus the Add and Get Info windows.
   import { tick } from "svelte";
   import AddAlbum from "./components/AddAlbum.svelte";
   import AlbumGrid from "./components/AlbumGrid.svelte";
   import AlbumList from "./components/AlbumList.svelte";
   import ColumnBrowser from "./components/ColumnBrowser.svelte";
+  import ContextMenu, { type MenuItem } from "./components/ContextMenu.svelte";
+  import GetInfo from "./components/GetInfo.svelte";
   import SourceList from "./components/SourceList.svelte";
   import TopBar from "./components/TopBar.svelte";
   import { browse, playlists, type SortDir, type SortKey, type Source, type ViewMode } from "./lib/browse.ts";
   import { LibraryDB } from "./lib/db.ts";
   import { Library } from "./lib/library.svelte.ts";
-  import type { Album } from "./lib/model.ts";
+  import { findGenreByName, type Album } from "./lib/model.ts";
   import { downloadLibraryFile, repoSource } from "./lib/persistence.ts";
 
   const library = new Library(new LibraryDB(), repoSource);
@@ -29,27 +31,46 @@
   let sortKey = $state<SortKey>(prefs.sortKey ?? "artist");
   let sortDir = $state<SortDir>(prefs.sortDir ?? "asc");
   let view = $state<ViewMode>(prefs.view ?? "list");
-  let selectedId = $state<string | null>(null);
+
+  // Selection: ids of the selected albums, the cursor (last clicked or moved
+  // to, kept in view) and the anchor that Shift-click extends from.
+  let selection = $state.raw<string[]>([]);
+  let cursor = $state<string | null>(null);
+  let anchor: string | null = null;
+
   let addOpen = $state(false);
+  let infoIds = $state.raw<string[]>([]);
+  let menu = $state<{ x: number; y: number; items: MenuItem[] } | null>(null);
+  let renamingGenre = $state<string | null>(null);
   let error = $state<string | null>(null);
 
   let fileInput: HTMLInputElement;
-  let sheet: HTMLDialogElement;
+  let addSheet: HTMLDialogElement;
+  let infoWindow: HTMLDialogElement;
   let main: HTMLDivElement;
 
   const genreNames = $derived(new Map(library.genres.map((g) => [g.id, g.name])));
   const result = $derived(
     browse(library.albums, library.genres, { source, search, genre, artist, album: albumTitle, sortKey, sortDir }),
   );
-  const selected = $derived(result.albums.find((a) => a.id === selectedId) ?? null);
+  const selectedSet = $derived(new Set(selection));
+  // Only albums still shown count as selected.
+  const selectedAlbums = $derived(result.albums.filter((a) => selectedSet.has(a.id)));
+  const infoAlbums = $derived(infoIds.flatMap((id) => library.getAlbum(id) ?? []));
+  const infoIndex = $derived(infoIds.length === 1 ? result.albums.findIndex((a) => a.id === infoIds[0]) : -1);
 
   $effect(() => {
     savePrefs({ view, sortKey, sortDir });
   });
 
   $effect(() => {
-    if (addOpen) sheet.showModal();
-    else if (sheet.open) sheet.close();
+    if (addOpen) addSheet.showModal();
+    else if (addSheet.open) addSheet.close();
+  });
+
+  $effect(() => {
+    if (infoIds.length > 0 && !infoWindow.open) infoWindow.showModal();
+    else if (infoIds.length === 0 && infoWindow.open) infoWindow.close();
   });
 
   function selectSource(s: Source) {
@@ -79,6 +100,41 @@
     }
   }
 
+  // --- Selection ---
+
+  function select(ids: string[], at: string | null) {
+    selection = ids;
+    cursor = at;
+  }
+
+  /** Click: select one. ⌘/Ctrl-click: toggle. Shift-click: range from the anchor. */
+  function pick(id: string, event: { shiftKey: boolean; metaKey: boolean; ctrlKey: boolean }) {
+    if (event.shiftKey && anchor) {
+      select(rangeIds(anchor, id), id);
+    } else if (event.metaKey || event.ctrlKey) {
+      select(selectedSet.has(id) ? selection.filter((s) => s !== id) : [...selection, id], id);
+      anchor = id;
+    } else {
+      select([id], id);
+      anchor = id;
+    }
+  }
+
+  function rangeIds(from: string, to: string): string[] {
+    const ids = result.albums.map((a) => a.id);
+    const [i, j] = [ids.indexOf(from), ids.indexOf(to)].sort((a, b) => a - b);
+    return i === -1 ? [to] : ids.slice(i, j + 1);
+  }
+
+  function selectAll() {
+    select(
+      result.albums.map((a) => a.id),
+      cursor,
+    );
+  }
+
+  // --- Actions ---
+
   function openInSpotify(album: Album) {
     if (album.spotify) window.location.href = album.spotify;
   }
@@ -90,6 +146,11 @@
     } catch (e) {
       error = (e as Error).message;
     }
+  }
+
+  function save() {
+    if (library.canSaveToRepo) run(() => library.saveToRepo());
+    else download();
   }
 
   function download() {
@@ -109,14 +170,28 @@
     fileInput.value = "";
   }
 
-  function remove(album: Album) {
-    if (!confirm(`Remove “${album.title}” from your library?`)) return;
+  function remove(albums: Album[]) {
+    if (albums.length === 0) return;
+    const question =
+      albums.length === 1
+        ? `Remove “${albums[0].title}” from your library?`
+        : `Remove these ${albums.length} albums from your library?`;
+    if (!confirm(question)) return;
+    // Then select the album after the last removed one, like iTunes.
     const list = result.albums;
-    const i = list.indexOf(album);
+    const removed = new Set(albums.map((a) => a.id));
+    const last = Math.max(...albums.map((a) => list.indexOf(a)));
+    const next = list.slice(last + 1).find((a) => !removed.has(a.id)) ?? [...list].reverse().find((a) => !removed.has(a.id));
     run(async () => {
-      await library.deleteAlbum(album.id);
-      selectedId = (list[i + 1] ?? list[i - 1])?.id ?? null;
+      for (const album of albums) await library.deleteAlbum(album.id);
+      select(next ? [next.id] : [], next?.id ?? null);
+      anchor = next?.id ?? null;
+      infoIds = [];
     });
+  }
+
+  function rate(album: Album, rating: number | null) {
+    run(() => library.updateAlbum(album.id, { rating }));
   }
 
   function added(album: Album) {
@@ -124,7 +199,21 @@
     // Show the new album: back to Music, filters cleared.
     selectSource({ kind: "music" });
     search = "";
-    selectedId = album.id;
+    select([album.id], album.id);
+    anchor = album.id;
+  }
+
+  function getInfo() {
+    if (selectedAlbums.length > 0) infoIds = selectedAlbums.map((a) => a.id);
+  }
+
+  /** Previous / Next in Get Info walk the main view, moving the selection along. */
+  function navigateInfo(delta: 1 | -1) {
+    const next = result.albums[infoIndex + delta];
+    if (!next) return;
+    infoIds = [next.id];
+    select([next.id], next.id);
+    anchor = next.id;
   }
 
   async function focusAlbums() {
@@ -132,22 +221,95 @@
     main.querySelector<HTMLElement>("[tabindex='0']")?.focus();
   }
 
+  // --- Genres ---
+
+  function renameGenre(id: string, name: string | null) {
+    if (renamingGenre !== id) return;
+    renamingGenre = null;
+    const current = library.genres.find((g) => g.id === id);
+    name = name?.trim() ?? "";
+    if (!current || !name || name === current.name) return;
+    const other = findGenreByName(library.genres, name);
+    if (other && other.id !== id) {
+      if (!confirm(`A genre named “${other.name}” already exists. Merge “${current.name}” into it?`)) return;
+      run(async () => {
+        await library.mergeGenre(id, other.id);
+        if (genre === id) genre = other.id;
+      });
+    } else {
+      run(() => library.renameGenre(id, name));
+    }
+  }
+
+  function deleteGenre(id: string) {
+    const name = genreNames.get(id) ?? id;
+    const count = library.albums.filter((a) => a.genres.includes(id)).length;
+    const detail = count === 0 ? "" : ` It will be removed from ${count} album${count === 1 ? "" : "s"}.`;
+    if (confirm(`Delete the genre “${name}”?${detail}`)) run(() => library.deleteGenre(id));
+  }
+
+  // --- Menus and shortcuts ---
+
+  function openMenu(event: MouseEvent, items: MenuItem[]) {
+    event.preventDefault();
+    menu = { x: event.clientX, y: event.clientY, items };
+  }
+
+  function albumMenu(event: MouseEvent, album: Album) {
+    // Right-clicking outside the selection selects that album first.
+    if (!selectedSet.has(album.id)) {
+      select([album.id], album.id);
+      anchor = album.id;
+    }
+    const many = selectedSet.size > 1;
+    openMenu(event, [
+      { label: many ? "Get Info (Multiple Items)" : "Get Info", action: getInfo },
+      { label: "Open in Spotify", action: () => openInSpotify(album), disabled: many || !album.spotify },
+      "separator",
+      { label: many ? `Delete ${selectedSet.size} Albums` : "Delete from Library", action: () => remove(selectedAlbums) },
+    ]);
+  }
+
+  function genreMenu(event: MouseEvent, id: string) {
+    openMenu(event, [
+      { label: "Rename Genre", action: () => (renamingGenre = id) },
+      { label: "Delete Genre…", action: () => deleteGenre(id) },
+    ]);
+  }
+
   function onMainKeydown(event: KeyboardEvent) {
     const list = result.albums;
     if (list.length === 0) return;
-    const i = selected ? list.indexOf(selected) : -1;
+    const i = cursor ? list.findIndex((a) => a.id === cursor) : -1;
     let step = 0;
     if (event.key === "ArrowDown") step = view === "grid" ? gridColumns() : 1;
     else if (event.key === "ArrowUp") step = view === "grid" ? -gridColumns() : -1;
     else if (event.key === "ArrowRight" && view === "grid") step = 1;
     else if (event.key === "ArrowLeft" && view === "grid") step = -1;
-    else if (event.key === "Enter" && selected) openInSpotify(selected);
-    else if ((event.key === "Delete" || event.key === "Backspace") && selected) remove(selected);
+    else if (event.key === "Enter" && selectedAlbums.length === 1) openInSpotify(selectedAlbums[0]);
+    else if (event.key === "Delete" || event.key === "Backspace") remove(selectedAlbums);
     else return;
     event.preventDefault();
     if (step !== 0) {
-      const next = i === -1 ? 0 : Math.max(0, Math.min(list.length - 1, i + step));
-      selectedId = list[next].id;
+      const next = list[i === -1 ? 0 : Math.max(0, Math.min(list.length - 1, i + step))].id;
+      // Shift extends the selection from the anchor.
+      pick(next, { shiftKey: event.shiftKey, metaKey: false, ctrlKey: false });
+    }
+  }
+
+  function onWindowKeydown(event: KeyboardEvent) {
+    if (!(event.metaKey || event.ctrlKey) || event.altKey) return;
+    const key = event.key.toLowerCase();
+    const modal = addOpen || infoIds.length > 0;
+    if (key === "s") {
+      event.preventDefault();
+      if (library.unsavedChanges > 0) save();
+    } else if (key === "i" && !modal) {
+      event.preventDefault();
+      getInfo();
+    } else if (key === "a" && !modal && main.contains(document.activeElement)) {
+      event.preventDefault();
+      selectAll();
     }
   }
 
@@ -173,14 +335,20 @@
   }
 </script>
 
+<svelte:window onkeydown={onWindowKeydown} />
+<svelte:head>
+  <title>{library.unsavedChanges > 0 ? `Album Library (${library.unsavedChanges} unsaved)` : "Album Library"}</title>
+</svelte:head>
+
 <div class="window">
   <TopBar
-    album={selected}
+    album={selectedAlbums.length === 1 ? selectedAlbums[0] : null}
+    selectedCount={selectedAlbums.length}
     unsavedChanges={library.unsavedChanges}
     canSaveToRepo={library.canSaveToRepo}
     bind:view
     bind:search
-    onsave={() => run(() => library.saveToRepo())}
+    onsave={save}
     ondownload={download}
     onimport={() => fileInput.click()}
   />
@@ -215,6 +383,10 @@
         artist={result.artist}
         album={result.album}
         onselect={selectColumn}
+        {renamingGenre}
+        ongenremenu={genreMenu}
+        onrenamestart={(id) => (renamingGenre = id)}
+        onrenamegenre={renameGenre}
       />
       <!-- Keyboard events bubble up from the list or grid. -->
       <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -229,14 +401,25 @@
           <AlbumList
             albums={result.albums}
             {genreNames}
-            bind:selectedId
+            selected={selectedSet}
+            {cursor}
             {sortKey}
             {sortDir}
             onsort={sortBy}
+            onpick={pick}
             onopen={openInSpotify}
+            onrate={rate}
+            onmenu={albumMenu}
           />
         {:else}
-          <AlbumGrid albums={result.albums} bind:selectedId onopen={openInSpotify} />
+          <AlbumGrid
+            albums={result.albums}
+            selected={selectedSet}
+            {cursor}
+            onpick={pick}
+            onopen={openInSpotify}
+            onmenu={albumMenu}
+          />
         {/if}
       </div>
     </div>
@@ -249,16 +432,35 @@
     <div class="count">
       {result.albums.length}
       {result.albums.length === 1 ? "album" : "albums"}
+      {#if selectedAlbums.length > 1}· {selectedAlbums.length} selected{/if}
     </div>
     <div class="buttons"></div>
   </footer>
 </div>
 
-<dialog class="sheet" bind:this={sheet} oncancel={() => (addOpen = false)} onclose={focusAlbums}>
+<dialog class="sheet" bind:this={addSheet} oncancel={() => (addOpen = false)} onclose={focusAlbums}>
   {#if addOpen}
     <AddAlbum {library} onadded={added} oncancel={() => (addOpen = false)} />
   {/if}
 </dialog>
+
+<dialog class="info-window" bind:this={infoWindow} oncancel={() => (infoIds = [])} onclose={focusAlbums}>
+  {#if infoAlbums.length > 0}
+    <GetInfo
+      {library}
+      albums={infoAlbums}
+      canPrevious={infoIndex > 0}
+      canNext={infoIndex !== -1 && infoIndex < result.albums.length - 1}
+      onnavigate={navigateInfo}
+      ondelete={() => remove(infoAlbums)}
+      onclose={() => (infoIds = [])}
+    />
+  {/if}
+</dialog>
+
+{#if menu}
+  <ContextMenu {...menu} onclose={() => (menu = null)} />
+{/if}
 
 <style>
   .window {
@@ -343,13 +545,25 @@
   .sheet[open] {
     animation: slide 0.2s ease-out;
   }
-  .sheet::backdrop {
+  .sheet::backdrop,
+  .info-window::backdrop {
     background: rgba(0, 0, 0, 0.15);
   }
   @keyframes slide {
     from {
       transform: translateY(-100%);
     }
+  }
+  /* Get Info is its own window, like in iTunes. */
+  .info-window {
+    width: min(560px, calc(100% - 32px));
+    max-height: calc(100vh - 32px);
+    padding: 0;
+    border: 1px solid #6e6e6e;
+    border-radius: 5px;
+    background: #ececec;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
+    overflow: auto;
   }
   @media (max-width: 700px) {
     .body {

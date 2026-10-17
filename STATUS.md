@@ -4,28 +4,34 @@ _Last updated: 2026-10-17 (session 2)_
 
 ## Where we are
 
-Milestones 1–3 are done: storage, adding albums, and the iTunes 10 window.
+The MVP is done (milestones 1–4): storage, adding albums, the iTunes 10
+window, and Get Info editing.
 
-- Window (`src/App.svelte` + `src/components/`): toolbar with Save/Export/Import
-  where the playback controls were, the LCD display (selected album, or the
-  unsaved-changes count), List/Grid switcher and search; source list (Music,
-  Recently Added = last 30 days, Playlists = tags); Genres | Artists | Albums
-  column browser; sortable striped list or cover grid; status bar with "+"
-  and the album count. Look and colors live in `src/app.css`.
-- Keyboard: arrows move the selection (columns, list, grid), Enter opens in
-  Spotify, Delete/Backspace removes (with a confirm). Double-click opens too.
-- "+" opens the add form as a sheet (`AddAlbum.svelte`); title + cover come
-  from a pasted Spotify link (oEmbed), everything else is typed by hand.
-- Browse logic (search, columns, sorting) is pure and tested in `src/lib/browse.ts`.
-  Sorting ignores a leading "The", like iTunes. Missing values sort last.
-- View and sort preferences are kept in localStorage.
-- 41 unit tests pass, `svelte-check` is clean. Clicked through in Firefox.
+- Window (`src/App.svelte` + `src/components/`): toolbar (Save/Export/Import,
+  LCD, List/Grid, search), source list (Music, Recently Added = last 30 days,
+  Playlists = tags), Genres | Artists | Albums column browser, striped list
+  or cover grid, status bar with "+". Look and colors live in `src/app.css`.
+- Selection: click, ⌘/Ctrl-click to toggle, Shift-click or Shift-arrows for a
+  range, ⌘A selects all. Enter or double-click opens in Spotify, Delete removes.
+- Get Info (⌘I or right-click): one album → Info and Artwork tabs with
+  Previous / Next (saves and moves on); several → Multiple Item Information,
+  where only ticked fields apply and playlists can be added or removed.
+- Ratings: click the stars right in the list (click the same star to clear).
+- Genres: double-click or right-click a genre in the column browser to rename
+  it; renaming to an existing genre's name offers to merge. Delete is in the
+  right-click menu. (Unused genres don't show in the column browser.)
+- Unsaved changes: Save turns blue, the tab title shows the count, ⌘S saves
+  (to the repo in dev, as a download otherwise).
+- Add sheet uses the same genre/playlist chips (`ChipInput.svelte`, `fields.ts`).
+- Browse logic is pure and tested in `src/lib/browse.ts`; the store gained
+  `updateAlbums` (bulk) and `mergeGenre`.
+- 43 unit tests pass, `svelte-check` is clean. Clicked through in Firefox
+  (except ⌘S, to avoid writing `data/library.json` from a test session).
 
 ## Next step
 
-Milestone 4: Get Info dialog (⌘I) for editing, multi-selection and bulk
-edits, inline star ratings, genre management. See `PLAN.md`. Until then
-there's no way to edit an album or set tags (so playlists stay empty).
+Phase 2 in `PLAN.md`: smart playlists, type-ahead, Cover Flow, more import
+paths. Or start curating the real library and fix what gets in the way.
 
 ## Decisions
 

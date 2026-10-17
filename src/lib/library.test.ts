@@ -99,6 +99,35 @@ describe("Library", () => {
     expect((await openLibrary()).albums[0].genres).toEqual(["jazz"]);
   });
 
+  it("merging a genre moves its albums and deletes it", async () => {
+    const library = await openLibrary();
+    await library.addGenre("Hip-Hop");
+    await library.addGenre("Rap");
+    await library.addGenre("Soul");
+    const both = await library.addAlbum({ title: "A", artists: ["X"], genres: ["rap", "soul", "hip-hop"] });
+    const one = await library.addAlbum({ title: "B", artists: ["X"], genres: ["soul", "rap"] });
+    await library.mergeGenre("rap", "hip-hop");
+    expect(library.genres.map((g) => g.id)).toEqual(["hip-hop", "soul"]);
+    expect(library.getAlbum(both.id)?.genres).toEqual(["hip-hop", "soul"]);
+    expect(library.getAlbum(one.id)?.genres).toEqual(["soul", "hip-hop"]);
+    expect((await openLibrary()).genres).toHaveLength(2);
+  });
+
+  it("updates several albums in one change", async () => {
+    const library = await openLibrary();
+    const a = await library.addAlbum({ title: "A", artists: ["X"], tags: ["old"] });
+    const b = await library.addAlbum({ title: "B", artists: ["Y"] });
+    const before = library.unsavedChanges;
+    await library.updateAlbums([a.id, b.id], (album) => ({ rating: 4, tags: [...album.tags, "vinyl"] }));
+    expect(library.unsavedChanges).toBe(before + 1);
+    expect(library.albums.map((x) => [x.title, x.rating, x.tags])).toEqual([
+      ["A", 4, ["old", "vinyl"]],
+      ["B", 4, ["vinyl"]],
+    ]);
+    await expect(library.updateAlbums([a.id], () => ({ rating: 9 }))).rejects.toThrow(/Rating/);
+    expect(library.getAlbum(a.id)?.rating).toBe(4);
+  });
+
   it("saving to the repo resets unsaved changes", async () => {
     const library = await openLibrary();
     await library.addAlbum({ title: "T", artists: ["A"] });

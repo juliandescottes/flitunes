@@ -1,5 +1,6 @@
 <script lang="ts">
   // iTunes column browser: Genres | Artists | Albums, each starting with "All (N)".
+  // Genres can be renamed in place (double-click or the context menu).
   import type { ColumnItem } from "../lib/browse.ts";
 
   type Column = "genre" | "artist" | "album";
@@ -12,6 +13,10 @@
     artist,
     album,
     onselect,
+    renamingGenre,
+    ongenremenu,
+    onrenamestart,
+    onrenamegenre,
   }: {
     genres: ColumnItem[];
     artists: ColumnItem[];
@@ -20,7 +25,25 @@
     artist: string | null;
     album: string | null;
     onselect: (column: Column, key: string | null) => void;
+    /** Genre id being renamed, if any. */
+    renamingGenre: string | null;
+    ongenremenu: (event: MouseEvent, id: string) => void;
+    onrenamestart: (id: string) => void;
+    /** Called with the new name, or null when the rename is cancelled. */
+    onrenamegenre: (id: string, name: string | null) => void;
   } = $props();
+
+  // Focuses and selects the rename field when it appears.
+  function renameField(input: HTMLInputElement) {
+    input.focus();
+    input.select();
+  }
+
+  function onRenameKeydown(event: KeyboardEvent, id: string) {
+    event.stopPropagation();
+    if (event.key === "Enter") onrenamegenre(id, (event.currentTarget as HTMLInputElement).value);
+    else if (event.key === "Escape") onrenamegenre(id, null);
+  }
 
   const columns = $derived([
     { id: "genre" as const, title: "Genres", noun: "Genre", items: genres, selected: genre },
@@ -53,13 +76,32 @@
           All ({column.items.length} {column.items.length === 1 ? column.noun : column.title})
         </li>
         {#each column.items as item (item.key)}
+          {@const isGenre = column.id === "genre"}
           <li
             role="option"
             aria-selected={column.selected === item.key}
             class:selected={column.selected === item.key}
             onmousedown={() => onselect(column.id, item.key)}
+            ondblclick={() => isGenre && onrenamestart(item.key)}
+            oncontextmenu={(e) => {
+              if (!isGenre) return;
+              onselect("genre", item.key);
+              ongenremenu(e, item.key);
+            }}
           >
-            {item.label}
+            {#if isGenre && renamingGenre === item.key}
+              <input
+                class="rename"
+                value={item.label}
+                aria-label="Genre name"
+                use:renameField
+                onmousedown={(e) => e.stopPropagation()}
+                onkeydown={(e) => onRenameKeydown(e, item.key)}
+                onblur={(e) => onrenamegenre(item.key, e.currentTarget.value)}
+              />
+            {:else}
+              {item.label}
+            {/if}
           </li>
         {/each}
       </ul>
@@ -106,6 +148,14 @@
   }
   li.selected {
     background: var(--select-inactive);
+  }
+  .rename {
+    font: inherit;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #555;
+    padding: 0 2px;
+    color: #000;
   }
   ul:focus li.selected {
     background: var(--select);

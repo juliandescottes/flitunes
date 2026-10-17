@@ -7,6 +7,7 @@
 
   let {
     album,
+    selectedCount,
     unsavedChanges,
     canSaveToRepo,
     view = $bindable(),
@@ -15,7 +16,9 @@
     ondownload,
     onimport,
   }: {
+    /** The selected album when exactly one is selected. */
     album: Album | null;
+    selectedCount: number;
     unsavedChanges: number;
     canSaveToRepo: boolean;
     view: ViewMode;
@@ -29,7 +32,13 @@
 <header class="toolbar">
   <div class="actions">
     {#if canSaveToRepo}
-      <button class="aqua" onclick={onsave} disabled={unsavedChanges === 0} title="Write data/library.json">Save</button>
+      <button
+        class="aqua"
+        class:default={unsavedChanges > 0}
+        onclick={onsave}
+        disabled={unsavedChanges === 0}
+        title="Write data/library.json (⌘S)">Save</button
+      >
     {/if}
     <button class="aqua" onclick={ondownload} title="Download library.json">Export</button>
     <button class="aqua" onclick={onimport} title="Replace the library with a library.json file">Import</button>
@@ -39,6 +48,9 @@
     {#if album}
       <div class="lcd-title">{album.title}</div>
       <div class="lcd-sub">{album.artists.join(", ")}{album.year ? ` — ${album.year}` : ""}</div>
+    {:else if selectedCount > 1}
+      <div class="lcd-title">{selectedCount} albums selected</div>
+      <div class="lcd-sub">⌘I to edit them together</div>
     {:else}
       <div class="lcd-title">Album Library</div>
       <div class="lcd-sub">

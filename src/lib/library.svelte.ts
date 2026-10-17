@@ -15,6 +15,8 @@ export type LibraryStatus =
   | { kind: "conflict"; file: LibraryFile }
   | { kind: "error"; message: string };
 
+export type AlbumPatch = Partial<Omit<Album, "id" | "addedAt">>;
+
 export type AlbumInput = Partial<Omit<Album, "id" | "addedAt">> & Pick<Album, "title" | "artists">;
 
 // Meta keys.
@@ -115,13 +117,24 @@ export class Library {
     return album;
   }
 
-  async updateAlbum(id: string, patch: Partial<Omit<Album, "id" | "addedAt">>): Promise<Album> {
+  async updateAlbum(id: string, patch: AlbumPatch): Promise<Album> {
     const current = this.getAlbum(id);
     if (!current) throw new Error(`Unknown album ${id}`);
     const album = this.#normalizeAlbum({ ...current, ...patch });
     await this.#mutate(() => this.#db.albums.put(album));
-    this.albums = this.albums.map((a) => (a.id === id ? album : a));
+    this.#replaceAlbums([album]);
     return album;
+  }
+
+  /** Updates several albums in one write, e.g. from Multiple Item Information. */
+  async updateAlbums(ids: string[], change: (album: Album) => AlbumPatch): Promise<void> {
+    const updated = ids.map((id) => {
+      const current = this.getAlbum(id);
+      if (!current) throw new Error(`Unknown album ${id}`);
+      return this.#normalizeAlbum({ ...current, ...change(current) });
+    });
+    await this.#mutate(() => this.#db.albums.bulkPut(updated));
+    this.#replaceAlbums(updated);
   }
 
   async deleteAlbum(id: string): Promise<void> {
@@ -155,9 +168,23 @@ export class Library {
       await this.#db.genres.delete(id);
       await this.#db.albums.bulkPut(affected);
     });
-    const byId = new Map(affected.map((a) => [a.id, a]));
     this.genres = this.genres.filter((g) => g.id !== id);
-    this.albums = this.albums.map((a) => byId.get(a.id) ?? a);
+    this.#replaceAlbums(affected);
+  }
+
+  /** Moves every album from genre `from` to genre `into`, then deletes `from`. */
+  async mergeGenre(from: string, into: string): Promise<void> {
+    if (from === into) return;
+    if (!this.genres.some((g) => g.id === into)) throw new Error(`Unknown genre "${into}"`);
+    const affected = this.albums
+      .filter((a) => a.genres.includes(from))
+      .map((a) => ({ ...a, genres: [...new Set(a.genres.map((g) => (g === from ? into : g)))] }));
+    await this.#mutate(async () => {
+      await this.#db.genres.delete(from);
+      await this.#db.albums.bulkPut(affected);
+    });
+    this.genres = this.genres.filter((g) => g.id !== from);
+    this.#replaceAlbums(affected);
   }
 
   /** Builds the library file for export. */
@@ -200,6 +227,11 @@ export class Library {
     this.albums = file.albums;
     this.genres = file.genres;
     this.unsavedChanges = 0;
+  }
+
+  #replaceAlbums(updated: Album[]): void {
+    const byId = new Map(updated.map((a) => [a.id, a]));
+    this.albums = this.albums.map((a) => byId.get(a.id) ?? a);
   }
 
   /** Runs a write in a transaction that also bumps the unsaved changes counter. */
