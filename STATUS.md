@@ -25,15 +25,19 @@ window, and Get Info editing.
 - Unsaved changes: Save turns blue, the tab title shows the count, ⌘S saves
   (to the repo in dev, as a download otherwise).
 - Add sheet uses the same genre/playlist chips (`ChipInput.svelte`, `fields.ts`).
+- Add Several (`AddSeveral.svelte`): paste several Spotify links (or click
+  "Add Several…"), look them up 4 at a time, then fill in artists and years
+  in a table. Genres and playlists apply to all; links already in the library
+  start unticked. Added with `library.addAlbums` (one write, one change).
 - Browse logic is pure and tested in `src/lib/browse.ts`; the store gained
   `updateAlbums` (bulk) and `mergeGenre`.
-- 44 unit tests pass, `svelte-check` is clean. Clicked through in Firefox
+- 46 unit tests pass, `svelte-check` is clean. Clicked through in Firefox
   (except ⌘S, to avoid writing `data/library.json` from a test session).
 
 ## Next step
 
-Phase 2 in `PLAN.md`: smart playlists, Cover Flow, more import
-paths. Or start curating the real library and fix what gets in the way.
+Phase 2 in `PLAN.md`: smart playlists, Cover Flow, CSV
+import. Or start curating the real library and fix what gets in the way.
 
 ## Decisions
 

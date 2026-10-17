@@ -4,7 +4,7 @@
   import { untrack } from "svelte";
   import type { Library } from "../lib/library.svelte.ts";
   import { VARIOUS_ARTISTS, type Album } from "../lib/model.ts";
-  import { fetchSpotifyAlbumInfo, parseSpotifyAlbumId, spotifyUri } from "../lib/spotify.ts";
+  import { fetchSpotifyAlbumInfo, parseSpotifyAlbumId, parseSpotifyAlbumIds, spotifyUri } from "../lib/spotify.ts";
   import ChipInput from "./ChipInput.svelte";
   import { genreChips, parseYear, playlistChips, splitArtists } from "./fields.ts";
 
@@ -12,7 +12,14 @@
     library,
     onadded,
     oncancel,
-  }: { library: Library; onadded: (album: Album) => void; oncancel: () => void } = $props();
+    onseveral,
+  }: {
+    library: Library;
+    onadded: (album: Album) => void;
+    oncancel: () => void;
+    /** Switches to Add Several, with the links pasted so far. */
+    onseveral: (text: string) => void;
+  } = $props();
 
   let link = $state("");
   let title = $state("");
@@ -31,6 +38,16 @@
   const albumId = $derived(parseSpotifyAlbumId(link));
   const linkInvalid = $derived(link.trim() !== "" && albumId === null);
   const duplicates = $derived(albumId ? library.findBySpotify(spotifyUri(albumId)) : []);
+
+  // Pasting several links switches to Add Several. Read the clipboard
+  // directly: a one-line input would drop the line breaks between them.
+  function onpaste(event: ClipboardEvent) {
+    const text = event.clipboardData?.getData("text/plain") ?? "";
+    if (parseSpotifyAlbumIds(text).ids.length > 1) {
+      event.preventDefault();
+      onseveral(text);
+    }
+  }
 
   // Look up a newly pasted link once.
   $effect(() => {
@@ -92,7 +109,10 @@
 </script>
 
 <form class="add" onsubmit={submit}>
-  <h2>Add to Library</h2>
+  <div class="head">
+    <h2>Add to Library</h2>
+    <button type="button" class="link" onclick={() => onseveral(link)}>Add Several…</button>
+  </div>
 
   <label class="wide">
     Spotify link
@@ -100,6 +120,7 @@
       placeholder="https://open.spotify.com/album/… (optional)"
       bind:value={link}
       aria-invalid={linkInvalid}
+      {onpaste}
     />
   </label>
   {#if linkInvalid}<p class="hint error">Not a Spotify album link.</p>{/if}
@@ -164,8 +185,14 @@
   .add {
     padding: 14px 18px;
   }
+  .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 10px;
+  }
   h2 {
-    margin: 0 0 10px;
+    margin: 0;
     font-size: 13px;
   }
   input {

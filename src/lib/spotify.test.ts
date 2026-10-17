@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { fetchSpotifyAlbumInfo, largeSpotifyCover, parseSpotifyAlbumId } from "./spotify.ts";
+import { fetchSpotifyAlbumInfo, largeSpotifyCover, parseSpotifyAlbumId, parseSpotifyAlbumIds } from "./spotify.ts";
 
 const ID = "1weenld61qoidwYuZ1GESA";
 
@@ -34,6 +34,14 @@ describe("parseSpotifyAlbumId", () => {
     "spotify:album:tooshort",
   ])("rejects %j", (input) => {
     expect(parseSpotifyAlbumId(input)).toBeNull();
+  });
+});
+
+describe("parseSpotifyAlbumIds", () => {
+  it("finds every album link, once, and reports the rest", () => {
+    const other = "4LH4d3cOWNNsVw41Gqt2kv";
+    const text = `https://open.spotify.com/album/${ID}?si=x\n\nspotify:album:${other}, open.spotify.com/album/${ID}\nhello`;
+    expect(parseSpotifyAlbumIds(text)).toEqual({ ids: [ID, other], invalid: ["hello"] });
   });
 });
 

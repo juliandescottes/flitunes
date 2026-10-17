@@ -89,6 +89,19 @@ describe("Library", () => {
     expect(library.albums).toHaveLength(0);
   });
 
+  it("adds several albums in one change, or none if one is invalid", async () => {
+    const library = await openLibrary();
+    await expect(library.addAlbums([{ title: "A", artists: ["X"] }, { title: "", artists: ["Y"] }])).rejects.toThrow();
+    expect(library.albums).toHaveLength(0);
+    const added = await library.addAlbums([
+      { title: "A", artists: ["X"] },
+      { title: "B", artists: ["Y"] },
+    ]);
+    expect(added.map((a) => a.title)).toEqual(["A", "B"]);
+    expect(library.unsavedChanges).toBe(1);
+    expect((await openLibrary()).albums).toHaveLength(2);
+  });
+
   it("deleting a genre removes it from albums", async () => {
     const library = await openLibrary();
     await library.addGenre("Jazz");

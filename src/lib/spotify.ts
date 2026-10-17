@@ -26,6 +26,22 @@ export function parseSpotifyAlbumId(input: string): string | null {
   return id && ALBUM_ID.test(id) ? id : null;
 }
 
+/**
+ * Finds every Spotify album link in a block of text (one per line, or
+ * separated by spaces or commas). Returns the album ids without duplicates,
+ * in order, and the pieces that are not album links.
+ */
+export function parseSpotifyAlbumIds(text: string): { ids: string[]; invalid: string[] } {
+  const ids: string[] = [];
+  const invalid: string[] = [];
+  for (const piece of text.split(/[\s,]+/).filter(Boolean)) {
+    const id = parseSpotifyAlbumId(piece);
+    if (id === null) invalid.push(piece);
+    else if (!ids.includes(id)) ids.push(id);
+  }
+  return { ids, invalid };
+}
+
 export const spotifyUri = (id: string) => `spotify:album:${id}`;
 export const spotifyWebUrl = (id: string) => `https://open.spotify.com/album/${id}`;
 

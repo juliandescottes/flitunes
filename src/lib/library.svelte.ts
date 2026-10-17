@@ -99,7 +99,22 @@ export class Library {
   }
 
   async addAlbum(input: AlbumInput): Promise<Album> {
-    const album = this.#normalizeAlbum({
+    const album = this.#newAlbum(input);
+    await this.#mutate(() => this.#db.albums.add(album));
+    this.albums = [...this.albums, album];
+    return album;
+  }
+
+  /** Adds several albums in one write and one unsaved change. All or nothing. */
+  async addAlbums(inputs: AlbumInput[]): Promise<Album[]> {
+    const albums = inputs.map((input) => this.#newAlbum(input));
+    await this.#mutate(() => this.#db.albums.bulkAdd(albums));
+    this.albums = [...this.albums, ...albums];
+    return albums;
+  }
+
+  #newAlbum(input: AlbumInput): Album {
+    return this.#normalizeAlbum({
       id: ulid(),
       addedAt: new Date().toISOString(),
       artistSort: null,
@@ -112,9 +127,6 @@ export class Library {
       cover: null,
       ...input,
     });
-    await this.#mutate(() => this.#db.albums.add(album));
-    this.albums = [...this.albums, album];
-    return album;
   }
 
   async updateAlbum(id: string, patch: AlbumPatch): Promise<Album> {

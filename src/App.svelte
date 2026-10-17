@@ -3,6 +3,7 @@
   // view, and status bar, plus the Add and Get Info windows.
   import { tick } from "svelte";
   import AddAlbum from "./components/AddAlbum.svelte";
+  import AddSeveral from "./components/AddSeveral.svelte";
   import AlbumGrid from "./components/AlbumGrid.svelte";
   import AlbumList from "./components/AlbumList.svelte";
   import ColumnBrowser from "./components/ColumnBrowser.svelte";
@@ -39,6 +40,8 @@
   let anchor: string | null = null;
 
   let addOpen = $state(false);
+  // Links for the Add Several sheet; null shows the single-album sheet.
+  let addSeveral = $state<string | null>(null);
   let infoIds = $state.raw<string[]>([]);
   let menu = $state<{ x: number; y: number; items: MenuItem[] } | null>(null);
   let renamingGenre = $state<string | null>(null);
@@ -201,6 +204,17 @@
     search = "";
     select([album.id], album.id);
     anchor = album.id;
+  }
+
+  function addedSeveral(albums: Album[]) {
+    addOpen = false;
+    selectSource({ kind: "music" });
+    search = "";
+    select(
+      albums.map((a) => a.id),
+      albums[0].id,
+    );
+    anchor = albums[0].id;
   }
 
   function getInfo() {
@@ -458,9 +472,26 @@
   </footer>
 </div>
 
-<dialog class="sheet" bind:this={addSheet} oncancel={() => (addOpen = false)} onclose={focusAlbums}>
-  {#if addOpen}
-    <AddAlbum {library} onadded={added} oncancel={() => (addOpen = false)} />
+<dialog
+  class="sheet"
+  class:wide={addSeveral !== null}
+  bind:this={addSheet}
+  oncancel={() => (addOpen = false)}
+  onclose={() => {
+    addSeveral = null;
+    focusAlbums();
+  }}
+>
+  {#if addOpen && addSeveral !== null}
+    <AddSeveral
+      {library}
+      text={addSeveral}
+      onadded={addedSeveral}
+      oncancel={() => (addOpen = false)}
+      onsingle={() => (addSeveral = null)}
+    />
+  {:else if addOpen}
+    <AddAlbum {library} onadded={added} oncancel={() => (addOpen = false)} onseveral={(text) => (addSeveral = text)} />
   {/if}
 </dialog>
 
@@ -561,6 +592,9 @@
     border-radius: 0 0 6px 6px;
     background: #ececec;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  }
+  .sheet.wide {
+    width: min(760px, calc(100% - 32px));
   }
   .sheet[open] {
     animation: slide 0.2s ease-out;
