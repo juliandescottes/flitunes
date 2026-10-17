@@ -1,7 +1,7 @@
 # Album Library
 
 Personal, single-user web app to curate a music album library by hand
-(iTunes-style browsing by artist, genre, tags) and open albums in Spotify.
+(iTunes 10-style browsing by artist, genre, tags, as a UI reference only) and open albums in Spotify.
 Spotify is only a link, never the source of truth.
 
 - Spec & design: `docs/spec.md`
@@ -46,8 +46,9 @@ Static Svelte 5 + Vite + TypeScript app, no backend.
 - Genres are a flat, curated list, referenced by slug id. The first genre on an album is the primary one.
 - One album entry per edition. Compilations use the artist `"Various Artists"` (`VARIOUS_ARTISTS`).
 - Covers are stored as URLs only. No image files in the repo.
-- External data comes only from unauthenticated, CORS-enabled endpoints (Spotify
-  oEmbed, iTunes Search, Cover Art Archive). No Spotify login or Web API.
+- Everything is hand curated. The only external lookup is Spotify oEmbed (title +
+  cover from a pasted link). No metadata services (iTunes, MusicBrainz, …), no
+  Spotify login or Web API.
 - Keep the store testable: inject `LibraryDB` and `LibrarySource`, and test with
   `fake-indexeddb` and an in-memory source (see `src/lib/library.test.ts`).
 

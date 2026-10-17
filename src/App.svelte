@@ -1,6 +1,7 @@
 <script lang="ts">
-  // Temporary shell to exercise the store and persistence. The real browse UI
-  // (column browser, cover grid, album detail) comes next.
+  // Temporary shell around the add-album form and the store. The real browse
+  // UI (column browser, cover grid, album detail) comes in milestone 3.
+  import AddAlbum from "./components/AddAlbum.svelte";
   import { LibraryDB } from "./lib/db.ts";
   import { Library } from "./lib/library.svelte.ts";
   import { artistSortKey } from "./lib/model.ts";
@@ -9,9 +10,6 @@
   const library = new Library(new LibraryDB(), repoSource);
   library.load();
 
-  let title = $state("");
-  let artist = $state("");
-  let year = $state("");
   let error = $state<string | null>(null);
   let fileInput: HTMLInputElement;
 
@@ -28,14 +26,6 @@
     } catch (e) {
       error = (e as Error).message;
     }
-  }
-
-  function add(event: SubmitEvent) {
-    event.preventDefault();
-    run(async () => {
-      await library.addAlbum({ title, artists: [artist], year: year ? Number(year) : null });
-      title = artist = year = "";
-    });
   }
 
   function download() {
@@ -85,12 +75,7 @@
 
   {#if error}<p class="error">{error}</p>{/if}
 
-  <form onsubmit={add}>
-    <input placeholder="Title" bind:value={title} required />
-    <input placeholder="Artist" bind:value={artist} required />
-    <input placeholder="Year" bind:value={year} inputmode="numeric" size="6" />
-    <button>Add</button>
-  </form>
+  <AddAlbum {library} />
 
   <ul>
     {#each sorted as album (album.id)}
@@ -134,11 +119,6 @@
   }
   .error {
     color: #c00;
-  }
-  form {
-    display: flex;
-    gap: 8px;
-    margin: 16px 0;
   }
   .link {
     border: none;

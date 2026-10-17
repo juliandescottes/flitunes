@@ -91,6 +91,11 @@ export class Library {
     return this.albums.find((a) => a.id === id);
   }
 
+  /** Albums linked to the given Spotify URI (there should be at most one). */
+  findBySpotify(uri: string): Album[] {
+    return this.albums.filter((a) => a.spotify === uri);
+  }
+
   async addAlbum(input: AlbumInput): Promise<Album> {
     const album = this.#normalizeAlbum({
       id: ulid(),

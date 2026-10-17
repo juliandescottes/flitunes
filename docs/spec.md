@@ -5,11 +5,15 @@ Status: draft, 2026-10-17. Personal tool, single user.
 ## 1. Why
 
 Spotify is built around playlists and tracks. I listen to albums. I want an
-iTunes-style library: albums browsed by artist, genre and my own tags, with one
-click to open/play the album in Spotify.
+old-school iTunes experience (iTunes 10, around 2010, before iCloud and Apple
+Music) for my albums: browse by genre, artist and my own playlists, and open
+the album in Spotify with a double-click. iTunes is the UI reference only,
+never a data source.
 
 ## 2. Principles
 
+- **Old-school iTunes, and not much more.** If iTunes 10 didn't do it, we
+  probably don't either. The only additions are a few ways to import albums.
 - **I curate the library by hand.** Spotify is not the source of truth. Each
   album just *links* to Spotify.
 - **Local-first, no backend.** A static web app. The working copy lives in
@@ -22,7 +26,9 @@ click to open/play the album in Spotify.
 
 - Importing my Spotify library automatically.
 - Controlling Spotify playback (play/pause/devices).
-- Track-level curation, playlists, multi-user, hosting for others.
+- Track-level curation, multi-user, hosting for others.
+- Anything iTunes 10 didn't have: embedded players, recommendations,
+  metadata lookups, social features.
 
 ## 4. Core concepts
 
@@ -31,38 +37,47 @@ click to open/play the album in Spotify.
 | **Album** | The core unit: title, artist(s), year, cover, Spotify link, genres, tags, rating, notes. |
 | **Edition** | Each edition (original, deluxe, remaster, …) is its own album entry with its own Spotify link. There's no grouping. |
 | **Artist** | Plain names on the album, plus an optional sort name ("Beatles, The"). There's no separate artist entity in v1. Compilations use a single artist called **"Various Artists"**, which shows up in the artist column like any other artist. |
-| **Genre** | Flat, curated vocabulary that I manage myself, with no hierarchy. One primary genre and optional secondaries. iTunes' genre is only a suggestion: it prefills when it matches an existing genre, and otherwise offers "create genre?". |
-| **Tag** | Free-form (`winter`, `vinyl-owned`, `to-listen`, …). |
-| **Smart collection** | A saved filter (phase 2), e.g. `genre=Jazz AND year<1970 AND rating>=4`. |
+| **Genre** | Flat, curated vocabulary that I manage myself, with no hierarchy. One primary genre and optional secondaries. Genres are always picked by hand; typing a new name offers "create genre?". |
+| **Tag** | Free-form (`winter`, `vinyl-owned`, `to-listen`, …). Shown as **playlists** in the source list: an album can be in several. |
+| **Smart playlist** | A saved filter, like iTunes Smart Playlists, e.g. `genre=Jazz AND year<1970 AND rating>=4`. |
 
 ## 5. Features
 
+The target is the iTunes 10 window, with albums instead of songs.
+
 ### MVP
-1. **Add album**: paste a Spotify album link.
-   - Fetch the title and cover via Spotify oEmbed (no auth, see §7).
-   - The artist / year / genre fields are prefilled from an iTunes Search lookup
-     (no auth). I confirm or edit before saving.
-   - Manual entry is always possible, including albums with no Spotify link.
-2. **Browse**
-   - Cover grid, sortable by artist / title / year / date added.
-   - iTunes-style column browser: **Genre → Artist → Album**.
-   - Sidebar: All albums, Recently added, Tags.
-3. **Album detail**: cover, metadata, tags, rating, notes, **Open in Spotify**.
-4. **Edit**: all fields, plus bulk-edit genre/tags on a multi-selection.
-5. **Search/filter** over the local library (instant, in-memory).
-6. **Persistence**: IndexedDB working copy, plus export/import of JSON (§6).
+1. **Window layout** (iTunes 10)
+   - Top bar: the "LCD" display in the center (shows the selected album),
+     view switcher (List / Album grid), search field on the right.
+   - **Source list** on the left: Library › Music, Recently Added, then
+     Playlists (one per tag) and Smart Playlists.
+   - **Column browser** above the main view: Genres | Artists | Albums,
+     each column with an "All (N)" row at the top.
+   - **Main view**: a sortable list (Name, Artist, Year, Genre, Rating,
+     Date Added) or a cover grid.
+   - Status bar at the bottom: "N albums".
+2. **Open in Spotify**: double-click or Enter opens `spotify:album:<id>` (§8).
+3. **Get Info** (⌘I): the edit dialog, with iTunes-style tabs (Info, Artwork),
+   for one album or a multi-selection (bulk genre/tags/rating).
+4. **Ratings**: 1–5 stars, editable inline in the list like iTunes.
+5. **Search**: the top-right field filters instantly.
+6. **Add / import**
+   - "Add to Library…": paste a Spotify album link. oEmbed prefills the
+     title and cover (§7); artist, year and genres are typed by hand. No
+     metadata lookup service. Manual entry with no link works too.
+   - Import / export `library.json` (§6).
+7. **Persistence**: IndexedDB working copy plus `library.json` (§6).
 
 ### Phase 2
-- Smart collections with a rule editor.
+- Smart playlists with a rule editor (iTunes-style "Match all of the following rules").
 - Keyboard navigation (arrows, type-ahead, Enter = open in Spotify).
-- Optional embedded Spotify player (iframe) in the album detail view.
-- "Refresh cover" action to re-fetch a dead cover URL via oEmbed/iTunes.
+- Cover Flow view.
+- More import paths, e.g. pasting several Spotify links at once, or a CSV.
+- "Refresh cover" to re-fetch a dead cover URL via oEmbed.
 
 ### Later / maybe
-- "Random album" from the current filter.
-- Optional Spotify login (PKCE) for one-off bulk import of saved albums and/or
-  real playback control (`PUT /me/player/play`, Premium only).
-- Track lists.
+- One-off import from Last.fm (`user.getTopAlbums`, needs an API key).
+- Optional Spotify login (PKCE) for a one-off bulk import of saved albums.
 
 ## 6. Storage & persistence
 
@@ -122,11 +137,10 @@ to diff better, a custom serializer is an easy switch.
 |---|---|---|
 | **Spotify oEmbed**<br>`https://open.spotify.com/oembed?url=<album url>` | album title, 300px cover URL, embed iframe | Primary for title + cover. |
 | **Spotify image CDN** | the same image hash at other sizes: swap the prefix `ab67616d00001e02` (300px) for `ab67616d0000b273` (640px) | Store the 640px URL. |
-| **iTunes Search API**<br>`https://itunes.apple.com/search?entity=album&term=…` | artist, album, release date, **primary genre**, track count, artwork (resizable to 600×600+ by editing the URL) | Prefill artist/year/genre; fallback cover. |
-| **Cover Art Archive** (MusicBrainz) | high-res covers by release MBID | Optional fallback for obscure releases. |
 
-oEmbed does **not** return the artist, which is why the iTunes lookup exists.
-These are undocumented-ish public endpoints. Treat them as conveniences: the
+oEmbed does **not** return the artist. That is fine: the library is hand curated,
+so artist, year and genre are always typed in.
+oEmbed is an undocumented-ish public endpoint. Treat it as a convenience: the
 user can always type or paste values, including a manual cover URL.
 
 ## 8. "Play in Spotify"

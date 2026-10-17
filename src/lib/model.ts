@@ -46,6 +46,12 @@ export function slugify(name: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
+/** Finds an existing genre with the same name, ignoring case and punctuation. */
+export function findGenreByName(genres: Genre[], name: string): Genre | undefined {
+  const id = slugify(name);
+  return id ? genres.find((g) => g.id === id || slugify(g.name) === id) : undefined;
+}
+
 /** Sort key for the album's artist: artistSort if set, else the first artist. */
 export function artistSortKey(album: Album): string {
   return (album.artistSort ?? album.artists[0] ?? "").toLocaleLowerCase();

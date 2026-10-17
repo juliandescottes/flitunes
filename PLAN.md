@@ -12,43 +12,45 @@ See `docs/spec.md` for the details behind each item.
 - [x] Save to repo (dev plugin), download and import JSON
 - [x] Unit tests (serialization, store)
 
-## Milestone 2: Adding albums
+## Milestone 2: Adding albums ✅
 
-- [ ] Parse Spotify album links/URIs (`open.spotify.com/album/…`, `spotify:album:…`, with `?si=` etc.)
-- [ ] Spotify oEmbed lookup: title + cover (swap to the 640px image URL)
-- [ ] iTunes Search lookup: suggest artist, year and genre, with a fallback cover
-- [ ] Add-album form: paste link → prefilled fields → confirm/edit → save
-- [ ] Manual entry (no Spotify link)
-- [ ] Genre picker: suggest existing genres, or offer "create genre?" for the iTunes genre
-- [ ] Duplicate warning (same Spotify URI already in the library)
+- [x] Parse Spotify album links/URIs (`open.spotify.com/album/…`, `spotify:album:…`, with `?si=` etc.)
+- [x] Spotify oEmbed lookup: title + cover (swap to the 640px image URL)
+- [x] Add-album form: paste link → prefilled fields → confirm/edit → save
+- [x] Manual entry (no Spotify link)
+- [x] Genre picker: autocomplete existing genres, or "create genre?" for a new name
+- [x] Duplicate warning (same Spotify URI already in the library)
 
-## Milestone 3: Browsing
+## Milestone 3: iTunes 10 window
 
-- [ ] App layout: sidebar, column browser, main view
-- [ ] Cover grid (virtualized if needed), sortable by artist / title / year / added
-- [ ] Column browser: Genre → Artist → Album
-- [ ] Sidebar: All albums, Recently added, Tags
-- [ ] Instant search/filter over the library
-- [ ] "Open in Spotify" (`spotify:` URI) + web player link
+Reference: iTunes 10 (2010). See `docs/spec.md` §5.
 
-## Milestone 4: Editing
+- [ ] Window chrome: top bar with LCD display, view switcher, search field; status bar
+- [ ] Source list: Music, Recently Added, Playlists (tags)
+- [ ] Column browser: Genres | Artists | Albums, with "All (N)" rows
+- [ ] List view: sortable columns (Name, Artist, Year, Genre, Rating, Date Added)
+- [ ] Album grid view
+- [ ] Instant search
+- [ ] Double-click / Enter opens the album in Spotify
+- [ ] "Add to Library…" opens the add form as a sheet
 
-- [ ] Album detail view: cover, metadata, tags, rating, notes
-- [ ] Edit all fields, delete album
-- [ ] Multi-select + bulk edit genre/tags
+## Milestone 4: Get Info & editing
+
+- [ ] Get Info dialog (⌘I): Info and Artwork tabs, edit all fields, delete
+- [ ] Multi-selection + Get Info for bulk genre/tags/rating
+- [ ] Inline star ratings in the list
 - [ ] Genre management (rename, delete, merge)
 - [ ] Unsaved-changes reminder polish
 
 ## Phase 2
 
-- [ ] Smart collections (saved filters + rule editor)
-- [ ] Keyboard navigation (arrows, type-ahead, Enter = open in Spotify)
-- [ ] Embedded Spotify player (iframe) in album detail
+- [ ] Smart playlists (rule editor)
+- [ ] Keyboard navigation (arrows, type-ahead)
+- [ ] Cover Flow
+- [ ] More import paths (several Spotify links at once, CSV)
 - [ ] "Refresh cover" for dead cover URLs
 
 ## Later / maybe
 
-- [ ] Random album from current filter
 - [ ] One-off import from Last.fm (`user.getTopAlbums`, needs an API key)
-- [ ] Optional Spotify login for bulk import / playback control
-- [ ] Track lists
+- [ ] Optional Spotify login for a one-off bulk import
