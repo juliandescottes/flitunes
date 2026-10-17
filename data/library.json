@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "exportedAt": "2026-10-17T14:05:02.998Z",
+  "exportedAt": "2026-10-17T17:21:09.486Z",
   "genres": [
     {
       "id": "electronic",
@@ -54,8 +54,8 @@
       ],
       "rating": 3,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:206GTDefY2qRMQxYXmfb0a",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2737f4dc15877a3c43f611a2709",
       "addedAt": "2026-10-17T10:22:09.567Z"
     },
     {
@@ -89,8 +89,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:6ZB8qaR9JNuS0Q0bG1nbcH",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2737870762a58313ad6f981d664",
       "addedAt": "2026-10-17T14:04:38.926Z"
     },
     {
@@ -137,8 +137,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:6wRDKCpKw3ap6dhkpdXNIN",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2735d03db2dbc21ba11e3e00330",
       "addedAt": "2026-10-17T14:04:38.926Z"
     },
     {
@@ -217,8 +217,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:2dMV9ltkI3il92f49tLnyV",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273012838e17b00ca6a34d4472b",
       "addedAt": "2026-10-17T14:04:38.926Z"
     },
     {
@@ -233,8 +233,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:4vxL3cLukzWtF16JD2eb2W",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273471fc4fc6166fd3d74ede183",
       "addedAt": "2026-10-17T14:04:38.926Z"
     },
     {
@@ -249,8 +249,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:1FNW2D6cUdpOWnV38xuGIT",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273f682220fac054e88a347a243",
       "addedAt": "2026-10-17T14:04:38.926Z"
     },
     {
@@ -265,8 +265,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:4i21O3uVh5palcfFhCjlT7",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b27353da07db25e2543cce38abfe",
       "addedAt": "2026-10-17T14:04:38.926Z"
     },
     {
@@ -297,8 +297,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:5YVJt1byIaOGa6PWU3SJ53",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2732561bfe95a05d5f1b84156b0",
       "addedAt": "2026-10-17T14:04:38.926Z"
     },
     {
@@ -345,8 +345,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:1CSb76Ja1dJxscppRPSW5n",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2737c4c7836e09df4399e25cc94",
       "addedAt": "2026-10-17T14:04:38.926Z"
     },
     {
@@ -361,8 +361,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:0V27xaU4i03XcbtW574KvQ",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273709d556ae61c3e364a0dfcdf",
       "addedAt": "2026-10-17T14:04:38.926Z"
     },
     {
@@ -441,8 +441,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:7pBPB9vwqCMLKNmUCK4k62",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27308036980eb9381f0ec3d28e9",
       "addedAt": "2026-10-17T14:04:38.926Z"
     },
     {
@@ -457,8 +457,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:4GT6uZod4p5RiDMOVHOMme",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2739e0e42aa866e5fa167b19608",
       "addedAt": "2026-10-17T14:04:38.926Z"
     },
     {
@@ -473,8 +473,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:5dTFrAllT7UElQ6mjsmQ9F",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273cc49427498842e182bfbe324",
       "addedAt": "2026-10-17T14:04:38.926Z"
     },
     {
@@ -505,8 +505,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:7HewCFRmffLzQlAonw6dOG",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2731754f79200290751913ceff0",
       "addedAt": "2026-10-17T14:04:38.926Z"
     },
     {
@@ -521,8 +521,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:12lwDzvs23w1e8EKa5zQoC",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2735df11c39821795f5fe971627",
       "addedAt": "2026-10-17T14:04:38.926Z"
     },
     {
@@ -569,8 +569,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:4iXilUplgTLmXfoVRHRIVq",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2733b4b83e3d8f898520536db70",
       "addedAt": "2026-10-17T14:04:38.926Z"
     },
     {
@@ -585,8 +585,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:0TtSidnyfFcIBWsFwrPvtw",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273a444d8e99398e8ab529e4915",
       "addedAt": "2026-10-17T14:04:38.926Z"
     },
     {
@@ -617,8 +617,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:3YWmAFuOtr9YIDdqJ2Gius",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273b55352581f8eeade34f70f6b",
       "addedAt": "2026-10-17T14:04:38.926Z"
     },
     {
@@ -649,8 +649,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:2IOkphZwsrRk1nWRkikEgK",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2734d928f0ae78513a5f042e20a",
       "addedAt": "2026-10-17T14:04:38.926Z"
     },
     {
@@ -665,8 +665,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:7xoc5hGNYAHzB69GOWllxz",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2734bd4ddd895e4eece555d2fd2",
       "addedAt": "2026-10-17T14:04:38.926Z"
     },
     {
@@ -713,8 +713,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:4wxoPjHSYFYurNyKaEiZNT",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273f05be6e0f6c59b1563b4e35e",
       "addedAt": "2026-10-17T14:04:38.926Z"
     },
     {
@@ -777,8 +777,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:7icgf3bU6X2ZrVm6pGSjP4",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2734e2f3ca0d2ff90976a9fe31f",
       "addedAt": "2026-10-17T14:04:38.926Z"
     },
     {
@@ -793,8 +793,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:3BTF9q997KuKxN9JgOBn7g",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273fd414d96c21bcdefd6bbd353",
       "addedAt": "2026-10-17T14:04:38.926Z"
     },
     {
@@ -873,8 +873,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:2XCcnYJJQXYoWm5oc20x9k",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273fd4a18493204ded82b0c7b00",
       "addedAt": "2026-10-17T14:04:38.926Z"
     },
     {
@@ -921,8 +921,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:6fPTGMgTTRWOZqs598foYD",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273b44478eebafc25f4a6b39fec",
       "addedAt": "2026-10-17T14:04:38.927Z"
     },
     {
@@ -969,8 +969,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:3sHB5AiFaJEOCAqh3taqGX",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273455f180675ebe947e459abf1",
       "addedAt": "2026-10-17T14:04:38.927Z"
     },
     {
@@ -1001,8 +1001,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:6rwBS7bfBlJTovu1AjUf5E",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b27359e8ccce1a0fd1070b817d75",
       "addedAt": "2026-10-17T14:04:38.927Z"
     },
     {
@@ -1065,8 +1065,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:2TmYd2YYLJ5dpKiL4pEqkD",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b27305522e96b9dfaed39bfdf23d",
       "addedAt": "2026-10-17T14:04:38.927Z"
     },
     {
@@ -1129,8 +1129,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:2Z6FVpZGGWnUaInkus8Cd4",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2738bf7b5773c7defc667ad6019",
       "addedAt": "2026-10-17T14:04:38.927Z"
     },
     {
@@ -1209,8 +1209,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:2ge6eVAMFNWS5srqDbudEq",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2730ffaa2eb072fab66e5345508",
       "addedAt": "2026-10-17T14:04:38.927Z"
     },
     {
@@ -1321,8 +1321,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:4ZFCqS8Ye5qgp4w7Sq09T4",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273c43655bf997bf376e0ec2009",
       "addedAt": "2026-10-17T14:04:38.927Z"
     },
     {
@@ -1385,8 +1385,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:1AckkxSo39144vOBrJ1GkS",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273ee0285c63a334af9b91fa12b",
       "addedAt": "2026-10-17T14:04:38.927Z"
     },
     {
@@ -1449,8 +1449,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:4kRMCapj9nEyBWnM0kc9OX",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273c349f6f497aefd6a7ea4b5da",
       "addedAt": "2026-10-17T14:04:38.927Z"
     },
     {
@@ -1513,8 +1513,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:4WMtqC1H3sta4jT7XflVEu",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273a30a78a30bf9c998f9a65192",
       "addedAt": "2026-10-17T14:04:38.927Z"
     },
     {
@@ -1561,8 +1561,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:6XfWE0VdiRbH9QWfyLibxW",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b27340f5a3ded8b25ed1dd7d5d14",
       "addedAt": "2026-10-17T14:04:38.927Z"
     },
     {
@@ -1625,8 +1625,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:4In2V4QylBdWT8HJ0dLDw5",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b27339522c242d7f10c0b80eb9b9",
       "addedAt": "2026-10-17T14:04:38.927Z"
     },
     {
@@ -1673,8 +1673,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:7aCBTtQ6vYkY0IzdyynAXO",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2731144f27fec003d0aab6aa15a",
       "addedAt": "2026-10-17T14:04:38.927Z"
     },
     {
@@ -1737,8 +1737,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:4AB19qiiH6r1eiIlH6cpFC",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2736708806d4af74b1c20c85ef9",
       "addedAt": "2026-10-17T14:04:38.927Z"
     },
     {
@@ -1769,8 +1769,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:3USQKOw0se5pBNEndu82Rb",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273db8e38addb58131f77b48377",
       "addedAt": "2026-10-17T14:04:38.927Z"
     },
     {
@@ -1785,8 +1785,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:1C30LhZB9I48LdpVCRRYvq",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273ad7f95966b473742cd323de8",
       "addedAt": "2026-10-17T14:04:38.927Z"
     },
     {
@@ -1817,8 +1817,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:6tQshkHWNJV8CFu2ZI3pKu",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273f04eff1b03559abdcb453df9",
       "addedAt": "2026-10-17T14:04:38.927Z"
     },
     {
@@ -1849,8 +1849,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:1hsdmKm56vQXN8PBrvUSLr",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b27376903e04946d513195eb47d3",
       "addedAt": "2026-10-17T14:04:38.927Z"
     },
     {
@@ -1881,8 +1881,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:3yT1f4nGSy3BBw4ghtRF29",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273d4fdba5317189abd48dae652",
       "addedAt": "2026-10-17T14:04:38.927Z"
     },
     {
@@ -1913,8 +1913,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:1k2uLH7mwB72zbepvM8rR4",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2730f65da27c1b96335e297c08b",
       "addedAt": "2026-10-17T14:04:38.927Z"
     },
     {
@@ -2025,8 +2025,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:0VOLcMBud9fi2LVVDaDrxL",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273a99c9bc5cedc0d3b2d0f13e5",
       "addedAt": "2026-10-17T14:04:38.927Z"
     },
     {
@@ -2041,8 +2041,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:5rbzadc5AEuHdeSGmdBDgR",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273b8ab48c35bf93c0ddb44fa53",
       "addedAt": "2026-10-17T14:04:38.927Z"
     },
     {
@@ -2121,8 +2121,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:0eufTqrmqa0x0A5MnzkEvT",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b27308ebf6998d9d72974388aba2",
       "addedAt": "2026-10-17T14:04:38.928Z"
     },
     {
@@ -2137,8 +2137,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:2WasBRAhIBdxM6FbImlfTX",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2737a2b693aa60136d1aa44ed1d",
       "addedAt": "2026-10-17T14:04:38.928Z"
     },
     {
@@ -2249,8 +2249,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:3X20tXW0zsl5imVzETPhQh",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2738645de4fcb7156fd0f664d38",
       "addedAt": "2026-10-17T14:04:38.928Z"
     },
     {
@@ -2297,8 +2297,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:2SJwxSJ0WCaeEiNSDSFXaN",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2736ffef62d7da15b7bdaf6bb3b",
       "addedAt": "2026-10-17T14:04:38.928Z"
     },
     {
@@ -2329,8 +2329,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:3eoo2PauHfTx9xZYY53FLR",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27301262984a63fc9ecf57e284a",
       "addedAt": "2026-10-17T14:04:38.928Z"
     },
     {
@@ -2361,8 +2361,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:2t1hVEwp82QebO7lq21Vto",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2734b5f115b26a0236a4e502eb9",
       "addedAt": "2026-10-17T14:04:38.928Z"
     },
     {
@@ -2409,8 +2409,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:5Dgqy4bBg09Rdw7CQM545s",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b27327cc8b0ed297111f53009772",
       "addedAt": "2026-10-17T14:04:38.928Z"
     },
     {
@@ -2505,8 +2505,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:7qE5vMfjJmrlpepWkHMtSF",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273b931cda1212a0e201a7e2de0",
       "addedAt": "2026-10-17T14:04:38.928Z"
     },
     {
@@ -2521,8 +2521,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:08LLwEtgyMST8wRsKaZiLZ",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273aca65d37d8844683ec0cdd83",
       "addedAt": "2026-10-17T14:04:38.928Z"
     },
     {
@@ -2537,8 +2537,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:55mLyioYUt6V3TxkFObTEo",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273d664d3700ca9af163be622d5",
       "addedAt": "2026-10-17T14:04:38.928Z"
     },
     {
@@ -2553,8 +2553,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:3wX4loyNH7gmjqqqoFLypJ",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273a4260b1e9d67337793e84e91",
       "addedAt": "2026-10-17T14:04:38.928Z"
     },
     {
@@ -2745,8 +2745,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:2DL7AR6nEM3bhwNy9zHuZa",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273aee5764a5b0f7318737310c4",
       "addedAt": "2026-10-17T14:04:38.928Z"
     },
     {
@@ -2793,8 +2793,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:5u0CxJH46YN9cBz9myapzt",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273019ecbab3d550a1ab914be7e",
       "addedAt": "2026-10-17T14:04:38.928Z"
     },
     {
@@ -2889,8 +2889,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:419vs1NUYE6crefXPgNNDC",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273e63cbea77d111bb79d6bdfa1",
       "addedAt": "2026-10-17T14:04:38.928Z"
     },
     {
@@ -2953,8 +2953,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:0eGxAVwdwV2mHrUgLJ8R6Y",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2732550872f317d70f5e304c835",
       "addedAt": "2026-10-17T14:04:38.928Z"
     },
     {
@@ -2969,8 +2969,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:11DMkbbSx4aCQc8VbEftD6",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b27394591649938c8554d0c1db47",
       "addedAt": "2026-10-17T14:04:38.928Z"
     },
     {
@@ -3001,8 +3001,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:49buCcKCJwxvdl0R2dMoIU",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273420610b3bf4b7ad08457cac6",
       "addedAt": "2026-10-17T14:04:38.928Z"
     },
     {
@@ -3017,8 +3017,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:6dFmNBt5ZLbaqf7PCtuvUv",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273f5947222ca227a92c6d6ced7",
       "addedAt": "2026-10-17T14:04:38.928Z"
     },
     {
@@ -3033,8 +3033,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:6P3NxDFmh6Ytuw7vFEwSgJ",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2730da5b8d7ce0fba35e494cee5",
       "addedAt": "2026-10-17T14:04:38.928Z"
     },
     {
@@ -3081,8 +3081,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:1dO7qBlkQXYENJaHfK7h56",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273f264678e5c123188214da2ac",
       "addedAt": "2026-10-17T14:04:38.928Z"
     },
     {
@@ -3161,8 +3161,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:34DvEbkQlFz3bxgaSpNhn9",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b27390170d2f23d44b359a595226",
       "addedAt": "2026-10-17T14:04:38.928Z"
     },
     {
@@ -3177,8 +3177,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:5r4qa5AIQUVypFRXQzjaiu",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2739c0b2d74cfb910735ca55317",
       "addedAt": "2026-10-17T14:04:38.928Z"
     },
     {
@@ -3209,8 +3209,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:6BRq5g6CWiFgN3NrjLGAYq",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273a7f85f2df08fbeb6dac5677c",
       "addedAt": "2026-10-17T14:04:38.928Z"
     },
     {
@@ -3225,8 +3225,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:4yT7Tq2TN7PcfgEx3EWc8k",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273a0790bc33e87f5fba88c07e2",
       "addedAt": "2026-10-17T14:04:38.928Z"
     },
     {
@@ -3241,8 +3241,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:0ooDpxwPm6gFJdxjWMQ2FQ",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273eb39b50a7a1594ec3f103240",
       "addedAt": "2026-10-17T14:04:38.928Z"
     },
     {
@@ -3289,8 +3289,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:3SXCY4kFMM4T4egq5DSUTa",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2734d2fbff666bf6a9997787214",
       "addedAt": "2026-10-17T14:04:38.928Z"
     },
     {
@@ -3305,8 +3305,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:1OHtZO1O3RusTDvFsxSv21",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2732fdc5fa3c6d71b5ffeb59fd4",
       "addedAt": "2026-10-17T14:04:38.928Z"
     },
     {
@@ -3369,8 +3369,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:2xWjRAaO5qYhsJSxmJp1IK",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b27372794a02454878876b884db9",
       "addedAt": "2026-10-17T14:04:38.929Z"
     },
     {
@@ -3385,8 +3385,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:39TrTBzr6CRFRnh8AqxSub",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b27327d514d7cac712d56b9a348a",
       "addedAt": "2026-10-17T14:04:38.929Z"
     },
     {
@@ -3417,8 +3417,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:1UBjGsLtSkSMHlBkCc2OI4",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273581bc388b3e8844db22a0612",
       "addedAt": "2026-10-17T14:04:38.929Z"
     },
     {
@@ -3545,8 +3545,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:1HUMjB15ARg96KIypcGzYY",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273d318ae2be517350a5fc717bb",
       "addedAt": "2026-10-17T14:04:38.929Z"
     },
     {
@@ -3609,8 +3609,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:4fUDor6o5gw0b18iYKEaRq",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2736745a70abfc25f45612c4d32",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -3641,8 +3641,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:55q7GIFZNRnt2Cw97nOFps",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273db0bec54553af86ae6940dce",
       "addedAt": "2026-10-17T14:04:38.929Z"
     },
     {
@@ -3689,8 +3689,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:2u7LOAgv5j5h543CgViXfw",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2739bced906ded019389f3484e2",
       "addedAt": "2026-10-17T14:04:38.929Z"
     },
     {
@@ -3705,8 +3705,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:4FmI0F5GvvR1M9RURWnJV9",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273cf5507e5a84e6332c910b0d5",
       "addedAt": "2026-10-17T14:04:38.929Z"
     },
     {
@@ -3721,8 +3721,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:0u9fVVMsSJ4JwXl2q6BzMK",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2735b928e748f5e811d158b5318",
       "addedAt": "2026-10-17T14:04:38.929Z"
     },
     {
@@ -3785,8 +3785,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:1OKkXhRuKQGiphASZB8Z7k",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273042b9c27fabceb5d5c7ce0d0",
       "addedAt": "2026-10-17T14:04:38.929Z"
     },
     {
@@ -3817,8 +3817,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:7gLNPbL9arQdIl4aj4hBcq",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2737f02102fd54b157fd1dd6fa4",
       "addedAt": "2026-10-17T14:04:38.929Z"
     },
     {
@@ -3865,8 +3865,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:5yq5H94vrdtWGlas2RZjsC",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273e4b4a8830f519fb5d35913b2",
       "addedAt": "2026-10-17T14:04:38.929Z"
     },
     {
@@ -4041,8 +4041,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:3SY2NKV4z32KTeeZ5soQvk",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2736116b77f785fe94fe7d5ce01",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -4073,8 +4073,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:5RxSZMoiY5v3jXyciJm9Pa",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2734460cf8d8ae1ab7417173aa3",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -4105,8 +4105,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:7n7VUw9XFam4zMT7zn99tq",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b27330210bdfa1657ddc7479954c",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -4233,8 +4233,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:3RPiGXFOSmJ7pHSMOzWSpc",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273889dc2ba24caa7e0695e3083",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -4313,8 +4313,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:1hwtX2ndk78CZmuWfsBAvO",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273483a3172880a96a1e99d2f20",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -4361,8 +4361,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:4YVSY6TwnXWH7Jz4olWO1e",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2737a3d726384007114d7ddb519",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -4393,8 +4393,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:7sKtEM0XcdniOZL50Opz74",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273ecc6e9a2d8e90ad07ab83f01",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -4409,8 +4409,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:2dCCumiY8gQx1ekPHigIJ9",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273a4058d47fafd1a4de1c657c8",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -4473,8 +4473,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:75oLHUz0HdATfOIcOdauQ9",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273b58eca99da746a9a4dd019db",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -4505,8 +4505,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:7761KE2C9rH1QO9WAE1Ysb",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2732dd4e9cdd4ecf1e9c691bdf4",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -4521,8 +4521,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:5oEO0KQX3G5uPNT03OuRvG",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2733ed2040062461c6574ead4e9",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -4553,8 +4553,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:50pFaF0d9E693wnQFGyEyO",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2734f89e3132359dab370712a70",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -4569,8 +4569,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:7DcHbfXY5HpmU2ltqCxc8c",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273da0aac935a63cfc519de1c99",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -4633,8 +4633,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:1vWnB0hYmluskQuzxwo25a",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2730ddcb1077d30a5ffb59b6864",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -4649,8 +4649,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:2pwNkShhY1uip80rLMHUgX",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273815d0d5cf4f0167ee18367d9",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -4729,8 +4729,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:7n4YQAF0Ii8Fnncst4RKew",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2735f0a42bcbfe36c4e7bd9865c",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -4745,8 +4745,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:6YMhMyOnucElTwYRFH279P",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273f34a0c8f7ced658345eca482",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -4761,8 +4761,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:2ncj0SrtsnWzol4SWMk54b",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2730222c0b380a726b620cd7e4e",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -4825,8 +4825,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:7Lou3RDk6NswmbzBMhro24",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273665c8dc1a815f56e6898db78",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -4889,8 +4889,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:2fukE8NE5b4NiYHtVySYMs",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273d7772586795a7a67b1c38760",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -4905,8 +4905,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:7sVZyVZbAmWdjzZUrodILO",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2730e043f1ca64e67fab12f38eb",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -4985,8 +4985,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:5h1b3DSr0gmUTqV5IZlE7z",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273a9456ae5a4b59a51d0524e05",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -5033,8 +5033,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:3op1q2WfGvAzQkiJoTGF5l",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b27366da5385d4544762cce92f1c",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -5065,8 +5065,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:64shsDEnphK07flo3DzWAc",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b27392edc775b35e028edc286cd8",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -5161,8 +5161,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:0t7B06Q8Lhd1dsCrliH7B0",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2735fac5fcfe23e8eeedbd284ac",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -5193,8 +5193,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:61h3VS8XDROIpvQznjTPTT",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2730a7d45a345534966a4ad2c39",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -5241,8 +5241,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:7iEkkEWs8Xs4WNEdInMjvp",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2731bc63132b01bce164826b212",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -5273,8 +5273,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:2TnJPCSX9i2etg8jbaMcbl",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b27365ff58390f0b7c44ec4d7aa5",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -5305,8 +5305,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:4df8UQDeH9u2tRXZsR162b",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b27392fbb861cc5765427a402304",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -5385,8 +5385,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:1Yp4WEfqoCVIzlI5ikLdup",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2736803714f71d7b5cbd1f566bd",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -5673,8 +5673,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:2F5lsYL2fOuXxovb2ZzaXA",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b27363e43525afb50072240c44f0",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -5833,8 +5833,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:7BkRQxUtZJpzRCJIZDbWxW",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273890ffb29d6f135a6b6a5ccf4",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -5849,8 +5849,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:3a0UOgDWw2pTajw85QPMiz",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27305d4eec40a828850aa8cd2f7",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -5913,8 +5913,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:3qEiWhSF2HO1NhVJVsGyZm",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273f510b1ab6184d8eecf6ba4bc",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -5929,8 +5929,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:5ARenRmM3OZOCI8eLQPoOg",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273618d2dc9868c46a711ee76bc",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -5961,8 +5961,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:7HeO2ieEUlGVFNwEFUAAlf",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b27378b7e6422d02d27ab0ec8644",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -5993,8 +5993,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:3E7YxHaWlOHiqTBHRtZL7D",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273fc07c435c0b34e84e9c7136c",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -6057,8 +6057,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:4GqxSX8XBO10J8o4FomkBK",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27309deee737cee10e539681694",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -6137,8 +6137,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:74QPd1WqK8kTsVNtHdBzJ8",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2731451fa8ef96932abd5a81791",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -6265,8 +6265,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:5OnTABNHitszrtiIE3zGoZ",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2734872f1c6f1ec4a5b2e6c4d21",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -6329,8 +6329,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:38wsYo0RLncPj1U2vCQr3M",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2734e82db91b65401e81dd68906",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -6441,8 +6441,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:3WZI3BhUd4TQl4CmNNm1HS",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273567137014776c6e414138db1",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -6473,8 +6473,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:3bdmzGr4N8AiYzCmmEUDCn",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2737c243696674eb8f2869871fb",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -6505,8 +6505,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:5iA9ECcGKLN2BSxikuENma",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2736d4ab9bf3bdea52371415ad6",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -6553,8 +6553,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:3NFNNMIWnByvVPvCf7LsRU",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273af3486eb00344584683f0123",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -6569,8 +6569,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:5ukf0iP3D4WbmlLVtyuLB9",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b27301a6c8b3b9dc283a46a55037",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -6601,8 +6601,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:23O4F21GDWiGd33tFN3ZgI",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b27320f51363b9e2cbd207f158ba",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -6633,8 +6633,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:3ATxQoA65pTgUlcffFLXtI",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273759be913d73571a021e53bca",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -6777,8 +6777,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:10p4597ekqFOqMbttkxggC",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273789657ec664daa222cab1e5a",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -6857,8 +6857,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:59ULYnF6B6PUg2971Rkttc",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273252c7fde84d11f96f64a780b",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -6873,8 +6873,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:5IlfTdX8ifs6qbQYgk7AoS",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27336f37bf1681bd6862145a9e6",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -6953,8 +6953,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:1PB3F8rMknGJFRntYfPW2K",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273c7f3729d5a0ec32055caae31",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -7017,8 +7017,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:5CtxgcqieOcYKyQjGKI0nY",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2736ba7aa49af16a0efe9c51c35",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -7033,8 +7033,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:0KBdfMTMxi0oD1oVqApTjr",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2732a6822eba903a21913896ab1",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -7321,8 +7321,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:3ROlJDoMvhnBLhodqiUFAX",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273987f6984d98d62e68f43d434",
       "addedAt": "2026-10-17T14:04:38.931Z"
     },
     {
@@ -7513,8 +7513,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:0w8MK3JVz4sCMhxMOdLx4c",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273aa69eff05d4a89a133a0f659",
       "addedAt": "2026-10-17T14:04:38.932Z"
     },
     {
@@ -7561,8 +7561,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:52MMrcUtar0coGVHULkuQ9",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273dd69a64d46d35725c47df19c",
       "addedAt": "2026-10-17T14:04:38.932Z"
     },
     {
@@ -7577,8 +7577,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:0sMhDEURXDVVqiqh45DeAi",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273e6e9ba3221e5b0a88a6a0c64",
       "addedAt": "2026-10-17T14:04:38.932Z"
     },
     {
@@ -7913,8 +7913,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:0bP8Ma482eikUQSdC1kmgb",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273e7e004e4f9779a1b5647f0f3",
       "addedAt": "2026-10-17T14:04:38.932Z"
     },
     {
@@ -7945,8 +7945,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:6T4LuURDDTHaddBTx58Tm2",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2736ea3d5a99bb0ba1c1c020ab2",
       "addedAt": "2026-10-17T14:04:38.932Z"
     },
     {
@@ -8009,8 +8009,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:6NTrwu1XJ56jBPx7HMksbZ",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273a0bb93884823982d57cb2004",
       "addedAt": "2026-10-17T14:04:38.932Z"
     },
     {
@@ -8057,8 +8057,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:77000IH1T6m9OH1bGrlLwX",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273914e85dd580e5b9a6764f82a",
       "addedAt": "2026-10-17T14:04:38.932Z"
     },
     {
@@ -8073,8 +8073,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:7HNrDkHNFopKBXGWf0UZML",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273978475485c66c12348fa6502",
       "addedAt": "2026-10-17T14:04:38.932Z"
     },
     {
@@ -8137,8 +8137,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:0Ug5scDXUIgGN8yanDBLQw",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273a43cd43ef4f3b2d5413b17f9",
       "addedAt": "2026-10-17T14:04:38.932Z"
     },
     {
@@ -8345,8 +8345,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:0LDCQOBp7NFjkD1LbuusCG",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2737b9142a2fb988b7671cbd600",
       "addedAt": "2026-10-17T14:04:38.932Z"
     },
     {
@@ -8377,8 +8377,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:65BL1WmHblGCNmhzfgYEyD",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273703add8a8bef1eb6a0fad4f7",
       "addedAt": "2026-10-17T14:04:38.933Z"
     },
     {
@@ -8553,8 +8553,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:5u0CxJH46YN9cBz9myapzt",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273019ecbab3d550a1ab914be7e",
       "addedAt": "2026-10-17T14:04:38.934Z"
     },
     {
@@ -8617,8 +8617,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:4mhpbf7jYc0L1nBceoebIE",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27340f8e560e743f9b5d382c0af",
       "addedAt": "2026-10-17T14:04:38.933Z"
     },
     {
@@ -8761,8 +8761,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:1Cary70IZ5OFhI1Obg5vBE",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2736c9c674a547d4ea375f26538",
       "addedAt": "2026-10-17T14:04:38.933Z"
     },
     {
@@ -8777,8 +8777,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:17DMb2ORbC2odeV9WGAvcS",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2736ed489b75d71dcb310c5ecf8",
       "addedAt": "2026-10-17T14:04:38.933Z"
     },
     {
@@ -8873,8 +8873,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:5rUs6wwi3ARImuk1iPXM4M",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273c9041c271d90b6020f5ebf6e",
       "addedAt": "2026-10-17T14:04:38.933Z"
     },
     {
@@ -8889,8 +8889,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:1AhiAELYFilrU6kbs6maN9",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273f21a7afb401bd348a8cf4410",
       "addedAt": "2026-10-17T14:04:38.933Z"
     },
     {
@@ -8921,8 +8921,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:3RGZGuwR3f0n6Y4WtE7dlR",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273df91f7635e716e39145b8e6d",
       "addedAt": "2026-10-17T14:04:38.933Z"
     },
     {
@@ -8953,8 +8953,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:4lDPv6qUZAUeD4K3sLEd1o",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27373244fd44ef8595986ae939f",
       "addedAt": "2026-10-17T14:04:38.933Z"
     },
     {
@@ -9289,8 +9289,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:2BaOST9ph4YEppAsZ9gCnB",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273384ec6066873f9deba9c997f",
       "addedAt": "2026-10-17T14:04:38.933Z"
     },
     {
@@ -9481,8 +9481,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:07ZzLDSYslPXeD6UYj8ZN9",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273902dd2632c6777542987ca79",
       "addedAt": "2026-10-17T14:04:38.933Z"
     },
     {
@@ -9625,8 +9625,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:1uqfrYHoPydXpai679nPtt",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273f98682e30c6cbe2d14326e3d",
       "addedAt": "2026-10-17T14:04:38.933Z"
     },
     {
@@ -9673,8 +9673,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:5Ej2wlQwy5c6jTH5DmuDDg",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273ce036e6711d1985de1002a2e",
       "addedAt": "2026-10-17T14:04:38.933Z"
     },
     {
@@ -9689,8 +9689,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:599elhYsAq6MQgFOB9uJzC",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273974f2586eaa8ff89671696b7",
       "addedAt": "2026-10-17T14:04:38.933Z"
     },
     {
@@ -9737,8 +9737,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:6HsuWwRSWGD8I3EcY6w5qz",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2730d989ab378d2ffa37738a11b",
       "addedAt": "2026-10-17T14:04:38.933Z"
     },
     {
@@ -9769,8 +9769,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:2tMQkZ8WvwpM7qmRVrW3hK",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b27367e37e975c8a8d8278b3f13c",
       "addedAt": "2026-10-17T14:04:38.933Z"
     },
     {
@@ -9785,8 +9785,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:52Dz3YVss0GF4vwgYWNnO2",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b27323c8a79c46a9d2c16a8bc71d",
       "addedAt": "2026-10-17T14:04:38.933Z"
     },
     {
@@ -9945,8 +9945,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:4ZM2tfnZjk9gMrDLAmlhKL",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273314e38231612e6e65c708291",
       "addedAt": "2026-10-17T14:04:38.933Z"
     },
     {
@@ -10057,8 +10057,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:1p3Yw1LPlnabOnywMjsFvD",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273bdf72f4b55ecc8254688990b",
       "addedAt": "2026-10-17T14:04:38.933Z"
     },
     {
@@ -10089,8 +10089,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:57iDUp03zccpmqSOHBjrQU",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2737383789c642fb9da123507f7",
       "addedAt": "2026-10-17T14:04:38.933Z"
     },
     {
@@ -10265,8 +10265,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:38dlqozTXjFW4bAmRHcUGd",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273c01c72253e26fc8cc8c290a7",
       "addedAt": "2026-10-17T14:04:38.934Z"
     },
     {
@@ -10361,8 +10361,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:7GAdWrS7xbumDLadbeOAbB",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273a2d78534d2747a8749674b02",
       "addedAt": "2026-10-17T14:04:38.934Z"
     },
     {
@@ -10377,8 +10377,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:5I7lLu8xXJfGRdFUqHaLQU",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2734078c255069c0e7a2553fa4a",
       "addedAt": "2026-10-17T14:04:38.934Z"
     },
     {
@@ -10425,8 +10425,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:1HTcIqkNYMYuHbmmrz5bDV",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273fbe70ee4869feb775ed5231c",
       "addedAt": "2026-10-17T14:04:38.934Z"
     },
     {
@@ -10489,8 +10489,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:21jjY7eM5fLc3fPnh5pPDu",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2731ce4ff13601f6bd731c17caa",
       "addedAt": "2026-10-17T14:04:38.934Z"
     },
     {
