@@ -4,6 +4,7 @@
   import { tick } from "svelte";
   import AddAlbum from "./components/AddAlbum.svelte";
   import AddSeveral from "./components/AddSeveral.svelte";
+  import ImportCsv from "./components/ImportCsv.svelte";
   import AlbumGrid from "./components/AlbumGrid.svelte";
   import AlbumList from "./components/AlbumList.svelte";
   import ColumnBrowser from "./components/ColumnBrowser.svelte";
@@ -40,8 +41,8 @@
   let anchor: string | null = null;
 
   let addOpen = $state(false);
-  // Links for the Add Several sheet; null shows the single-album sheet.
-  let addSeveral = $state<string | null>(null);
+  // Which form the Add sheet shows.
+  let addMode = $state<{ kind: "one" } | { kind: "several"; text: string } | { kind: "csv" }>({ kind: "one" });
   let infoIds = $state.raw<string[]>([]);
   let menu = $state<{ x: number; y: number; items: MenuItem[] } | null>(null);
   let renamingGenre = $state<string | null>(null);
@@ -474,24 +475,34 @@
 
 <dialog
   class="sheet"
-  class:wide={addSeveral !== null}
+  class:wide={addMode.kind !== "one"}
   bind:this={addSheet}
   oncancel={() => (addOpen = false)}
   onclose={() => {
-    addSeveral = null;
+    addMode = { kind: "one" };
     focusAlbums();
   }}
 >
-  {#if addOpen && addSeveral !== null}
+  {#if !addOpen}
+    <!-- Nothing: the form is re-created each time the sheet opens. -->
+  {:else if addMode.kind === "several"}
     <AddSeveral
       {library}
-      text={addSeveral}
+      text={addMode.text}
       onadded={addedSeveral}
       oncancel={() => (addOpen = false)}
-      onsingle={() => (addSeveral = null)}
+      onsingle={() => (addMode = { kind: "one" })}
     />
-  {:else if addOpen}
-    <AddAlbum {library} onadded={added} oncancel={() => (addOpen = false)} onseveral={(text) => (addSeveral = text)} />
+  {:else if addMode.kind === "csv"}
+    <ImportCsv {library} onadded={addedSeveral} oncancel={() => (addOpen = false)} />
+  {:else}
+    <AddAlbum
+      {library}
+      onadded={added}
+      oncancel={() => (addOpen = false)}
+      onseveral={(text) => (addMode = { kind: "several", text })}
+      oncsv={() => (addMode = { kind: "csv" })}
+    />
   {/if}
 </dialog>
 

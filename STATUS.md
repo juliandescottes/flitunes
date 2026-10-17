@@ -29,9 +29,15 @@ window, and Get Info editing.
   "Add Several…"), look them up 4 at a time, then fill in artists and years
   in a table. Genres and playlists apply to all; links already in the library
   start unticked. Added with `library.addAlbums` (one write, one change).
+- Import CSV (`ImportCsv.svelte`, parser in `src/lib/csv.ts`): from the Add
+  sheet. Needs album and artist columns (year, plays, spotify optional, found
+  by header name). Rows start unticked; a play-count filter and "Tick All
+  Shown" narrow long lists. Albums matching one already in the library
+  (`albumMatchKey`: artist + title, ignoring case, accents and punctuation)
+  are marked and never ticked in bulk.
 - Browse logic is pure and tested in `src/lib/browse.ts`; the store gained
   `updateAlbums` (bulk) and `mergeGenre`.
-- 46 unit tests pass, `svelte-check` is clean. Clicked through in Firefox
+- 52 unit tests pass, `svelte-check` is clean. Clicked through in Firefox
   (except ⌘S, to avoid writing `data/library.json` from a test session).
 - GitHub Pages: `.github/workflows/pages.yml` tests, builds and deploys on
   every push to `main` (needs Settings → Pages → Source: GitHub Actions).
@@ -39,8 +45,7 @@ window, and Get Info editing.
 
 ## Next step
 
-Phase 2 in `PLAN.md`: smart playlists, Cover Flow, CSV
-import. Or start curating the real library and fix what gets in the way.
+Phase 2 in `PLAN.md`: smart playlists, Cover Flow. Or start curating the real library and fix what gets in the way.
 
 ## Decisions
 

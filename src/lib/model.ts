@@ -52,6 +52,11 @@ export function findGenreByName(genres: Genre[], name: string): Genre | undefine
   return id ? genres.find((g) => g.id === id || slugify(g.name) === id) : undefined;
 }
 
+/** Key for spotting the same album entered twice: artist and title, ignoring case, accents and punctuation. */
+export function albumMatchKey(artist: string, title: string): string {
+  return `${slugify(sortableName(artist))}/${slugify(title)}`;
+}
+
 /** Name for sorting, ignoring a leading "The " like iTunes: "The Beatles" → "Beatles". */
 export function sortableName(name: string): string {
   return name.replace(/^the\s+/i, "");

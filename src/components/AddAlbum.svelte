@@ -13,12 +13,14 @@
     onadded,
     oncancel,
     onseveral,
+    oncsv,
   }: {
     library: Library;
     onadded: (album: Album) => void;
     oncancel: () => void;
     /** Switches to Add Several, with the links pasted so far. */
     onseveral: (text: string) => void;
+    oncsv: () => void;
   } = $props();
 
   let link = $state("");
@@ -111,7 +113,10 @@
 <form class="add" onsubmit={submit}>
   <div class="head">
     <h2>Add to Library</h2>
-    <button type="button" class="link" onclick={() => onseveral(link)}>Add Several…</button>
+    <span class="links">
+      <button type="button" class="link" onclick={() => onseveral(link)}>Add Several…</button>
+      <button type="button" class="link" onclick={oncsv}>Import CSV…</button>
+    </span>
   </div>
 
   <label class="wide">
@@ -190,6 +195,10 @@
     justify-content: space-between;
     align-items: baseline;
     margin-bottom: 10px;
+  }
+  .links {
+    display: flex;
+    gap: 12px;
   }
   h2 {
     margin: 0;

@@ -48,7 +48,7 @@ Reference: iTunes 10 (2010). See `docs/spec.md` §5.
 - [x] Type-ahead in lists (jumps by the sorted column)
 - [ ] Cover Flow
 - [x] Several Spotify links at once (Add Several sheet)
-- [ ] CSV import
+- [x] CSV import (e.g. a Last.fm top-albums export), with a play-count filter
 - [ ] "Refresh cover" for dead cover URLs
 
 ## Later / maybe
