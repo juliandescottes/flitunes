@@ -5,7 +5,7 @@
   import { parseCsvAlbums } from "../lib/csv.ts";
   import type { Library } from "../lib/library.svelte.ts";
   import { albumMatchKey, type Album } from "../lib/model.ts";
-  import { parseSpotifyAlbumId, spotifyUri } from "../lib/spotify.ts";
+  import { parseSpotifyLink } from "../lib/spotify.ts";
   import ChipInput from "./ChipInput.svelte";
   import { genreChips, playlistChips, splitArtists } from "./fields.ts";
 
@@ -46,10 +46,10 @@
     try {
       const existing = new Set(library.albums.map((a) => albumMatchKey(a.artists[0] ?? "", a.title)));
       rows = parseCsvAlbums(await file.text()).map((a, key) => {
-        const id = a.spotify ? parseSpotifyAlbumId(a.spotify) : null;
+        const spotify = a.spotify ? parseSpotifyLink(a.spotify) : null;
         const duplicate =
-          existing.has(albumMatchKey(a.artist, a.title)) || (id !== null && library.findBySpotify(spotifyUri(id)).length > 0);
-        return { ...a, key, spotify: id && spotifyUri(id), duplicate, include: false };
+          existing.has(albumMatchKey(a.artist, a.title)) || (spotify !== null && library.findBySpotify(spotify).length > 0);
+        return { ...a, key, spotify, duplicate, include: false };
       });
       fileName = file.name;
       if (rows.length === 0) error = "No albums found in this file.";

@@ -4,7 +4,7 @@
   import { untrack } from "svelte";
   import type { Library } from "../lib/library.svelte.ts";
   import type { Album } from "../lib/model.ts";
-  import { fetchSpotifyAlbumInfo, parseSpotifyAlbumId, spotifyUri, spotifyWebUrl } from "../lib/spotify.ts";
+  import { fetchSpotifyInfo, parseSpotifyLink, spotifyWebUrl } from "../lib/spotify.ts";
   import ChipInput from "./ChipInput.svelte";
   import { genreChips, joinArtists, parseYear, playlistChips, splitArtists } from "./fields.ts";
   import StarRating from "./StarRating.svelte";
@@ -40,19 +40,19 @@
   let rating = $state(initial.rating);
   let tags = $state([...initial.tags]);
   let notes = $state(initial.notes);
-  const initialId = initial.spotify ? parseSpotifyAlbumId(initial.spotify) : null;
-  let link = $state(initialId ? spotifyWebUrl(initialId) : "");
+  const initialUri = initial.spotify ? parseSpotifyLink(initial.spotify) : null;
+  let link = $state(initialUri ? spotifyWebUrl(initialUri) : "");
   let cover = $state(initial.cover ?? "");
   let error = $state<string | null>(null);
   let fetchingCover = $state(false);
 
-  const albumId = $derived(parseSpotifyAlbumId(link));
-  const linkInvalid = $derived(link.trim() !== "" && albumId === null);
+  const spotify = $derived(parseSpotifyLink(link));
+  const linkInvalid = $derived(link.trim() !== "" && spotify === null);
 
   async function save(): Promise<boolean> {
     error = null;
     if (linkInvalid) {
-      error = "The Spotify link is not an album link.";
+      error = "The Spotify link is not an album or playlist link.";
       return false;
     }
     try {
@@ -65,7 +65,7 @@
         rating,
         tags,
         notes,
-        spotify: albumId ? spotifyUri(albumId) : null,
+        spotify,
         cover: cover.trim() || null,
       });
       return true;
@@ -85,11 +85,11 @@
   }
 
   async function useSpotifyCover() {
-    if (!albumId) return;
+    if (!spotify) return;
     fetchingCover = true;
     error = null;
     try {
-      const info = await fetchSpotifyAlbumInfo(albumId);
+      const info = await fetchSpotifyInfo(spotify);
       if (info.cover) cover = info.cover;
       else error = "Spotify has no cover for this album.";
     } catch (e) {
@@ -153,7 +153,7 @@
         <label for="info-cover">Cover URL</label>
         <input id="info-cover" type="url" bind:value={cover} />
         <div class="row">
-          <button type="button" class="aqua" disabled={!albumId || fetchingCover} onclick={useSpotifyCover}>
+          <button type="button" class="aqua" disabled={!spotify || fetchingCover} onclick={useSpotifyCover}>
             {fetchingCover ? "Fetching…" : "Use Spotify Cover"}
           </button>
           <button type="button" class="aqua" disabled={!cover} onclick={() => (cover = "")}>Remove</button>

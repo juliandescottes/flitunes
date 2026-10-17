@@ -5,7 +5,7 @@
   import { untrack } from "svelte";
   import type { Library } from "../lib/library.svelte.ts";
   import type { Album } from "../lib/model.ts";
-  import { fetchSpotifyAlbumInfo, parseSpotifyAlbumIds, spotifyUri } from "../lib/spotify.ts";
+  import { fetchSpotifyInfo, parseSpotifyLinks } from "../lib/spotify.ts";
   import ChipInput from "./ChipInput.svelte";
   import { genreChips, parseYear, playlistChips, splitArtists } from "./fields.ts";
 
@@ -24,7 +24,8 @@
   } = $props();
 
   interface Row {
-    id: string;
+    /** Spotify URI. */
+    uri: string;
     title: string;
     artists: string;
     year: string;
@@ -41,7 +42,7 @@
   let error = $state<string | null>(null);
   let request = 0;
 
-  const parsed = $derived(parseSpotifyAlbumIds(text));
+  const parsed = $derived(parseSpotifyLinks(text));
   const included = $derived(rows?.filter((r) => r.include) ?? []);
   const loading = $derived(rows?.some((r) => r.status === "loading") ?? false);
 
@@ -52,15 +53,15 @@
     event.preventDefault();
     const req = ++request;
     error = null;
-    rows = parsed.ids.map((id) => {
-      const duplicate = library.findBySpotify(spotifyUri(id)).length > 0;
-      return { id, title: "", artists: "", year: "", cover: null, status: "loading", duplicate, include: !duplicate };
+    rows = parsed.uris.map((uri) => {
+      const duplicate = library.findBySpotify(uri).length > 0;
+      return { uri, title: "", artists: "", year: "", cover: null, status: "loading", duplicate, include: !duplicate };
     });
     const queue = [...rows];
     const worker = async () => {
       for (let row = queue.shift(); row; row = queue.shift()) {
         try {
-          const info = await fetchSpotifyAlbumInfo(row.id);
+          const info = await fetchSpotifyInfo(row.uri);
           if (req !== request) return;
           row.title = info.title;
           row.cover = info.cover;
@@ -85,7 +86,7 @@
           year: parseYear(row.year),
           genres: [...genres],
           tags: [...tags],
-          spotify: spotifyUri(row.id),
+          spotify: row.uri,
           cover: row.cover,
         })),
       );
@@ -114,14 +115,14 @@
     </label>
     {#if parsed.invalid.length > 0}
       <p class="hint warning">
-        Not album links, will be skipped: {parsed.invalid.slice(0, 3).join(", ")}{parsed.invalid.length > 3 ? "…" : ""}
+        Not album or playlist links, will be skipped: {parsed.invalid.slice(0, 3).join(", ")}{parsed.invalid.length > 3 ? "…" : ""}
       </p>
     {/if}
     <div class="row actions">
-      <span class="sub">{parsed.ids.length} {parsed.ids.length === 1 ? "album" : "albums"}</span>
+      <span class="sub">{parsed.uris.length} {parsed.uris.length === 1 ? "album" : "albums"}</span>
       <span class="spacer"></span>
       <button type="button" class="aqua" onclick={oncancel}>Cancel</button>
-      <button class="aqua default" disabled={parsed.ids.length === 0}>Look Up</button>
+      <button class="aqua default" disabled={parsed.uris.length === 0}>Look Up</button>
     </div>
   </form>
 {:else}
@@ -143,7 +144,7 @@
           </tr>
         </thead>
         <tbody>
-          {#each rows as row (row.id)}
+          {#each rows as row (row.uri)}
             <tr class:excluded={!row.include}>
               <td class="check">
                 <input type="checkbox" bind:checked={row.include} aria-label="Add {row.title || 'this album'}" />

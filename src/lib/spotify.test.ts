@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { fetchSpotifyAlbumInfo, largeSpotifyCover, parseSpotifyAlbumId, parseSpotifyAlbumIds } from "./spotify.ts";
+import { fetchSpotifyInfo, largeSpotifyCover, parseSpotifyLink, parseSpotifyLinks, spotifyWebUrl } from "./spotify.ts";
 
 const ID = "1weenld61qoidwYuZ1GESA";
 
@@ -13,7 +13,7 @@ function stubFetch(body: unknown, status = 200) {
   return { fetchFn, urls };
 }
 
-describe("parseSpotifyAlbumId", () => {
+describe("parseSpotifyLink", () => {
   it.each([
     `https://open.spotify.com/album/${ID}`,
     `https://open.spotify.com/album/${ID}?si=abc123`,
@@ -21,27 +21,45 @@ describe("parseSpotifyAlbumId", () => {
     `https://open.spotify.com/embed/album/${ID}?utm_source=oembed`,
     `open.spotify.com/album/${ID}`,
     `  spotify:album:${ID}  `,
-  ])("parses %s", (input) => {
-    expect(parseSpotifyAlbumId(input)).toBe(ID);
+  ])("parses the album link %s", (input) => {
+    expect(parseSpotifyLink(input)).toBe(`spotify:album:${ID}`);
+  });
+
+  it.each([
+    `https://open.spotify.com/playlist/${ID}?si=abc123`,
+    `https://open.spotify.com/intl-fr/playlist/${ID}`,
+    `spotify:playlist:${ID}`,
+  ])("parses the playlist link %s", (input) => {
+    expect(parseSpotifyLink(input)).toBe(`spotify:playlist:${ID}`);
   });
 
   it.each([
     "",
     "Kind of Blue",
     `https://open.spotify.com/track/${ID}`,
+    `spotify:track:${ID}`,
     `https://example.com/album/${ID}`,
     "https://open.spotify.com/album/tooshort",
     "spotify:album:tooshort",
   ])("rejects %j", (input) => {
-    expect(parseSpotifyAlbumId(input)).toBeNull();
+    expect(parseSpotifyLink(input)).toBeNull();
   });
 });
 
-describe("parseSpotifyAlbumIds", () => {
-  it("finds every album link, once, and reports the rest", () => {
+describe("parseSpotifyLinks", () => {
+  it("finds every album or playlist link, once, and reports the rest", () => {
     const other = "4LH4d3cOWNNsVw41Gqt2kv";
-    const text = `https://open.spotify.com/album/${ID}?si=x\n\nspotify:album:${other}, open.spotify.com/album/${ID}\nhello`;
-    expect(parseSpotifyAlbumIds(text)).toEqual({ ids: [ID, other], invalid: ["hello"] });
+    const text = `https://open.spotify.com/album/${ID}?si=x\n\nspotify:playlist:${other}, open.spotify.com/album/${ID}\nhello`;
+    expect(parseSpotifyLinks(text)).toEqual({
+      uris: [`spotify:album:${ID}`, `spotify:playlist:${other}`],
+      invalid: ["hello"],
+    });
+  });
+});
+
+describe("spotifyWebUrl", () => {
+  it("turns a URI into a web link", () => {
+    expect(spotifyWebUrl(`spotify:playlist:${ID}`)).toBe(`https://open.spotify.com/playlist/${ID}`);
   });
 });
 
@@ -57,7 +75,7 @@ describe("Spotify oEmbed", () => {
       title: "Kind Of Blue",
       thumbnail_url: "https://image-cdn-ak.spotifycdn.com/image/ab67616d00001e02387a",
     });
-    expect(await fetchSpotifyAlbumInfo(ID, fetchFn)).toEqual({
+    expect(await fetchSpotifyInfo(`spotify:album:${ID}`, fetchFn)).toEqual({
       title: "Kind Of Blue",
       cover: "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273387a",
     });
@@ -66,6 +84,6 @@ describe("Spotify oEmbed", () => {
 
   it("fails on HTTP errors", async () => {
     const { fetchFn } = stubFetch({}, 404);
-    await expect(fetchSpotifyAlbumInfo(ID, fetchFn)).rejects.toThrow("HTTP 404");
+    await expect(fetchSpotifyInfo(`spotify:album:${ID}`, fetchFn)).rejects.toThrow("HTTP 404");
   });
 });

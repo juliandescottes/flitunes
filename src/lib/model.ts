@@ -23,7 +23,7 @@ export interface Album {
   /** 1-5, or null when unrated. */
   rating: number | null;
   notes: string;
-  /** Spotify URI, e.g. "spotify:album:1weenld61qoidwYuZ1GESA". */
+  /** Spotify album or playlist URI, e.g. "spotify:album:1weenld61qoidwYuZ1GESA". */
   spotify: string | null;
   cover: string | null;
   addedAt: string;

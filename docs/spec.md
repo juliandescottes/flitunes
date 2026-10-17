@@ -65,6 +65,9 @@ The target is the iTunes 10 window, with albums instead of songs.
    - "Add to Library…": paste a Spotify album link. oEmbed prefills the
      title and cover (§7); artist, year and genres are typed by hand. No
      metadata lookup service. Manual entry with no link works too.
+     A playlist link is accepted as a fallback for albums Spotify doesn't
+     have as an album (stored as `spotify:playlist:<id>`; oEmbed gives the
+     playlist's name and cover).
    - Import / export `library.json` (§6).
 7. **Persistence**: IndexedDB working copy plus `library.json` (§6).
 

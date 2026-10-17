@@ -4,7 +4,7 @@
   import { untrack } from "svelte";
   import type { Library } from "../lib/library.svelte.ts";
   import { VARIOUS_ARTISTS, type Album } from "../lib/model.ts";
-  import { fetchSpotifyAlbumInfo, parseSpotifyAlbumId, parseSpotifyAlbumIds, spotifyUri } from "../lib/spotify.ts";
+  import { fetchSpotifyInfo, parseSpotifyLink, parseSpotifyLinks } from "../lib/spotify.ts";
   import ChipInput from "./ChipInput.svelte";
   import { genreChips, parseYear, playlistChips, splitArtists } from "./fields.ts";
 
@@ -33,19 +33,19 @@
 
   let busy = $state(false);
   let error = $state<string | null>(null);
-  // The last looked-up album id, and a counter to ignore stale responses.
+  // The last looked-up Spotify URI, and a counter to ignore stale responses.
   let lookedUp: string | null = null;
   let request = 0;
 
-  const albumId = $derived(parseSpotifyAlbumId(link));
-  const linkInvalid = $derived(link.trim() !== "" && albumId === null);
-  const duplicates = $derived(albumId ? library.findBySpotify(spotifyUri(albumId)) : []);
+  const spotify = $derived(parseSpotifyLink(link));
+  const linkInvalid = $derived(link.trim() !== "" && spotify === null);
+  const duplicates = $derived(spotify ? library.findBySpotify(spotify) : []);
 
   // Pasting several links switches to Add Several. Read the clipboard
   // directly: a one-line input would drop the line breaks between them.
   function onpaste(event: ClipboardEvent) {
     const text = event.clipboardData?.getData("text/plain") ?? "";
-    if (parseSpotifyAlbumIds(text).ids.length > 1) {
+    if (parseSpotifyLinks(text).uris.length > 1) {
       event.preventDefault();
       onseveral(text);
     }
@@ -53,17 +53,17 @@
 
   // Look up a newly pasted link once.
   $effect(() => {
-    const id = albumId;
-    if (id && id !== lookedUp) untrack(() => lookupSpotify(id));
+    const uri = spotify;
+    if (uri && uri !== lookedUp) untrack(() => lookupSpotify(uri));
   });
 
-  async function lookupSpotify(id: string) {
-    lookedUp = id;
+  async function lookupSpotify(uri: string) {
+    lookedUp = uri;
     const req = ++request;
     busy = true;
     error = null;
     try {
-      const info = await fetchSpotifyAlbumInfo(id);
+      const info = await fetchSpotifyInfo(uri);
       if (req !== request) return;
       title = info.title;
       cover = info.cover ?? "";
@@ -94,7 +94,7 @@
         year: parseYear(year),
         genres,
         tags,
-        spotify: albumId ? spotifyUri(albumId) : null,
+        spotify,
         cover: cover.trim() || null,
       });
       reset();
@@ -128,7 +128,7 @@
       {onpaste}
     />
   </label>
-  {#if linkInvalid}<p class="hint error">Not a Spotify album link.</p>{/if}
+  {#if linkInvalid}<p class="hint error">Not a Spotify album or playlist link.</p>{/if}
   {#if busy}<p class="hint">Looking up…</p>{/if}
   {#if duplicates.length > 0}
     <p class="hint warning">
