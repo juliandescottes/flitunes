@@ -45,7 +45,7 @@ Reference: iTunes 10 (2010). See `docs/spec.md` §5.
 ## Phase 2
 
 - [ ] Smart playlists (rule editor)
-- [ ] Type-ahead in lists (arrows, Enter and Delete already work)
+- [x] Type-ahead in lists (jumps by the sorted column)
 - [ ] Cover Flow
 - [ ] More import paths (several Spotify links at once, CSV)
 - [ ] "Refresh cover" for dead cover URLs

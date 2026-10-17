@@ -160,6 +160,27 @@ export function genreName(album: Album, genreNames: Map<string, string>): string
   return id === undefined ? null : (genreNames.get(id) ?? id);
 }
 
+/**
+ * Type-ahead, like iTunes: the first album whose sorted column starts with
+ * `prefix`. Columns without text (rating, date added) match on the name.
+ */
+export function typeAhead(
+  albums: Album[],
+  prefix: string,
+  key: SortKey,
+  genreNames: Map<string, string>,
+): Album | null {
+  const wanted = fold(prefix);
+  if (!wanted) return null;
+  const text = (a: Album): string => {
+    if (key === "artist") return artistSortName(a);
+    if (key === "genre") return genreName(a, genreNames) ?? "";
+    if (key === "year") return a.year?.toString() ?? "";
+    return sortableName(a.title);
+  };
+  return albums.find((a) => fold(text(a)).startsWith(wanted)) ?? null;
+}
+
 function artistSortName(album: Album): string {
   return album.artistSort ?? sortableName(album.artists[0] ?? "");
 }

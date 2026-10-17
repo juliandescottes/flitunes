@@ -10,7 +10,7 @@
   import GetInfo from "./components/GetInfo.svelte";
   import SourceList from "./components/SourceList.svelte";
   import TopBar from "./components/TopBar.svelte";
-  import { browse, playlists, type SortDir, type SortKey, type Source, type ViewMode } from "./lib/browse.ts";
+  import { browse, playlists, typeAhead, type SortDir, type SortKey, type Source, type ViewMode } from "./lib/browse.ts";
   import { LibraryDB } from "./lib/db.ts";
   import { Library } from "./lib/library.svelte.ts";
   import { findGenreByName, type Album } from "./lib/model.ts";
@@ -277,9 +277,29 @@
     ]);
   }
 
+  // Type-ahead: letters typed within a second of each other build one prefix.
+  let typed = "";
+  let typedAt = 0;
+
+  function typeAheadKey(event: KeyboardEvent): boolean {
+    if (event.key.length !== 1 || event.metaKey || event.ctrlKey || event.altKey) return false;
+    const now = event.timeStamp;
+    if (now - typedAt > 1000) typed = "";
+    if (typed === "" && event.key === " ") return false;
+    typed += event.key;
+    typedAt = now;
+    const match = typeAhead(result.albums, typed, sortKey, genreNames);
+    if (match) pick(match.id, { shiftKey: false, metaKey: false, ctrlKey: false });
+    return true;
+  }
+
   function onMainKeydown(event: KeyboardEvent) {
     const list = result.albums;
     if (list.length === 0) return;
+    if (typeAheadKey(event)) {
+      event.preventDefault();
+      return;
+    }
     const i = cursor ? list.findIndex((a) => a.id === cursor) : -1;
     let step = 0;
     if (event.key === "ArrowDown") step = view === "grid" ? gridColumns() : 1;

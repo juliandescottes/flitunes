@@ -13,6 +13,8 @@ window, and Get Info editing.
   or cover grid, status bar with "+". Look and colors live in `src/app.css`.
 - Selection: click, ⌘/Ctrl-click to toggle, Shift-click or Shift-arrows for a
   range, ⌘A selects all. Enter or double-click opens in Spotify, Delete removes.
+- Type-ahead: typing letters in the list or grid jumps to the first album whose
+  sorted column starts with them (name when sorted by rating or date added).
 - Get Info (⌘I or right-click): one album → Info and Artwork tabs with
   Previous / Next (saves and moves on); several → Multiple Item Information,
   where only ticked fields apply and playlists can be added or removed.
@@ -25,12 +27,12 @@ window, and Get Info editing.
 - Add sheet uses the same genre/playlist chips (`ChipInput.svelte`, `fields.ts`).
 - Browse logic is pure and tested in `src/lib/browse.ts`; the store gained
   `updateAlbums` (bulk) and `mergeGenre`.
-- 43 unit tests pass, `svelte-check` is clean. Clicked through in Firefox
+- 44 unit tests pass, `svelte-check` is clean. Clicked through in Firefox
   (except ⌘S, to avoid writing `data/library.json` from a test session).
 
 ## Next step
 
-Phase 2 in `PLAN.md`: smart playlists, type-ahead, Cover Flow, more import
+Phase 2 in `PLAN.md`: smart playlists, Cover Flow, more import
 paths. Or start curating the real library and fix what gets in the way.
 
 ## Decisions

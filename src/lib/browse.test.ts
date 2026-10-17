@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { browse, playlists, type BrowseState } from "./browse.ts";
+import { browse, playlists, typeAhead, type BrowseState } from "./browse.ts";
 import type { Album, Genre } from "./model.ts";
 
 const NOW = Date.parse("2026-10-17T00:00:00Z");
@@ -123,5 +123,14 @@ describe("browse", () => {
       "Kind of Blue (1959)",
       "Kind of Blue (2008)",
     ]);
+  });
+
+  it("jumps to the first album starting with the typed text", () => {
+    const list = browse(albums, genres, state({}), NOW).albums;
+    const genreNames = new Map(genres.map((g) => [g.id, g.name]));
+    expect(typeAhead(list, "ki", "title", genreNames)?.title).toBe("Kind of Blue");
+    expect(typeAhead(list, "beat", "artist", genreNames)?.title).toBe("Abbey Road");
+    expect(typeAhead(list, "200", "year", genreNames)?.title).toBe("Discovery");
+    expect(typeAhead(list, "zz", "title", genreNames)).toBeNull();
   });
 });
