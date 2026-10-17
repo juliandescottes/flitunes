@@ -145,14 +145,6 @@ user can always type or paste values, including a manual cover URL.
 - No backend. Only the dev-server plugin writes `library.json`.
 - Covers: stored as URLs only, relying on the browser's HTTP cache. No image files in the repo.
 
-## 10. Decisions log
+## 10. Decisions
 
-| Date | Decision |
-|---|---|
-| 2026-10-17 | I curate the library by hand. Spotify is only a link. No Spotify login in the MVP. |
-| 2026-10-17 | IndexedDB working copy + `library.json` committed to the repo. |
-| 2026-10-17 | UI: Svelte. |
-| 2026-10-17 | Genres: flat, curated list. |
-| 2026-10-17 | One entry per edition. |
-| 2026-10-17 | Compilations → artist "Various Artists". |
-| 2026-10-17 | Covers: store URLs only. |
+The decisions log lives in `STATUS.md`.
