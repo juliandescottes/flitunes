@@ -33,6 +33,9 @@ window, and Get Info editing.
   `updateAlbums` (bulk) and `mergeGenre`.
 - 46 unit tests pass, `svelte-check` is clean. Clicked through in Firefox
   (except ⌘S, to avoid writing `data/library.json` from a test session).
+- GitHub Pages: `.github/workflows/pages.yml` tests, builds and deploys on
+  every push to `main` (needs Settings → Pages → Source: GitHub Actions).
+  Pages is the everywhere-viewer; curation happens locally, then push.
 
 ## Next step
 

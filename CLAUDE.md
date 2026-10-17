@@ -19,6 +19,11 @@ npm run build    # static build in dist/ (includes a copy of library.json)
 
 Run `npm test` and `npm run check` before committing.
 
+Every push to `main` deploys the build to GitHub Pages
+(`.github/workflows/pages.yml`). The site is a viewer of the committed
+`data/library.json`: edits made there stay in that browser and Save downloads
+the file. Curate locally with `npm run dev`, then push.
+
 ## Architecture
 
 Static Svelte 5 + Vite + TypeScript app, no backend.
