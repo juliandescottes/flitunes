@@ -45,7 +45,11 @@ window, and Get Info editing.
 
 ## Next step
 
-Phase 2 in `PLAN.md`: smart playlists, Cover Flow. Or start curating the real library and fix what gets in the way.
+In progress: one-off bulk import of Spotify links for the 666 albums imported
+from Last.fm. Notes, scripts and data live in the git-ignored `import/`
+folder: start with `import/README.md`.
+
+Then: Phase 2 in `PLAN.md`: smart playlists, Cover Flow. Or start curating the real library and fix what gets in the way.
 
 ## Decisions
 

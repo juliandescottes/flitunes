@@ -1,3 +1,6 @@
 node_modules/
 dist/
 data/*.tmp
+
+# One-off import work: personal data, scripts and notes (see import/README.md)
+import/
