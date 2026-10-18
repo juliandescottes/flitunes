@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "exportedAt": "2026-10-18T14:44:04.833Z",
+  "exportedAt": "2026-10-18T14:55:43.272Z",
   "genres": [
     {
       "id": "electronic",
@@ -1097,8 +1097,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:298tKa2DPLT9GNmY8vsvLj",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273f45aa52a80eee950b885daa0",
       "addedAt": "2026-10-17T14:04:38.927Z"
     },
     {
@@ -2057,8 +2057,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:3DrgM5X3yX1JP1liNLAOHI",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273532391d63cfd6d32677f7af6",
       "addedAt": "2026-10-17T14:04:38.928Z"
     },
     {
@@ -2233,8 +2233,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:0Dv4ArPFwSFPWrubYdExKq",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273d255944dd08e7fba8197aff8",
       "addedAt": "2026-10-17T14:04:38.928Z"
     },
     {
@@ -5337,8 +5337,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:5wv5Usz20cDXn9REmkS3El",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2731335ea53b0a3a0267dd401b9",
       "addedAt": "2026-10-17T14:04:38.930Z"
     },
     {
@@ -7457,7 +7457,7 @@
       "id": "01M552VM4M0WDD1DY41EY997FJ",
       "title": "Definitely Maybe",
       "artists": [
-        "Various Artists"
+        "Oasis"
       ],
       "artistSort": null,
       "year": null,
@@ -7465,8 +7465,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": "spotify:album:0gIO9yueDiAdB3Y2Z8iOV2",
-      "cover": "https://i.scdn.co/image/ab67616d0000b2731f03b9783bd4364ac4a91a5f",
+      "spotify": "spotify:album:3LzKUdUTdJb6P7xGN6SotC",
+      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b2737c8f18614002cc5542f6c7aa",
       "addedAt": "2026-10-17T14:04:38.932Z"
     },
     {
@@ -8649,8 +8649,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:7h5ZynVT4trEQ8tc9uKjkf",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b273d5a75422aa4bbc2a22aae9db",
       "addedAt": "2026-10-17T14:04:38.933Z"
     },
     {
@@ -8745,8 +8745,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:4Ff3cd5IDgb79mmicl51Kz",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2731ec37d768a0ca445b713b77c",
       "addedAt": "2026-10-17T14:04:38.933Z"
     },
     {
@@ -9497,8 +9497,8 @@
       "tags": [],
       "rating": null,
       "notes": "",
-      "spotify": null,
-      "cover": null,
+      "spotify": "spotify:album:5LsJNuyLsyGJI4bYgUjmYw",
+      "cover": "https://image-cdn-fa.spotifycdn.com/image/ab67616d0000b2738bc2fccf54ceba6e9a4e3657",
       "addedAt": "2026-10-17T14:04:38.933Z"
     },
     {
