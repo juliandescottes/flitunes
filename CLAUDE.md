@@ -26,11 +26,14 @@ the file. Curate locally with `npm run dev`, then push.
 
 ## Workflow
 
-Fixes and features go through a pull request, not a direct commit to `main`:
-work on a branch, then open the PR with `gh pr create`. The description is the
-project's decision record: say what changed, why, and which alternatives
-were set aside. Open an issue first for a question that needs discussing,
-and link it from the PR. The user reviews and merges.
+Fixes and features go through a pull request, not a direct commit to `main`.
+Work on a branch and commit there. The user pushes the branch and opens the
+PR. The PR description is the project's decision record (what changed, why,
+which alternatives were set aside): draft it in the chat for the user.
+For a question that needs discussing, draft an issue for the user to file.
+
+Never push, open PRs, create issues or comment on GitHub unless the user
+asks for that specific action: all of it is posted under the user's name.
 
 ## Architecture
 
