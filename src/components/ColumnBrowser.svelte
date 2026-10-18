@@ -1,6 +1,7 @@
 <script lang="ts">
   // iTunes column browser: Genres | Artists | Albums, each starting with "All (N)".
   // Genres can be renamed in place (double-click or the context menu).
+  // Its height is resized by dragging its bottom edge.
   import type { ColumnItem } from "../lib/browse.ts";
 
   type Column = "genre" | "artist" | "album";
@@ -17,6 +18,7 @@
     ongenremenu,
     onrenamestart,
     onrenamegenre,
+    height = $bindable(),
   }: {
     genres: ColumnItem[];
     artists: ColumnItem[];
@@ -31,7 +33,46 @@
     onrenamestart: (id: string) => void;
     /** Called with the new name, or null when the rename is cancelled. */
     onrenamegenre: (id: string, name: string | null) => void;
+    /** Height in pixels. */
+    height: number;
   } = $props();
+
+  const MIN_HEIGHT = 60;
+  // Room left for the album list below.
+  const MIN_LIST_HEIGHT = 100;
+  let browser: HTMLDivElement;
+
+  function clampHeight(value: number): number {
+    const available = (browser.parentElement?.clientHeight ?? Infinity) - MIN_LIST_HEIGHT;
+    return Math.round(Math.max(MIN_HEIGHT, Math.min(available, value)));
+  }
+
+  function startResize(event: PointerEvent) {
+    if (event.button !== 0) return;
+    event.preventDefault();
+    const handle = event.currentTarget as HTMLElement;
+    handle.setPointerCapture(event.pointerId);
+    const startY = event.clientY;
+    // Start from the shown height: a smaller window may have shrunk it.
+    const startHeight = clampHeight(height);
+    const move = (e: PointerEvent) => (height = clampHeight(startHeight + e.clientY - startY));
+    const end = () => {
+      handle.removeEventListener("pointermove", move);
+      handle.removeEventListener("pointerup", end);
+      handle.removeEventListener("pointercancel", end);
+    };
+    handle.addEventListener("pointermove", move);
+    handle.addEventListener("pointerup", end);
+    handle.addEventListener("pointercancel", end);
+  }
+
+  function resizeKeydown(event: KeyboardEvent) {
+    const step = event.shiftKey ? 50 : 10;
+    if (event.key === "ArrowUp") height = clampHeight(clampHeight(height) - step);
+    else if (event.key === "ArrowDown") height = clampHeight(clampHeight(height) + step);
+    else return;
+    event.preventDefault();
+  }
 
   // Focuses and selects the rename field when it appears.
   function renameField(input: HTMLInputElement) {
@@ -62,7 +103,7 @@
   }
 </script>
 
-<div class="browser">
+<div class="browser" bind:this={browser} style:height="{height}px">
   {#each columns as column (column.id)}
     <div class="column">
       <div class="head">{column.title}</div>
@@ -107,15 +148,46 @@
       </ul>
     </div>
   {/each}
+  <!-- A focusable separator is an ARIA widget (resized with the arrow keys), which Svelte doesn't know. -->
+  <!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions -->
+  <div
+    class="splitter"
+    role="separator"
+    aria-orientation="horizontal"
+    aria-label="Resize the column browser"
+    aria-valuenow={height}
+    aria-valuemin={MIN_HEIGHT}
+    tabindex="0"
+    onpointerdown={startResize}
+    onkeydown={resizeKeydown}
+  ></div>
 </div>
 
 <style>
   .browser {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    height: 160px;
+    position: relative;
+    flex-shrink: 1;
+    min-height: 60px;
     border-bottom: 1px solid #a5a5a5;
     background: #fff;
+  }
+  /* A grab area straddling the bottom border, like iTunes. */
+  .splitter {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -4px;
+    height: 7px;
+    z-index: 2;
+    cursor: row-resize;
+    touch-action: none;
+    outline: none;
+  }
+  .splitter:focus-visible {
+    background: var(--select);
+    opacity: 0.5;
   }
   .column {
     display: flex;

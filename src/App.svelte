@@ -33,6 +33,7 @@
   let sortKey = $state<SortKey>(prefs.sortKey ?? "artist");
   let sortDir = $state<SortDir>(prefs.sortDir ?? "asc");
   let view = $state<ViewMode>(prefs.view ?? "list");
+  let browserHeight = $state(typeof prefs.browserHeight === "number" ? prefs.browserHeight : 160);
 
   // Selection: ids of the selected albums, the cursor (last clicked or moved
   // to, kept in view) and the anchor that Shift-click extends from.
@@ -64,7 +65,7 @@
   const infoIndex = $derived(infoIds.length === 1 ? result.albums.findIndex((a) => a.id === infoIds[0]) : -1);
 
   $effect(() => {
-    savePrefs({ view, sortKey, sortDir });
+    savePrefs({ view, sortKey, sortDir, browserHeight });
   });
 
   $effect(() => {
@@ -353,7 +354,7 @@
     return grid ? getComputedStyle(grid).gridTemplateColumns.split(" ").length : 1;
   }
 
-  function loadPrefs(): Partial<{ view: ViewMode; sortKey: SortKey; sortDir: SortDir }> {
+  function loadPrefs(): Partial<{ view: ViewMode; sortKey: SortKey; sortDir: SortDir; browserHeight: number }> {
     try {
       return JSON.parse(localStorage.getItem(PREFS_KEY) ?? "{}");
     } catch {
@@ -422,6 +423,7 @@
         ongenremenu={genreMenu}
         onrenamestart={(id) => (renamingGenre = id)}
         onrenamegenre={renameGenre}
+        bind:height={browserHeight}
       />
       <!-- Keyboard events bubble up from the list or grid. -->
       <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -536,13 +538,15 @@
     min-height: 0;
     grid-row: 5;
   }
+  /* The column browser shrinks before the album list gets too small. */
   .content {
-    display: grid;
-    grid-template-rows: auto minmax(0, 1fr);
+    display: flex;
+    flex-direction: column;
     min-height: 0;
   }
   .main {
-    min-height: 0;
+    flex: 1 1 0;
+    min-height: 100px;
     outline: none;
   }
   .empty {
