@@ -1,5 +1,6 @@
-// Access to library.json: fetched from the dev server (or the static build),
-// and written back into the repo by the dev-server plugin.
+// Access to library.json, which lives in its own data repo. The dev server
+// reads and writes a local clone of it; the static build fetches it from
+// VITE_LIBRARY_URL (or a library.json next to index.html).
 
 import type { LibraryFile } from "./model.ts";
 import { parseLibraryFile, serializeLibraryFile } from "./serialize.ts";
@@ -7,15 +8,16 @@ import { parseLibraryFile, serializeLibraryFile } from "./serialize.ts";
 export interface LibrarySource {
   /** Returns the persisted library file, or null if there is none. */
   fetchFile(): Promise<LibraryFile | null>;
-  /** Writes the library file into the repo. Only available in dev. */
+  /** Writes the library file to disk. Only available in dev. */
   saveFile?(file: LibraryFile): Promise<void>;
 }
 
 const DEV_ENDPOINT = "/__library";
+const LIBRARY_URL: string = import.meta.env.VITE_LIBRARY_URL || `${import.meta.env.BASE_URL}library.json`;
 
 export const repoSource: LibrarySource = {
   async fetchFile() {
-    const url = import.meta.env.DEV ? DEV_ENDPOINT : `${import.meta.env.BASE_URL}library.json`;
+    const url = import.meta.env.DEV ? DEV_ENDPOINT : LIBRARY_URL;
     const res = await fetch(url, { cache: "no-store" });
     if (res.status === 404) return null;
     if (!res.ok) throw new Error(`Failed to fetch library.json: HTTP ${res.status}`);

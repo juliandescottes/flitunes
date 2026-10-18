@@ -1,6 +1,6 @@
 # Status
 
-_Last updated: 2026-10-17 (session 2)_
+_Last updated: 2026-10-18_
 
 ## Where we are
 
@@ -38,7 +38,7 @@ window, and Get Info editing.
 - Browse logic is pure and tested in `src/lib/browse.ts`; the store gained
   `updateAlbums` (bulk) and `mergeGenre`.
 - 52 unit tests pass, `svelte-check` is clean. Clicked through in Firefox
-  (except ⌘S, to avoid writing `data/library.json` from a test session).
+  (except ⌘S, to avoid writing `library.json` from a test session).
 - GitHub Pages: `.github/workflows/pages.yml` tests, builds and deploys on
   every push to `main` (needs Settings → Pages → Source: GitHub Actions).
   Pages is the everywhere-viewer; curation happens locally, then push.
@@ -64,6 +64,8 @@ Then: Phase 2 in `PLAN.md`: smart playlists, Cover Flow. Or start curating the r
 | 2026-10-17 | Everything hand curated: no metadata lookups (iTunes Search removed). "iTunes-style" = the 2010 iTunes 10 UI only. |
 | 2026-10-17 | Scope: an old-school iTunes 10 experience, plus a few import paths, and not much more. Tags show as playlists. Embedded player and track lists dropped. |
 | 2026-10-17 | Last.fm import deferred (scraping is blocked; would need an API key). |
+| 2026-10-18 | Code changes go through PRs; the user pushes, opens PRs and files issues. |
+| 2026-10-18 | Content apart from code: `library.json` moved to its own repo, `spotify-viewer-album-library` (history kept). The site fetches it from there; dev reads/writes a clone next to the app. |
 
 ## Known issues / notes
 

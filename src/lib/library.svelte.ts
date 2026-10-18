@@ -204,7 +204,7 @@ export class Library {
     return toLibraryFile(this.albums, this.genres, new Date().toISOString());
   }
 
-  /** Writes library.json into the repo (dev server only). */
+  /** Writes library.json to disk (dev server only). */
   async saveToRepo(): Promise<void> {
     if (!this.#source.saveFile) throw new Error("Saving to the repo is only available in dev mode");
     const file = this.snapshot();

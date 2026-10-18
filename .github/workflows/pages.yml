@@ -1,6 +1,6 @@
 # Builds the app and publishes it on GitHub Pages on every push to main.
-# The site is a viewer of the committed data/library.json; curate locally
-# with `npm run dev` (which saves into the repo), then push.
+# The site loads the library from its own repo (VITE_LIBRARY_URL) when the
+# page opens, so library pushes show up without redeploying the app.
 name: Deploy to GitHub Pages
 
 on:
@@ -29,6 +29,8 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
+        env:
+          VITE_LIBRARY_URL: https://raw.githubusercontent.com/juliandescottes/spotify-viewer-album-library/main/library.json
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:

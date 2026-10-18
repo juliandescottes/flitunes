@@ -85,22 +85,25 @@ The target is the iTunes 10 window, with albums instead of songs.
 ## 6. Storage & persistence
 
 ```
-IndexedDB (working copy)  ──export──▶  library.json (committed to repo)
+IndexedDB (working copy)  ──export──▶  library.json (in its own data repo)
                           ◀──import──
 ```
 
 - **IndexedDB** via Dexie. Every edit is saved immediately.
-- **`library.json`** in the repo is the durable copy. Git gives history and diffs.
-- **First run / empty DB**: the app loads the `library.json` bundled with the
-  build, so a fresh browser or machine starts with my library.
+- **`library.json`** is the durable copy, in its own repo
+  (`spotify-viewer-album-library`) so content and code keep separate
+  histories. Git gives history and diffs.
+- **First run / empty DB**: the app loads `library.json`: from the local clone
+  of the data repo in dev, from the data repo's raw URL (`VITE_LIBRARY_URL`)
+  on the deployed site. A fresh browser or machine starts with my library.
 - **Export options:**
   1. *Download JSON*. Works in every browser; I move the file into the repo myself.
   2. *Save to repo* (dev mode only). A tiny Vite dev-server plugin exposes
-     `POST /__library` and writes `library.json` straight into the repo. One click,
+     `POST /__library` and writes `library.json` straight into the data repo clone. One click,
      any browser, and nothing exists in production builds. **← recommended**
   3. File System Access API (`showSaveFilePicker`) is Chromium-only. Skip it.
 - **Conflict safety**: the export includes `exportedAt`. On startup, if the
-  bundled `library.json` is newer than the last local edit, offer to load it.
+  fetched `library.json` is newer than the last local edit, offer to load it.
   This handles editing on two machines via git pull.
 - **Reminder**: show a "N unsaved changes since last export" badge.
 
