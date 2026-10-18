@@ -24,6 +24,14 @@ Every push to `main` deploys the build to GitHub Pages
 `data/library.json`: edits made there stay in that browser and Save downloads
 the file. Curate locally with `npm run dev`, then push.
 
+## Workflow
+
+Fixes and features go through a pull request, not a direct commit to `main`:
+work on a branch, then open the PR with `gh pr create`. The description is the
+project's decision record: say what changed, why, and which alternatives
+were set aside. Open an issue first for a question that needs discussing,
+and link it from the PR. The user reviews and merges.
+
 ## Architecture
 
 Static Svelte 5 + Vite + TypeScript app, no backend.
