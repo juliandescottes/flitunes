@@ -1,9 +1,8 @@
-// Serves data/library.json to the app and, in dev only, lets the app write it
-// back into the repo via POST /__library. The production build ships a copy
-// of the file next to index.html.
+// Dev only: serves the library file (a local clone of the data repo) to the
+// app, and lets the app write it back via POST /__library. The production
+// build fetches the library from its URL instead (see persistence.ts).
 
 import { readFile, rename, writeFile } from "node:fs/promises";
-import { readFileSync } from "node:fs";
 import type { IncomingMessage } from "node:http";
 import type { Plugin } from "vite";
 import { parseLibraryFile, serializeLibraryFile } from "../src/lib/serialize.ts";
@@ -59,10 +58,6 @@ export function libraryFile(path: string): Plugin {
           res.end((e as Error).message);
         }
       });
-    },
-
-    generateBundle() {
-      this.emitFile({ type: "asset", fileName: "library.json", source: readFileSync(path) });
     },
   };
 }

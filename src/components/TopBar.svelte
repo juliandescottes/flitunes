@@ -37,7 +37,7 @@
         class:default={unsavedChanges > 0}
         onclick={onsave}
         disabled={unsavedChanges === 0}
-        title="Write data/library.json (⌘S)">Save</button
+        title="Write library.json (⌘S)">Save</button
       >
     {/if}
     <button class="aqua" onclick={ondownload} title="Download library.json">Export</button>
