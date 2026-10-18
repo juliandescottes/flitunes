@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "exportedAt": "2026-10-18T14:55:43.272Z",
+  "exportedAt": "2026-10-18T15:25:25.805Z",
   "genres": [
     {
       "id": "electronic",
@@ -2779,22 +2779,6 @@
       "notes": "",
       "spotify": "spotify:album:5hDWwtqddVoWquau8QByxI",
       "cover": "https://i.scdn.co/image/ab67616d0000b273302f263eff8ea4dcf1b6c13e",
-      "addedAt": "2026-10-17T14:04:38.928Z"
-    },
-    {
-      "id": "01M552VM4GNN7BR1GEPP5TJTAN",
-      "title": "Please Smile My Noise Bleed",
-      "artists": [
-        "Mum"
-      ],
-      "artistSort": null,
-      "year": null,
-      "genres": [],
-      "tags": [],
-      "rating": null,
-      "notes": "",
-      "spotify": "spotify:album:5u0CxJH46YN9cBz9myapzt",
-      "cover": "https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b273019ecbab3d550a1ab914be7e",
       "addedAt": "2026-10-17T14:04:38.928Z"
     },
     {
@@ -9294,22 +9278,6 @@
       "addedAt": "2026-10-17T14:04:38.933Z"
     },
     {
-      "id": "01M552VM4NJ8WX403KPTAMJ740",
-      "title": "Arm's Way",
-      "artists": [
-        "Islands"
-      ],
-      "artistSort": null,
-      "year": null,
-      "genres": [],
-      "tags": [],
-      "rating": null,
-      "notes": "",
-      "spotify": null,
-      "cover": null,
-      "addedAt": "2026-10-17T14:04:38.933Z"
-    },
-    {
       "id": "01M552VM4NJSTQ9DGSTFFGKE1Q",
       "title": "Tunguska",
       "artists": [
@@ -10158,22 +10126,6 @@
       "addedAt": "2026-10-17T14:04:38.934Z"
     },
     {
-      "id": "01M552VM4P3R29TXP9S0ZS3JFV",
-      "title": "Blazblue Calamity: Trigger LE OST",
-      "artists": [
-        "石渡太輔"
-      ],
-      "artistSort": null,
-      "year": null,
-      "genres": [],
-      "tags": [],
-      "rating": null,
-      "notes": "",
-      "spotify": null,
-      "cover": null,
-      "addedAt": "2026-10-17T14:04:38.934Z"
-    },
-    {
       "id": "01M552VM4P40TV4KCGZRP7VVQE",
       "title": "And by December You Will Know Where Your Heart Truly Lies",
       "artists": [
@@ -10642,22 +10594,6 @@
       "title": "Captured Anthems for an Empty Bathtub",
       "artists": [
         "K.C. Accidental"
-      ],
-      "artistSort": null,
-      "year": null,
-      "genres": [],
-      "tags": [],
-      "rating": null,
-      "notes": "",
-      "spotify": null,
-      "cover": null,
-      "addedAt": "2026-10-17T14:04:38.934Z"
-    },
-    {
-      "id": "01M552VM4PX3AY4EFNWNQVBBH6",
-      "title": "Futurist's Against The Ocean",
-      "artists": [
-        "Asva"
       ],
       "artistSort": null,
       "year": null,
