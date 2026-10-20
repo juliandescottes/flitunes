@@ -168,8 +168,9 @@ user can always type or paste values, including a manual cover URL.
   Needs Spotify Premium, and a Spotify app (developer dashboard) whose client ID
   is set at build time as `VITE_SPOTIFY_CLIENT_ID`; without one the feature is
   hidden. The app must list each address it runs on as a redirect URI
-  (`http://127.0.0.1:5173/` in dev, the Pages URL). In Development Mode, Spotify
-  only lets accounts added in the dashboard sign in.
+  (`http://127.0.0.1:5173/` in dev, the Pages URL). In Development Mode (2026 rules),
+  only up to 5 accounts added in the dashboard can sign in, and the app's
+  owner needs Premium.
 
 ## 9. Tech stack
 

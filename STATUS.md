@@ -100,5 +100,9 @@ and scripts in the git-ignored `import/` folder: see `import/README.md`.
 
 - TypeScript pinned to 6.x until `svelte-check` supports 7.
 - Multiple artists are entered separated by ";" (names can contain commas).
+- Spotify Development Mode (2026): up to 5 allow-listed accounts per app, owner
+  needs Premium, and some Web API endpoints were removed. The ones used here
+  (`/me`, `/me/player*`, `/albums/{id}/tracks`) aren't in the removed list, but
+  check Spotify's changelog if a call starts failing.
 - Spotify oEmbed is public but undocumented.
   Always allow manual entry as a fallback.
