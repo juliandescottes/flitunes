@@ -50,22 +50,26 @@ export interface BrowseResult {
 export function browse(albums: Album[], genres: Genre[], state: BrowseState, now = Date.now()): BrowseResult {
   const genreNames = new Map(genres.map((g) => [g.id, g.name]));
   const words = searchWords(state.search);
-  const base = albums.filter(
+  // Filtering keeps the order, so the whole library is sorted once (cached)
+  // and every filter below works on sorted lists.
+  const sorted = sortedLibrary(albums, genres, genreNames, state.sortKey, state.sortDir);
+  const ranks = nameRanks(albums);
+  const base = sorted.filter(
     (a) =>
       inSource(a, state.source, now) &&
       (!state.linkedOnly || a.spotify !== null) &&
-      matchesSearch(a, words, genreNames),
+      matchesSearch(a, words, genres, genreNames),
   );
 
   const genreList = genreItems(base, genreNames);
   const genre = effective(state.genre, genreList);
   const byGenre = genre === null ? base : base.filter((a) => a.genres.includes(genre));
 
-  const artistList = artistItems(byGenre);
+  const artistList = artistItems(byGenre, ranks.artists);
   const artist = effective(state.artist, artistList);
   const byArtist = artist === null ? byGenre : byGenre.filter((a) => a.artists.includes(artist));
 
-  const titleList = albumTitleItems(byArtist);
+  const titleList = albumTitleItems(byArtist, ranks.titles);
   const album = effective(state.album, titleList);
   const shown = album === null ? byArtist : byArtist.filter((a) => a.title === album);
 
@@ -77,8 +81,54 @@ export function browse(albums: Album[], genres: Genre[], state: BrowseState, now
     artist,
     album,
     total: base.length,
-    albums: sortAlbums(shown, state.sortKey, state.sortDir, genreNames),
+    albums: shown,
   };
+}
+
+// The library's arrays are replaced, never mutated (see library.svelte.ts),
+// so the last result can be reused while they are the same arrays.
+let lastSort: { albums: Album[]; genres: Genre[]; key: SortKey; dir: SortDir; sorted: Album[] } | null = null;
+
+function sortedLibrary(
+  albums: Album[],
+  genres: Genre[],
+  genreNames: Map<string, string>,
+  key: SortKey,
+  dir: SortDir,
+): Album[] {
+  const last = lastSort;
+  if (last && last.albums === albums && last.genres === genres && last.key === key && last.dir === dir) {
+    return last.sorted;
+  }
+  const sorted = sortAlbums(albums, key, dir, genreNames);
+  lastSort = { albums, genres, key, dir, sorted };
+  return sorted;
+}
+
+interface NameRanks {
+  /** Position of each artist, and of each album title, in the library's sorted order. */
+  artists: Map<string, number>;
+  titles: Map<string, number>;
+}
+
+let lastRanks: { albums: Album[]; ranks: NameRanks } | null = null;
+
+// Sorting every name once lets the column lists sort by a number.
+function nameRanks(albums: Album[]): NameRanks {
+  if (lastRanks?.albums === albums) return lastRanks.ranks;
+  // An artist sorts by the artistSort of an album they lead, else by name without "The".
+  const sortNames = new Map<string, string>();
+  for (const a of albums) {
+    if (a.artistSort && a.artists[0]) sortNames.set(a.artists[0], a.artistSort);
+  }
+  const rank = (names: Set<string>, sortName: (name: string) => string) =>
+    new Map(sortBy([...names], sortName).map((name, i) => [name, i]));
+  const ranks = {
+    artists: rank(new Set(albums.flatMap((a) => a.artists)), (name) => sortNames.get(name) ?? sortableName(name)),
+    titles: rank(new Set(albums.map((a) => a.title)), sortableName),
+  };
+  lastRanks = { albums, ranks };
+  return ranks;
 }
 
 export function inSource(album: Album, source: Source, now = Date.now()): boolean {
@@ -101,18 +151,33 @@ function searchWords(query: string): string[] {
   return fold(query).split(/\s+/).filter(Boolean);
 }
 
+// Folded search text per album. Albums are replaced, never mutated, on edit,
+// and so is the genres array on a rename, so both can key a cache.
+const searchTexts = new WeakMap<Genre[], WeakMap<Album, string>>();
+
+function searchText(album: Album, genres: Genre[], genreNames: Map<string, string>): string {
+  let texts = searchTexts.get(genres);
+  if (!texts) searchTexts.set(genres, (texts = new WeakMap()));
+  let text = texts.get(album);
+  if (text === undefined) {
+    text = fold(
+      [
+        album.title,
+        ...album.artists,
+        album.year ?? "",
+        ...album.genres.map((id) => genreNames.get(id) ?? id),
+        ...album.tags,
+      ].join(" "),
+    );
+    texts.set(album, text);
+  }
+  return text;
+}
+
 /** Every search word must appear in the title, artists, year, genres or tags. */
-function matchesSearch(album: Album, words: string[], genreNames: Map<string, string>): boolean {
+function matchesSearch(album: Album, words: string[], genres: Genre[], genreNames: Map<string, string>): boolean {
   if (words.length === 0) return true;
-  const text = fold(
-    [
-      album.title,
-      ...album.artists,
-      album.year ?? "",
-      ...album.genres.map((id) => genreNames.get(id) ?? id),
-      ...album.tags,
-    ].join(" "),
-  );
+  const text = searchText(album, genres, genreNames);
   return words.every((w) => text.includes(w));
 }
 
@@ -123,42 +188,52 @@ function genreItems(albums: Album[], genreNames: Map<string, string>): ColumnIte
     .sort((a, b) => compareText(a.label, b.label));
 }
 
-function artistItems(albums: Album[]): ColumnItem[] {
-  // An artist sorts by the artistSort of an album they lead, else by name without "The".
-  const sortNames = new Map<string, string>();
-  for (const a of albums) {
-    if (a.artistSort && a.artists[0]) sortNames.set(a.artists[0], a.artistSort);
-  }
-  const counts = countBy(albums.flatMap((a) => a.artists));
-  const sortName = (name: string) => sortNames.get(name) ?? sortableName(name);
-  return [...counts]
+function artistItems(albums: Album[], ranks: Map<string, number>): ColumnItem[] {
+  return [...countBy(albums.flatMap((a) => a.artists))]
     .map(([key, count]) => ({ key, label: key, count }))
-    .sort((a, b) => compareText(sortName(a.key), sortName(b.key)));
+    .sort((a, b) => ranks.get(a.key)! - ranks.get(b.key)!);
 }
 
-function albumTitleItems(albums: Album[]): ColumnItem[] {
+function albumTitleItems(albums: Album[], ranks: Map<string, number>): ColumnItem[] {
   // Editions sharing a title are grouped under one entry.
   return [...countBy(albums.map((a) => a.title))]
     .map(([key, count]) => ({ key, label: key, count }))
-    .sort((a, b) => compareText(sortableName(a.key), sortableName(b.key)));
+    .sort((a, b) => ranks.get(a.key)! - ranks.get(b.key)!);
+}
+
+/** Sorts by a text key computed once per item rather than once per comparison. */
+function sortBy<T>(items: T[], key: (item: T) => string): T[] {
+  const keyed = items.map((item) => ({ item, key: key(item) }));
+  keyed.sort((a, b) => compareText(a.key, b.key));
+  return keyed.map((k) => k.item);
 }
 
 export function sortAlbums(albums: Album[], key: SortKey, dir: SortDir, genreNames: Map<string, string>): Album[] {
-  const byArtist = (a: Album, b: Album) => compareText(artistSortName(a), artistSortName(b));
-  const byTitle = (a: Album, b: Album) => compareText(sortableName(a.title), sortableName(b.title));
-  const byYear = (a: Album, b: Album) => compareNullable(a.year, b.year, 1);
+  // Sort names are computed once per album, not once per comparison.
+  type Keyed = { album: Album; artist: string; title: string; genre: string | null };
+  const keyed: Keyed[] = albums.map((album) => ({
+    album,
+    artist: artistSortName(album),
+    title: sortableName(album.title),
+    genre: key === "genre" ? genreName(album, genreNames) : null,
+  }));
+  const byArtist = (a: Keyed, b: Keyed) => compareText(a.artist, b.artist);
+  const byTitle = (a: Keyed, b: Keyed) => compareText(a.title, b.title);
+  const byYear = (a: Keyed, b: Keyed) => compareNullable(a.album.year, b.album.year, 1);
   // Ties are broken like iTunes: artist, then year, then title.
-  const tieBreak = (a: Album, b: Album) => byArtist(a, b) || byYear(a, b) || byTitle(a, b);
+  const tieBreak = (a: Keyed, b: Keyed) => byArtist(a, b) || byYear(a, b) || byTitle(a, b);
   const sign = dir === "asc" ? 1 : -1;
-  const primary: Record<SortKey, (a: Album, b: Album) => number> = {
+  const primary: Record<SortKey, (a: Keyed, b: Keyed) => number> = {
     title: (a, b) => sign * byTitle(a, b),
     artist: (a, b) => sign * byArtist(a, b),
-    year: (a, b) => compareNullable(a.year, b.year, sign),
-    genre: (a, b) => compareNullable(genreName(a, genreNames), genreName(b, genreNames), sign),
-    rating: (a, b) => compareNullable(a.rating, b.rating, sign),
-    addedAt: (a, b) => sign * a.addedAt.localeCompare(b.addedAt),
+    year: (a, b) => compareNullable(a.album.year, b.album.year, sign),
+    genre: (a, b) => compareNullable(a.genre, b.genre, sign),
+    rating: (a, b) => compareNullable(a.album.rating, b.album.rating, sign),
+    addedAt: (a, b) => sign * a.album.addedAt.localeCompare(b.album.addedAt),
   };
-  return [...albums].sort((a, b) => primary[key](a, b) || tieBreak(a, b));
+  const compare = primary[key];
+  keyed.sort((a, b) => compare(a, b) || tieBreak(a, b));
+  return keyed.map((k) => k.album);
 }
 
 /** Name of the album's primary genre, or null. */
