@@ -11,6 +11,7 @@
     unsavedChanges,
     canSaveToRepo,
     view = $bindable(),
+    linkedOnly = $bindable(),
     search = $bindable(),
     onsave,
     ondownload,
@@ -22,6 +23,8 @@
     unsavedChanges: number;
     canSaveToRepo: boolean;
     view: ViewMode;
+    /** Hide albums without a Spotify link. */
+    linkedOnly: boolean;
     search: string;
     onsave: () => void;
     ondownload: () => void;
@@ -60,6 +63,25 @@
   </div>
 
   <div class="right">
+    <div class="segmented">
+      <button
+        class:on={linkedOnly}
+        aria-pressed={linkedOnly}
+        aria-label="Only albums with a Spotify link"
+        title={linkedOnly ? "Show albums without a Spotify link" : "Hide albums without a Spotify link"}
+        onclick={() => (linkedOnly = !linkedOnly)}
+      >
+        <svg viewBox="0 0 14 14" width="13" height="13" aria-hidden="true">
+        <path
+          d="M6 8a3 3 0 0 0 4.2 0l2-2a3 3 0 0 0-4.2-4.2l-1 1M8 6a3 3 0 0 0-4.2 0l-2 2a3 3 0 0 0 4.2 4.2l1-1"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.6"
+          stroke-linecap="round"
+        />
+      </svg>
+      </button>
+    </div>
     <div class="segmented" role="group" aria-label="View">
       <button class:on={view === "list"} aria-pressed={view === "list"} title="List" onclick={() => (view = "list")}>
         <svg viewBox="0 0 14 10" width="14" height="10" aria-hidden="true">
@@ -137,9 +159,11 @@
     border-radius: 4px;
     overflow: hidden;
   }
+  /* The segmented buttons and the search field share one height. */
   .segmented button {
     border: none;
-    padding: 3px 9px;
+    height: 20px;
+    padding: 0 9px;
     background: linear-gradient(#fdfdfd, #d4d4d4);
     color: #444;
     display: grid;
@@ -160,7 +184,9 @@
     background: #fff;
     border: 1px solid #8a8a8a;
     border-radius: 11px;
-    padding: 2px 8px;
+    box-sizing: border-box;
+    height: 22px;
+    padding: 0 8px;
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
     width: 160px;
   }

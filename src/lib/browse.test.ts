@@ -43,6 +43,7 @@ const albums = [kindOfBlue, kindOfBlueLegacy, abbeyRoad, discovery, various];
 const state = (patch: Partial<BrowseState> = {}): BrowseState => ({
   source: { kind: "music" },
   search: "",
+  linkedOnly: false,
   genre: null,
   artist: null,
   album: null,
@@ -104,6 +105,14 @@ describe("browse", () => {
     const vinyl = browse(albums, genres, state({ source: { kind: "playlist", tag: "vinyl" } }), NOW);
     expect(titles(vinyl.albums)).toEqual(["Abbey Road (1969)", "Kind of Blue (1959)"]);
     expect(playlists(albums)).toEqual(["summer", "vinyl"]);
+  });
+
+  it("hides albums without a Spotify link", () => {
+    const linked = album("Linked", ["Someone"], { genres: ["rock"], spotify: "spotify:album:4LH4d3cOWNNsVw41Gqt2kv" });
+    const result = browse([...albums, linked], genres, state({ linkedOnly: true }), NOW);
+    expect(titles(result.albums)).toEqual(["Linked"]);
+    expect(result.artists.map((a) => a.key)).toEqual(["Someone"]);
+    expect(result.genres.map((g) => g.key)).toEqual(["rock"]);
   });
 
   it("sorts by any column, missing values last", () => {

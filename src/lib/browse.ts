@@ -17,6 +17,8 @@ export type SortDir = "asc" | "desc";
 export interface BrowseState {
   source: Source;
   search: string;
+  /** Hide albums without a Spotify link. */
+  linkedOnly: boolean;
   /** Column browser selections; null means "All". */
   genre: string | null;
   artist: string | null;
@@ -39,7 +41,7 @@ export interface BrowseResult {
   genre: string | null;
   artist: string | null;
   album: string | null;
-  /** Number of albums in the source after search, before the column browser. */
+  /** Number of albums in the source after search and the link filter, before the column browser. */
   total: number;
   /** The albums shown in the main view, sorted. */
   albums: Album[];
@@ -48,7 +50,12 @@ export interface BrowseResult {
 export function browse(albums: Album[], genres: Genre[], state: BrowseState, now = Date.now()): BrowseResult {
   const genreNames = new Map(genres.map((g) => [g.id, g.name]));
   const words = searchWords(state.search);
-  const base = albums.filter((a) => inSource(a, state.source, now) && matchesSearch(a, words, genreNames));
+  const base = albums.filter(
+    (a) =>
+      inSource(a, state.source, now) &&
+      (!state.linkedOnly || a.spotify !== null) &&
+      matchesSearch(a, words, genreNames),
+  );
 
   const genreList = genreItems(base, genreNames);
   const genre = effective(state.genre, genreList);

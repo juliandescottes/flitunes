@@ -33,6 +33,7 @@
   let sortKey = $state<SortKey>(prefs.sortKey ?? "artist");
   let sortDir = $state<SortDir>(prefs.sortDir ?? "asc");
   let view = $state<ViewMode>(prefs.view ?? "list");
+  let linkedOnly = $state(prefs.linkedOnly === true);
   let browserHeight = $state(typeof prefs.browserHeight === "number" ? prefs.browserHeight : 160);
 
   // Selection: ids of the selected albums, the cursor (last clicked or moved
@@ -56,7 +57,7 @@
 
   const genreNames = $derived(new Map(library.genres.map((g) => [g.id, g.name])));
   const result = $derived(
-    browse(library.albums, library.genres, { source, search, genre, artist, album: albumTitle, sortKey, sortDir }),
+    browse(library.albums, library.genres, { source, search, linkedOnly, genre, artist, album: albumTitle, sortKey, sortDir }),
   );
   const selectedSet = $derived(new Set(selection));
   // Only albums still shown count as selected.
@@ -65,7 +66,7 @@
   const infoIndex = $derived(infoIds.length === 1 ? result.albums.findIndex((a) => a.id === infoIds[0]) : -1);
 
   $effect(() => {
-    savePrefs({ view, sortKey, sortDir, browserHeight });
+    savePrefs({ view, sortKey, sortDir, browserHeight, linkedOnly });
   });
 
   $effect(() => {
@@ -354,7 +355,13 @@
     return grid ? getComputedStyle(grid).gridTemplateColumns.split(" ").length : 1;
   }
 
-  function loadPrefs(): Partial<{ view: ViewMode; sortKey: SortKey; sortDir: SortDir; browserHeight: number }> {
+  function loadPrefs(): Partial<{
+    view: ViewMode;
+    sortKey: SortKey;
+    sortDir: SortDir;
+    browserHeight: number;
+    linkedOnly: boolean;
+  }> {
     try {
       return JSON.parse(localStorage.getItem(PREFS_KEY) ?? "{}");
     } catch {
@@ -383,6 +390,7 @@
     unsavedChanges={library.unsavedChanges}
     canSaveToRepo={library.canSaveToRepo}
     bind:view
+    bind:linkedOnly
     bind:search
     onsave={save}
     ondownload={download}
@@ -408,7 +416,11 @@
   {/if}
 
   <div class="body">
-    <SourceList bind:source={() => source, selectSource} playlists={playlists(library.albums)} />
+    <SourceList
+      bind:source={() => source, selectSource}
+      playlists={playlists(library.albums)}
+      onadd={() => (addOpen = true)}
+    />
 
     <div class="content">
       <ColumnBrowser
@@ -464,12 +476,16 @@
 
   <footer class="status">
     <div class="buttons">
-      <button class="square" title="Add to Library…" aria-label="Add to Library" onclick={() => (addOpen = true)}>+</button>
+      <!-- Narrow windows hide the source list and its Add button. -->
+      <button class="square narrow-add" title="Add to Library…" aria-label="Add to Library" onclick={() => (addOpen = true)}
+        >+</button
+      >
     </div>
     <div class="count">
       {result.albums.length}
       {result.albums.length === 1 ? "album" : "albums"}
       {#if selectedAlbums.length > 1}· {selectedAlbums.length} selected{/if}
+      {#if linkedOnly}· albums without a Spotify link hidden{/if}
     </div>
     <div class="buttons"></div>
   </footer>
@@ -595,6 +611,9 @@
   .square:active {
     background: linear-gradient(#bdbdbd, #e2e2e2);
   }
+  .narrow-add {
+    display: none;
+  }
   /* Sheets slide down from the toolbar. */
   .sheet {
     margin: 0 auto;
@@ -640,6 +659,9 @@
     }
     .body :global(.sources) {
       display: none;
+    }
+    .narrow-add {
+      display: block;
     }
   }
 </style>
