@@ -161,6 +161,10 @@ user can always type or paste values, including a manual cover URL.
   on the first available one; transport buttons sit left of the toolbar
   display, which shows the playing track like iTunes. The player state is
   polled every 5 s while the page is visible (Spotify doesn't push it).
+- **Album details** (signed in): "Show Tracks" in an album's context menu
+  shows its cover, info and track list (`GET /albums/{id}/tracks`, cached for
+  the session, never saved). Double-click or Enter on a track plays the album
+  from that track; the playing track is marked. Esc or Back returns.
   Needs Spotify Premium, and a Spotify app (developer dashboard) whose client ID
   is set at build time as `VITE_SPOTIFY_CLIENT_ID`; without one the feature is
   hidden. The app must list each address it runs on as a redirect URI

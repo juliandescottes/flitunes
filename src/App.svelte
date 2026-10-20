@@ -7,6 +7,7 @@
   import ImportCsv from "./components/ImportCsv.svelte";
   import AlbumGrid from "./components/AlbumGrid.svelte";
   import AlbumList from "./components/AlbumList.svelte";
+  import AlbumTracks from "./components/AlbumTracks.svelte";
   import ColumnBrowser from "./components/ColumnBrowser.svelte";
   import ContextMenu, { type MenuItem } from "./components/ContextMenu.svelte";
   import GetInfo from "./components/GetInfo.svelte";
@@ -18,6 +19,7 @@
   import { findGenreByName, type Album } from "./lib/model.ts";
   import { downloadLibraryFile, repoSource } from "./lib/persistence.ts";
   import { SpotifyPlayer } from "./lib/spotify-player.svelte.ts";
+  import { albumTracks, hasTrackList } from "./lib/spotify-tracks.ts";
   import { browserSession } from "./lib/spotify-session.svelte.ts";
 
   const library = new Library(new LibraryDB(), repoSource);
@@ -55,6 +57,10 @@
   let cursor = $state<string | null>(null);
   let anchor: string | null = null;
 
+  // The album whose tracks the main area shows, instead of the list or grid.
+  let tracksFor = $state<string | null>(null);
+  const tracksAlbum = $derived(tracksFor ? (library.getAlbum(tracksFor) ?? null) : null);
+
   let addOpen = $state(false);
   // Which form the Add sheet shows.
   let addMode = $state<{ kind: "one" } | { kind: "several"; text: string } | { kind: "csv" }>({ kind: "one" });
@@ -86,6 +92,12 @@
     if (player.error) error = player.error;
   });
 
+  // Searching goes back from an album's tracks to the results.
+  $effect(() => {
+    void search;
+    tracksFor = null;
+  });
+
   // Follow what's playing while signed in.
   $effect(() => {
     if (spotify.status === "signed-in") return player.start();
@@ -107,11 +119,13 @@
   });
 
   function selectSource(s: Source) {
+    tracksFor = null;
     source = s;
     genre = artist = albumTitle = null;
   }
 
   function selectColumn(column: "genre" | "artist" | "album", key: string | null) {
+    tracksFor = null;
     // Like iTunes, picking a genre resets the artist and album, and so on.
     if (column === "genre") {
       genre = key;
@@ -320,6 +334,9 @@
     openMenu(event, [
       { label: many ? "Get Info (Multiple Items)" : "Get Info", action: getInfo },
       { label: "Open in Spotify", action: () => openInSpotify(album), disabled: many || !album.spotify },
+      ...(spotify.status === "signed-in"
+        ? [{ label: "Show Tracks", action: () => showTracks(album), disabled: many || !hasTrackList(album.spotify) }]
+        : []),
       "separator",
       { label: many ? `Delete ${selectedSet.size} Albums` : "Delete from Library", action: () => remove(selectedAlbums) },
     ]);
@@ -348,7 +365,19 @@
     return true;
   }
 
+  function showTracks(album: Album) {
+    tracksFor = album.id;
+    tick().then(() => main.querySelector<HTMLElement>(".tracks")?.focus());
+  }
+
+  function closeTracks() {
+    tracksFor = null;
+    focusAlbums();
+  }
+
   function onMainKeydown(event: KeyboardEvent) {
+    // The track list handles its own keys.
+    if (tracksAlbum) return;
     const list = result.albums;
     if (list.length === 0) return;
     if (typeAheadKey(event)) {
@@ -490,6 +519,16 @@
           <p class="empty">Loading…</p>
         {:else if library.albums.length === 0}
           <p class="empty">Your library is empty. Click <strong>+</strong> to add an album.</p>
+        {:else if tracksAlbum?.spotify}
+          {@const uri = tracksAlbum.spotify}
+          <AlbumTracks
+            album={tracksAlbum}
+            load={() => albumTracks(spotify, uri)}
+            playingUri={player.playback?.track?.uri ?? null}
+            isPlaying={player.playback?.isPlaying ?? false}
+            onplay={(trackUri) => player.play(uri, trackUri)}
+            onback={closeTracks}
+          />
         {:else if result.albums.length === 0}
           <p class="empty">No albums match.</p>
         {:else if view === "list"}
