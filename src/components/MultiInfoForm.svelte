@@ -123,9 +123,9 @@
     grid-template-columns: auto max-content 1fr;
     gap: 6px 8px;
     align-items: center;
-    border: 1px solid #b4b4b4;
+    border: 1px solid #c7a3b3;
     border-radius: 4px;
-    background: #e3e3e3;
+    background: #f1e2e8;
     padding: 12px 14px;
   }
   label,
@@ -134,7 +134,7 @@
   }
   input:not([type="checkbox"]) {
     font: inherit;
-    border: 1px solid #a5a5a5;
+    border: 1px solid #bfa2af;
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.15);
     padding: 2px 3px;
     min-width: 0;

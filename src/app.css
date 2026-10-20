@@ -1,22 +1,22 @@
-/* iTunes 10 (2010, Mac OS X 10.6) look. */
+/* iTunes 10 (2010, Mac OS X 10.6) look, tinted pink. */
 :root {
   --font: "Lucida Grande", "Lucida Sans Unicode", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --text: #000;
-  --text-dim: #6d6d6d;
-  --toolbar: linear-gradient(#e8e8e8, #bcbcbc);
-  --toolbar-border: #7a7a7a;
-  --header: linear-gradient(#ffffff, #e2e2e2);
-  --header-border: #a8a8a8;
-  --source-bg: #d9dfe7;
-  --source-heading: #6f7a87;
-  --stripe: #f1f5fa;
-  --rule: #d6d6d6;
-  /* Selection: blue when the pane has focus, gray-blue otherwise. */
-  --select: #3875d7;
-  --select-inactive: #cacaca;
-  --select-source: linear-gradient(#6ea4e4, #3a76cf);
-  --select-source-inactive: linear-gradient(#a6b3c6, #8594ab);
-  --lcd: linear-gradient(#fbfbf6, #e3e5da);
+  --text-dim: #7d6670;
+  --toolbar: linear-gradient(#f3e6ec, #d6bcc8);
+  --toolbar-border: #8f7381;
+  --header: linear-gradient(#ffffff, #f1e2e8);
+  --header-border: #c3a8b4;
+  --source-bg: #f2e1e8;
+  --source-heading: #8d6a7a;
+  --stripe: #fcf2f6;
+  --rule: #eddce3;
+  /* Selection: pink when the pane has focus, muted pink otherwise. */
+  --select: #d9457f;
+  --select-inactive: #e2ccd5;
+  --select-source: linear-gradient(#f28db6, #d3487f);
+  --select-source-inactive: linear-gradient(#d3afbf, #b88d9f);
+  --lcd: linear-gradient(#fffafb, #f1e3e8);
   color-scheme: light;
 }
 
@@ -42,16 +42,16 @@ button {
 .aqua {
   font-size: 11px;
   padding: 2px 10px;
-  border: 1px solid #7d7d7d;
+  border: 1px solid #8f7783;
   border-radius: 11px;
-  background: linear-gradient(#fdfdfd, #d9d9d9);
+  background: linear-gradient(#fffbfc, #e8d6de);
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
   color: #222;
   cursor: default;
 }
 
 .aqua:active:not(:disabled) {
-  background: linear-gradient(#cfcfcf, #ebebeb);
+  background: linear-gradient(#ddc7d1, #f3e7ec);
 }
 
 .aqua:disabled {
@@ -59,6 +59,6 @@ button {
 }
 
 .aqua.default {
-  border-color: #3b6fb6;
-  background: linear-gradient(#bcd8f8, #6aa6ee 50%, #4f91e8 51%, #90c1f6);
+  border-color: #b23d6f;
+  background: linear-gradient(#fbcfe1, #f394bc 50%, #ea74a5 51%, #f8bdd5);
 }

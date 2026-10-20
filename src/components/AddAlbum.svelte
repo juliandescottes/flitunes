@@ -270,7 +270,7 @@
   .link {
     border: none;
     background: none;
-    color: #06c;
+    color: #c2407a;
     cursor: pointer;
     padding: 0;
   }

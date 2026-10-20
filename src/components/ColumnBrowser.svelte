@@ -170,7 +170,7 @@
     position: relative;
     flex-shrink: 1;
     min-height: 60px;
-    border-bottom: 1px solid #a5a5a5;
+    border-bottom: 1px solid #bfa2af;
     background: #fff;
   }
   /* A grab area straddling the bottom border, like iTunes. */
@@ -195,7 +195,7 @@
     min-height: 0;
   }
   .column + .column {
-    border-left: 1px solid #c4c4c4;
+    border-left: 1px solid #d6bdc8;
   }
   .head {
     background: var(--header);

@@ -121,7 +121,7 @@
   }
   .lcd {
     height: 40px;
-    border: 1px solid #8a8a8a;
+    border: 1px solid #9b8590;
     border-radius: 5px;
     background: var(--lcd);
     box-shadow:
@@ -155,7 +155,7 @@
   }
   .segmented {
     display: flex;
-    border: 1px solid #7d7d7d;
+    border: 1px solid #8f7783;
     border-radius: 4px;
     overflow: hidden;
   }
@@ -164,16 +164,16 @@
     border: none;
     height: 20px;
     padding: 0 9px;
-    background: linear-gradient(#fdfdfd, #d4d4d4);
+    background: linear-gradient(#fffbfc, #e3cfd8);
     color: #444;
     display: grid;
     place-items: center;
   }
   .segmented button + button {
-    border-left: 1px solid #7d7d7d;
+    border-left: 1px solid #8f7783;
   }
   .segmented button.on {
-    background: linear-gradient(#8c8c8c, #b4b4b4);
+    background: linear-gradient(#a37a8c, #c7a3b3);
     color: #fff;
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
   }
@@ -182,7 +182,7 @@
     align-items: center;
     gap: 4px;
     background: #fff;
-    border: 1px solid #8a8a8a;
+    border: 1px solid #9b8590;
     border-radius: 11px;
     box-sizing: border-box;
     height: 22px;

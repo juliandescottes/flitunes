@@ -45,8 +45,8 @@
     position: relative;
     text-align: center;
     padding: 3px 60px;
-    background: linear-gradient(#e8e8e8, #c4c4c4);
-    border-bottom: 1px solid #8a8a8a;
+    background: linear-gradient(#f3e6ec, #d6bdc8);
+    border-bottom: 1px solid #9b8590;
     font-size: 13px;
     white-space: nowrap;
     overflow: hidden;

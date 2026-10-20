@@ -232,7 +232,7 @@
   .table {
     max-height: 45vh;
     overflow: auto;
-    border: 1px solid #a5a5a5;
+    border: 1px solid #bfa2af;
     background: #fff;
   }
   table {
@@ -328,7 +328,7 @@
   .link {
     border: none;
     background: none;
-    color: #06c;
+    color: #c2407a;
     cursor: pointer;
     padding: 0;
   }

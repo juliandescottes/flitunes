@@ -111,6 +111,6 @@
     background: #dadada;
   }
   .grid:focus-within .item.selected {
-    background: #c5d8f2;
+    background: #f7d3e2;
   }
 </style>

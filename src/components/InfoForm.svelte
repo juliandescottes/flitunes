@@ -214,8 +214,8 @@
     position: relative;
   }
   .tabs button {
-    border: 1px solid #8a8a8a;
-    background: linear-gradient(#fdfdfd, #d9d9d9);
+    border: 1px solid #9b8590;
+    background: linear-gradient(#fffbfc, #e8d6de);
     padding: 3px 16px;
     font: inherit;
     cursor: default;
@@ -228,14 +228,14 @@
     border-left: none;
   }
   .tabs button.on {
-    background: linear-gradient(#a9cdf6, #5d9ce8);
-    border-color: #4a7ab9;
+    background: linear-gradient(#fbcfe1, #ea74a5);
+    border-color: #b23d6f;
     color: #000;
   }
   .panel {
-    border: 1px solid #b4b4b4;
+    border: 1px solid #c7a3b3;
     border-radius: 4px;
-    background: #e3e3e3;
+    background: #f1e2e8;
     padding: 20px 14px 12px;
     min-height: 300px;
   }
@@ -255,7 +255,7 @@
   input,
   textarea {
     font: inherit;
-    border: 1px solid #a5a5a5;
+    border: 1px solid #bfa2af;
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.15);
     padding: 2px 3px;
     min-width: 0;

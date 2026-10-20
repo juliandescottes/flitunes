@@ -120,7 +120,7 @@
     text-align: left;
   }
   th.sorted {
-    background: linear-gradient(#c5d8f2, #92b3e1);
+    background: linear-gradient(#f7d3e2, #e8a6c2);
   }
   th button {
     display: flex;
