@@ -380,7 +380,7 @@
 
 <svelte:window onkeydown={onWindowKeydown} />
 <svelte:head>
-  <title>{library.unsavedChanges > 0 ? `Album Library (${library.unsavedChanges} unsaved)` : "Album Library"}</title>
+  <title>{library.unsavedChanges > 0 ? `FliTunes (${library.unsavedChanges} unsaved)` : "FliTunes"}</title>
 </svelte:head>
 
 <div class="window">

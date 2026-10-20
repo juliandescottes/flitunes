@@ -1,4 +1,4 @@
-# Album Library — Spec & Technical Design (draft v2)
+# FliTunes — Spec & Technical Design (draft v2)
 
 Status: draft, 2026-10-17. Personal tool, single user.
 

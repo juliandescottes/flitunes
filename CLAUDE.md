@@ -1,4 +1,4 @@
-# Album Library
+# FliTunes
 
 Personal, single-user web app to curate a music album library by hand
 (iTunes 10-style browsing by artist, genre, tags, as a UI reference only) and open albums in Spotify.

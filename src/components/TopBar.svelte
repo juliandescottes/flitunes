@@ -55,7 +55,7 @@
       <div class="lcd-title">{selectedCount} albums selected</div>
       <div class="lcd-sub">⌘I to edit them together</div>
     {:else}
-      <div class="lcd-title">Album Library</div>
+      <div class="lcd-title">FliTunes</div>
       <div class="lcd-sub">
         {unsavedChanges === 0 ? "All changes saved" : `${unsavedChanges} unsaved change${unsavedChanges === 1 ? "" : "s"}`}
       </div>
