@@ -1,7 +1,11 @@
 <script lang="ts">
   // iTunes list view: striped rows, sortable column headers, inline ratings.
+  // Only the rows in view are rendered (rows have a fixed height), so long
+  // libraries stay fast.
+  import { untrack } from "svelte";
   import { genreName, type SortDir, type SortKey } from "../lib/browse.ts";
   import type { Album } from "../lib/model.ts";
+  import { revealRow, viewportHeight, visibleRows } from "../lib/virtual.ts";
   import StarRating from "./StarRating.svelte";
 
   let {
@@ -42,15 +46,41 @@
 
   const dateFormat = new Intl.DateTimeFormat(undefined, { dateStyle: "short", timeStyle: "short" });
 
-  let body: HTMLTableSectionElement;
+  /** Row height in pixels, matching the CSS. */
+  const ROW = 18;
+
+  let scroller: HTMLDivElement;
+  let scrollTop = $state(0);
+  let viewport = $state(0);
+  let headerHeight = $state(0);
+  const range = $derived(visibleRows(scrollTop - headerHeight, viewport, ROW, albums.length));
+  const shown = $derived(albums.slice(range.start, range.end));
+
   $effect(() => {
-    if (cursor) body.querySelector(`[data-id="${cursor}"]`)?.scrollIntoView({ block: "nearest" });
+    if (!cursor) return;
+    const index = untrack(() => albums.findIndex((a) => a.id === cursor));
+    if (index < 0) return;
+    const top = revealRow(headerHeight + index * ROW, ROW, scroller.scrollTop, viewportHeight(scroller), headerHeight);
+    if (top === null) return;
+    scroller.scrollTop = top;
+    // Render the new rows now rather than on the next scroll event.
+    scrollTop = scroller.scrollTop;
   });
 </script>
 
-<div class="scroller" tabindex="0" role="grid" aria-label="Albums" aria-multiselectable="true">
+<div
+  class="scroller"
+  tabindex="0"
+  role="grid"
+  aria-label="Albums"
+  aria-multiselectable="true"
+  aria-rowcount={albums.length + 1}
+  bind:this={scroller}
+  bind:clientHeight={viewport}
+  onscroll={() => (scrollTop = scroller.scrollTop)}
+>
   <table>
-    <thead>
+    <thead bind:offsetHeight={headerHeight}>
       <tr>
         {#each columns as c (c.key)}
           <th class={c.class} class:sorted={sortKey === c.key} aria-sort={sortKey === c.key ? (sortDir === "asc" ? "ascending" : "descending") : "none"}>
@@ -62,11 +92,16 @@
         {/each}
       </tr>
     </thead>
-    <tbody bind:this={body}>
-      {#each albums as album (album.id)}
+    <tbody>
+      {#if range.start > 0}
+        <tr class="spacer" aria-hidden="true"><td colspan="6" style:height="{range.start * ROW}px"></td></tr>
+      {/if}
+      {#each shown as album, i (album.id)}
         {@const isSelected = selected.has(album.id)}
         <tr
           data-id={album.id}
+          aria-rowindex={range.start + i + 2}
+          class:alt={(range.start + i) % 2 === 1}
           class:selected={isSelected}
           aria-selected={isSelected}
           onmousedown={(e) => e.button === 0 && onpick(album.id, e)}
@@ -88,6 +123,11 @@
           <td class="added">{dateFormat.format(new Date(album.addedAt))}</td>
         </tr>
       {/each}
+      {#if range.end < albums.length}
+        <tr class="spacer" aria-hidden="true">
+          <td colspan="6" style:height="{(albums.length - range.end) * ROW}px"></td>
+        </tr>
+      {/if}
     </tbody>
   </table>
 </div>
@@ -113,7 +153,8 @@
     top: 0;
     z-index: 1;
     background: var(--header);
-    border-bottom: 1px solid var(--header-border);
+    /* A shadow, not a border: collapsed borders would make the header 17.5px. */
+    box-shadow: inset 0 -1px 0 var(--header-border);
     border-right: 1px solid #c8c8c8;
     padding: 0;
     font-weight: normal;
@@ -126,9 +167,12 @@
     display: flex;
     justify-content: space-between;
     width: 100%;
+    /* One row tall, like the stripes below assume. */
+    height: 18px;
     border: none;
     background: none;
-    padding: 1px 5px;
+    padding: 0 5px;
+    align-items: center;
     text-align: left;
     cursor: default;
   }
@@ -156,18 +200,26 @@
     width: 18%;
   }
   td {
+    /* Rows must be exactly 18px (ROW) for the virtual scrolling. */
+    box-sizing: border-box;
     height: 18px;
+    max-height: 18px;
+    line-height: 18px;
     padding: 0 5px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     cursor: default;
   }
-  tbody tr:nth-child(odd) td {
+  tbody tr td {
     background: #fff;
   }
-  tbody tr:nth-child(even) td {
+  tbody tr.alt td {
     background: var(--stripe);
+  }
+  tbody tr.spacer td {
+    padding: 0;
+    background: none;
   }
   tbody tr.selected td {
     background: var(--select-inactive);
@@ -185,6 +237,9 @@
     color: #fff;
     font-size: 9px;
     text-decoration: none;
+    /* Without this, its smaller font makes the line, and so the row, taller. */
+    line-height: 1;
+    vertical-align: middle;
   }
   tr:hover .go,
   tr.selected .go {

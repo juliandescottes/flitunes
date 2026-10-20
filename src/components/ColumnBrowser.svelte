@@ -2,8 +2,10 @@
   // iTunes column browser: Genres | Artists | Albums, each starting with "All (N)".
   // Genres can be renamed in place (double-click or the context menu).
   // Double-click or Enter on an album opens it in Spotify.
-  // Its height is resized by dragging its bottom edge.
+  // Its height is resized by dragging its bottom edge. Each column only
+  // renders the entries in view (entries have a fixed height).
   import type { ColumnItem } from "../lib/browse.ts";
+  import { revealRow, viewportHeight, visibleRows } from "../lib/virtual.ts";
 
   type Column = "genre" | "artist" | "album";
 
@@ -41,6 +43,8 @@
     height: number;
   } = $props();
 
+  /** Entry height in pixels, matching the CSS. */
+  const ROW = 16;
   const MIN_HEIGHT = 60;
   // Room left for the album list below.
   const MIN_LIST_HEIGHT = 100;
@@ -90,6 +94,15 @@
     else if (event.key === "Escape") onrenamegenre(id, null);
   }
 
+  const lists: Record<Column, HTMLUListElement | undefined> = { genre: undefined, artist: undefined, album: undefined };
+  const scrollTops = $state<Record<Column, number>>({ genre: 0, artist: 0, album: 0 });
+  const viewports = $state<Record<Column, number>>({ genre: 0, artist: 0, album: 0 });
+
+  // Rows below "All", which is always rendered.
+  function range(id: Column, count: number) {
+    return visibleRows(scrollTops[id] - ROW, viewports[id], ROW, count);
+  }
+
   const columns = $derived([
     { id: "genre" as const, title: "Genres", noun: "Genre", items: genres, selected: genre },
     { id: "artist" as const, title: "Artists", noun: "Artist", items: artists, selected: artist },
@@ -109,14 +122,29 @@
     const i = keys.indexOf(column.selected);
     const next = Math.max(0, Math.min(keys.length - 1, i + (event.key === "ArrowDown" ? 1 : -1)));
     onselect(column.id, keys[next]);
+    const list = lists[column.id];
+    const top = list && revealRow(next * ROW, ROW, list.scrollTop, viewportHeight(list));
+    if (list && top != null) {
+      list.scrollTop = top;
+      scrollTops[column.id] = list.scrollTop;
+    }
   }
 </script>
 
 <div class="browser" bind:this={browser} style:height="{height}px">
   {#each columns as column (column.id)}
+    {@const rows = range(column.id, column.items.length)}
     <div class="column">
       <div class="head">{column.title}</div>
-      <ul role="listbox" tabindex="0" aria-label={column.title} onkeydown={(e) => onkeydown(e, column)}>
+      <ul
+        role="listbox"
+        tabindex="0"
+        aria-label={column.title}
+        onkeydown={(e) => onkeydown(e, column)}
+        bind:this={lists[column.id]}
+        bind:clientHeight={viewports[column.id]}
+        onscroll={(e) => (scrollTops[column.id] = e.currentTarget.scrollTop)}
+      >
         <li
           role="option"
           aria-selected={column.selected === null}
@@ -125,7 +153,10 @@
         >
           All ({column.items.length} {column.items.length === 1 ? column.noun : column.title})
         </li>
-        {#each column.items as item (item.key)}
+        {#if rows.start > 0}
+          <li class="spacer" role="presentation" style:height="{rows.start * ROW}px"></li>
+        {/if}
+        {#each column.items.slice(rows.start, rows.end) as item (item.key)}
           {@const isGenre = column.id === "genre"}
           <li
             role="option"
@@ -157,6 +188,9 @@
             {/if}
           </li>
         {/each}
+        {#if rows.end < column.items.length}
+          <li class="spacer" role="presentation" style:height="{(column.items.length - rows.end) * ROW}px"></li>
+        {/if}
       </ul>
     </div>
   {/each}
@@ -224,11 +258,18 @@
     outline: none;
   }
   li {
+    /* Entries must be exactly 16px (ROW) for the virtual scrolling. */
+    box-sizing: border-box;
+    height: 16px;
+    line-height: 14px;
     padding: 1px 6px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     cursor: default;
+  }
+  li.spacer {
+    padding: 0;
   }
   li.selected {
     background: var(--select-inactive);
@@ -237,6 +278,7 @@
     font: inherit;
     width: 100%;
     box-sizing: border-box;
+    height: 14px;
     border: 1px solid #555;
     padding: 0 2px;
     color: #000;
