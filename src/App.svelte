@@ -33,6 +33,7 @@
   let sortKey = $state<SortKey>(prefs.sortKey ?? "artist");
   let sortDir = $state<SortDir>(prefs.sortDir ?? "asc");
   let view = $state<ViewMode>(prefs.view ?? "list");
+  let linkedOnly = $state(prefs.linkedOnly === true);
   let browserHeight = $state(typeof prefs.browserHeight === "number" ? prefs.browserHeight : 160);
 
   // Selection: ids of the selected albums, the cursor (last clicked or moved
@@ -56,7 +57,7 @@
 
   const genreNames = $derived(new Map(library.genres.map((g) => [g.id, g.name])));
   const result = $derived(
-    browse(library.albums, library.genres, { source, search, genre, artist, album: albumTitle, sortKey, sortDir }),
+    browse(library.albums, library.genres, { source, search, linkedOnly, genre, artist, album: albumTitle, sortKey, sortDir }),
   );
   const selectedSet = $derived(new Set(selection));
   // Only albums still shown count as selected.
@@ -65,7 +66,7 @@
   const infoIndex = $derived(infoIds.length === 1 ? result.albums.findIndex((a) => a.id === infoIds[0]) : -1);
 
   $effect(() => {
-    savePrefs({ view, sortKey, sortDir, browserHeight });
+    savePrefs({ view, sortKey, sortDir, browserHeight, linkedOnly });
   });
 
   $effect(() => {
@@ -354,7 +355,13 @@
     return grid ? getComputedStyle(grid).gridTemplateColumns.split(" ").length : 1;
   }
 
-  function loadPrefs(): Partial<{ view: ViewMode; sortKey: SortKey; sortDir: SortDir; browserHeight: number }> {
+  function loadPrefs(): Partial<{
+    view: ViewMode;
+    sortKey: SortKey;
+    sortDir: SortDir;
+    browserHeight: number;
+    linkedOnly: boolean;
+  }> {
     try {
       return JSON.parse(localStorage.getItem(PREFS_KEY) ?? "{}");
     } catch {
@@ -470,8 +477,28 @@
       {result.albums.length}
       {result.albums.length === 1 ? "album" : "albums"}
       {#if selectedAlbums.length > 1}· {selectedAlbums.length} selected{/if}
+      {#if linkedOnly}· albums without a Spotify link hidden{/if}
     </div>
-    <div class="buttons"></div>
+    <div class="buttons end">
+      <button
+        class="square"
+        class:on={linkedOnly}
+        aria-pressed={linkedOnly}
+        title={linkedOnly ? "Show albums without a Spotify link" : "Hide albums without a Spotify link"}
+        aria-label="Only albums with a Spotify link"
+        onclick={() => (linkedOnly = !linkedOnly)}
+      >
+        <svg viewBox="0 0 14 14" width="13" height="13" aria-hidden="true">
+          <path
+            d="M6 8a3 3 0 0 0 4.2 0l2-2a3 3 0 0 0-4.2-4.2l-1 1M8 6a3 3 0 0 0-4.2 0l-2 2a3 3 0 0 0 4.2 4.2l1-1"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+            stroke-linecap="round"
+          />
+        </svg>
+      </button>
+    </div>
   </footer>
 </div>
 
@@ -592,8 +619,20 @@
     line-height: 1;
     color: #333;
   }
-  .square:active {
+  .square:active,
+  .square.on {
     background: linear-gradient(#bdbdbd, #e2e2e2);
+  }
+  .square.on {
+    color: #1f5fbf;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
+  }
+  .square svg {
+    display: block;
+    margin: auto;
+  }
+  .buttons.end {
+    justify-self: end;
   }
   /* Sheets slide down from the toolbar. */
   .sheet {
