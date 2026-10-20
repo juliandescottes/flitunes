@@ -1,6 +1,6 @@
 # Status
 
-_Last updated: 2026-10-18_
+_Last updated: 2026-10-21_
 
 ## Where we are
 
@@ -37,19 +37,37 @@ window, and Get Info editing.
   are marked and never ticked in bulk.
 - Browse logic is pure and tested in `src/lib/browse.ts`; the store gained
   `updateAlbums` (bulk) and `mergeGenre`.
-- 52 unit tests pass, `svelte-check` is clean. Clicked through in Firefox
-  (except ⌘S, to avoid writing `library.json` from a test session).
+- Since then (PRs #3–#11): the column browser is resizable; playlist links
+  are accepted; a toolbar toggle hides albums without a Spotify link; "+ Add to
+  Library" sits at the bottom of the sidebar; double-click or Enter in the
+  Albums column opens the album; the app is called **FliTunes**, tinted pink,
+  with a pink note favicon.
+- Performance (PR #11): lists, grid and column browser only render the rows in
+  view (`src/lib/virtual.ts`), and `browse()` sorts the library once and
+  filters afterwards. With 3000 albums every interaction takes under 25 ms.
+  `src/lib/mock.ts` / `scripts/mock-library.ts` make mock libraries;
+  `browse.perf.test.ts` keeps budgets.
+- Optional Spotify sign-in (branch `spotify-login`): "Connect Spotify" in the
+  toolbar when a client ID is configured; OAuth PKCE in `src/lib/spotify-auth.ts`,
+  reactive state and Web API calls in `src/lib/spotify-session.svelte.ts`.
+- 84 unit tests pass, `svelte-check` is clean.
 - GitHub Pages: `.github/workflows/pages.yml` tests, builds and deploys on
   every push to `main` (needs Settings → Pages → Source: GitHub Actions).
   Pages is the everywhere-viewer; curation happens locally, then push.
 
 ## Next step
 
-In progress: one-off bulk import of Spotify links for the 666 albums imported
-from Last.fm. Notes, scripts and data live in the git-ignored `import/`
-folder: start with `import/README.md`.
+Spotify playback, on top of the sign-in: now playing in the toolbar display
+with play/pause and next, double-click plays the album on the active device.
+Then an album details view with its track list (fetched live, never saved).
 
-Then: Phase 2 in `PLAN.md`: smart playlists, Cover Flow. Or start curating the real library and fix what gets in the way.
+To try the sign-in for real: create (or reuse) an app in the Spotify developer
+dashboard, add `http://127.0.0.1:5173/` and the Pages URL as redirect URIs,
+put its client ID in `.env.local` and in the repository variable
+`SPOTIFY_CLIENT_ID`.
+
+The library import (Last.fm, Spotify links, early years by artist) is notes
+and scripts in the git-ignored `import/` folder: see `import/README.md`.
 
 ## Decisions
 
@@ -66,6 +84,7 @@ Then: Phase 2 in `PLAN.md`: smart playlists, Cover Flow. Or start curating the r
 | 2026-10-17 | Last.fm import deferred (scraping is blocked; would need an API key). |
 | 2026-10-18 | Code changes go through PRs; the user pushes, opens PRs and files issues. |
 | 2026-10-18 | Content apart from code: `library.json` moved to its own repo, `spotify-viewer-album-library` (history kept). The site fetches it from there; dev reads/writes a clone next to the app. |
+| 2026-10-21 | Optional Spotify sign-in (OAuth PKCE, no backend) for playback control only. Spotify data shown while signed in is fetched live, never saved; the library stays hand curated. |
 
 ## Known issues / notes
 

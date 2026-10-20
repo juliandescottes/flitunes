@@ -18,14 +18,14 @@ never a data source.
   album just *links* to Spotify.
 - **Local-first, no backend.** A static web app. The working copy lives in
   IndexedDB, and a JSON snapshot is committed to the repo for durability and history.
-- **No Spotify login required.** Everything in the MVP works with public,
-  unauthenticated endpoints. This avoids the Development Mode / Premium /
-  endpoint-churn problems of the Spotify Web API entirely.
+- **No Spotify login required to browse.** Browsing, curating and opening
+  albums work with public, unauthenticated endpoints. Signing in to Spotify is
+  optional and only adds playback control (§8). Spotify data shown while signed
+  in (now playing, track lists) is fetched live and never saved to the library.
 
 ## 3. Non-goals (for now)
 
 - Importing my Spotify library automatically.
-- Controlling Spotify playback (play/pause/devices).
 - Track-level curation, multi-user, hosting for others.
 - Anything iTunes 10 didn't have: embedded players, recommendations,
   metadata lookups, social features.
@@ -153,8 +153,15 @@ user can always type or paste values, including a manual cover URL.
 
 - **Open in Spotify** button links to `spotify:album:<id>`, which opens the desktop
   app on the album. A secondary link to `https://open.spotify.com/album/<id>` opens the web player.
-- The link opens the album page, not playback. That's acceptable for v1. Real
-  "press play" needs the Web API + Premium (see Later).
+- The link opens the album page, not playback.
+- **Optional: signing in to Spotify** (OAuth with PKCE, all in the browser, no
+  client secret; `src/lib/spotify-auth.ts`) to control playback on the active
+  device through the Web API: play an album, pause, skip, see what's playing.
+  Needs Spotify Premium, and a Spotify app (developer dashboard) whose client ID
+  is set at build time as `VITE_SPOTIFY_CLIENT_ID`; without one the feature is
+  hidden. The app must list each address it runs on as a redirect URI
+  (`http://127.0.0.1:5173/` in dev, the Pages URL). In Development Mode, Spotify
+  only lets accounts added in the dashboard sign in.
 
 ## 9. Tech stack
 

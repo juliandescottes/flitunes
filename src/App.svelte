@@ -17,9 +17,20 @@
   import { Library } from "./lib/library.svelte.ts";
   import { findGenreByName, type Album } from "./lib/model.ts";
   import { downloadLibraryFile, repoSource } from "./lib/persistence.ts";
+  import { browserSession } from "./lib/spotify-session.svelte.ts";
 
   const library = new Library(new LibraryDB(), repoSource);
   library.load();
+
+  // Optional Spotify sign-in, for playback control.
+  const spotify = browserSession();
+  spotify.init(new URLSearchParams(location.search)).then((handled) => {
+    if (handled.length === 0) return;
+    // Drop Spotify's redirect parameters from the address.
+    const url = new URL(location.href);
+    for (const name of handled) url.searchParams.delete(name);
+    history.replaceState(history.state, "", url);
+  });
 
   // View preferences survive reloads (per browser only).
   const PREFS_KEY = "album-library:view";
@@ -64,6 +75,10 @@
   const selectedAlbums = $derived(result.albums.filter((a) => selectedSet.has(a.id)));
   const infoAlbums = $derived(infoIds.flatMap((id) => library.getAlbum(id) ?? []));
   const infoIndex = $derived(infoIds.length === 1 ? result.albums.findIndex((a) => a.id === infoIds[0]) : -1);
+
+  $effect(() => {
+    if (spotify.error) error = spotify.error;
+  });
 
   $effect(() => {
     savePrefs({ view, sortKey, sortDir, browserHeight, linkedOnly });
@@ -396,6 +411,9 @@
     selectedCount={selectedAlbums.length}
     unsavedChanges={library.unsavedChanges}
     canSaveToRepo={library.canSaveToRepo}
+    spotifyStatus={spotify.status}
+    spotifyUser={spotify.user}
+    onspotify={() => (spotify.status === "signed-in" ? spotify.signOut() : spotify.signIn())}
     bind:view
     bind:linkedOnly
     bind:search

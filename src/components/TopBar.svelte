@@ -4,12 +4,16 @@
   // on the right.
   import type { ViewMode } from "../lib/browse.ts";
   import type { Album } from "../lib/model.ts";
+  import type { SpotifyStatus } from "../lib/spotify-session.svelte.ts";
 
   let {
     album,
     selectedCount,
     unsavedChanges,
     canSaveToRepo,
+    spotifyStatus,
+    spotifyUser,
+    onspotify,
     view = $bindable(),
     linkedOnly = $bindable(),
     search = $bindable(),
@@ -22,6 +26,11 @@
     selectedCount: number;
     unsavedChanges: number;
     canSaveToRepo: boolean;
+    spotifyStatus: SpotifyStatus;
+    /** Display name of the signed-in Spotify account. */
+    spotifyUser: string | null;
+    /** Signs in to Spotify, or out when signed in. */
+    onspotify: () => void;
     view: ViewMode;
     /** Hide albums without a Spotify link. */
     linkedOnly: boolean;
@@ -45,6 +54,21 @@
     {/if}
     <button class="aqua" onclick={ondownload} title="Download library.json">Export</button>
     <button class="aqua" onclick={onimport} title="Replace the library with a library.json file">Import</button>
+    {#if spotifyStatus === "signed-in"}
+      <button
+        class="aqua"
+        onclick={onspotify}
+        title={spotifyUser ? `Signed in to Spotify as ${spotifyUser}. Click to disconnect.` : "Disconnect from Spotify"}
+        >Disconnect Spotify</button
+      >
+    {:else if spotifyStatus !== "disabled"}
+      <button
+        class="aqua"
+        onclick={onspotify}
+        disabled={spotifyStatus === "signing-in"}
+        title="Sign in to Spotify to control playback from here">Connect Spotify</button
+      >
+    {/if}
   </div>
 
   <div class="lcd" aria-live="polite">
