@@ -81,7 +81,7 @@
     gap: 4px;
     padding: 2px 3px;
     background: #fff;
-    border: 1px solid #a5a5a5;
+    border: 1px solid #bfa2af;
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.15);
     min-height: 20px;
   }
@@ -99,12 +99,12 @@
     gap: 2px;
     border-radius: 9px;
     padding: 0 4px 0 7px;
-    background: linear-gradient(#e9eef6, #cdd7e6);
-    border: 1px solid #9eaec6;
+    background: linear-gradient(#faeef3, #ecd4de);
+    border: 1px solid #c9a2b3;
   }
   .chip.primary {
-    background: linear-gradient(#bcd4f4, #8fb3e6);
-    border-color: #5d86c0;
+    background: linear-gradient(#f8cade, #eba2c2);
+    border-color: #c0527f;
     font-weight: bold;
   }
   .chip button {
@@ -116,7 +116,7 @@
     cursor: default;
   }
   .remove {
-    color: #4a5a72;
+    color: #74495c;
     font-size: 12px;
     line-height: 1;
     padding: 0 2px;

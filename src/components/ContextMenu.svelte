@@ -92,7 +92,7 @@
   }
   button:hover:not(:disabled),
   button:focus:not(:disabled) {
-    background: linear-gradient(#6a8ff6, #2b5fea);
+    background: linear-gradient(#f28db6, #d3487f);
     color: #fff;
   }
   button:disabled {
@@ -101,6 +101,6 @@
   .separator {
     height: 1px;
     margin: 5px 0;
-    background: #e0e0e0;
+    background: #f0dfe6;
   }
 </style>

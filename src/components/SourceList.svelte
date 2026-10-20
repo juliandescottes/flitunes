@@ -60,7 +60,7 @@
     flex-direction: column;
     min-height: 0;
     background: var(--source-bg);
-    border-right: 1px solid #a4a9b0;
+    border-right: 1px solid #c6a9b6;
   }
   nav {
     flex: 1;
@@ -108,7 +108,7 @@
   }
   .icon {
     flex: none;
-    fill: #5b6b80;
+    fill: #8a6577;
   }
   .icon.recent {
     fill: #8d6fc4;

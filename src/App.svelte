@@ -380,7 +380,7 @@
 
 <svelte:window onkeydown={onWindowKeydown} />
 <svelte:head>
-  <title>{library.unsavedChanges > 0 ? `Album Library (${library.unsavedChanges} unsaved)` : "Album Library"}</title>
+  <title>{library.unsavedChanges > 0 ? `FliTunes (${library.unsavedChanges} unsaved)` : "FliTunes"}</title>
 </svelte:head>
 
 <div class="window">
@@ -601,15 +601,15 @@
     width: 24px;
     height: 20px;
     padding: 0;
-    border: 1px solid #7d7d7d;
+    border: 1px solid #8f7783;
     border-radius: 3px;
-    background: linear-gradient(#fdfdfd, #d4d4d4);
+    background: linear-gradient(#fffbfc, #e3cfd8);
     font-size: 15px;
     line-height: 1;
     color: #333;
   }
   .square:active {
-    background: linear-gradient(#bdbdbd, #e2e2e2);
+    background: linear-gradient(#bdbdbd, #f1e2e8);
   }
   .narrow-add {
     display: none;
@@ -621,10 +621,10 @@
     width: min(620px, calc(100% - 32px));
     max-height: 90vh;
     padding: 0;
-    border: 1px solid #8a8a8a;
+    border: 1px solid #9b8590;
     border-top: none;
     border-radius: 0 0 6px 6px;
-    background: #ececec;
+    background: #f6ebef;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
   }
   .sheet.wide {
@@ -649,7 +649,7 @@
     padding: 0;
     border: 1px solid #6e6e6e;
     border-radius: 5px;
-    background: #ececec;
+    background: #f6ebef;
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
     overflow: auto;
   }

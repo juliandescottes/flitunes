@@ -229,7 +229,7 @@
   .table {
     max-height: 50vh;
     overflow: auto;
-    border: 1px solid #a5a5a5;
+    border: 1px solid #bfa2af;
     background: #fff;
   }
   table {

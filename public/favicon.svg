@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- After the iTunes 10 note: a glossy pink note on a dark rounded tile. -->
+  <defs>
+    <!-- Beamed eighth notes, centered in the tile. -->
+    <path
+      id="note"
+      transform="translate(32 32) scale(1.3) translate(-33.4 -31.6)"
+      d="M25 19.5 47 14v24.6a5.6 4.6-20 1 1-3.4-4.3V22.4L28.4 26v17.6a5.6 4.6-20 1 1-3.4-4.3z"
+    />
+    <clipPath id="note-clip"><use href="#note" /></clipPath>
+    <linearGradient id="shine" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.75" />
+      <stop offset="1" stop-color="#fff" stop-opacity="0.2" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#1d1b1e" />
+  <!-- A faint sheen on the tile's top half. -->
+  <path d="M0 14a14 14 0 0 1 14-14h36a14 14 0 0 1 14 14v12q-32 8-64 0z" fill="#fff" opacity="0.07" />
+  <use href="#note" fill="#ec5c9c" />
+  <!-- The gloss: a light top half with a curved edge, clipped to the note. -->
+  <path clip-path="url(#note-clip)" d="M0 0h64v29q-32 6-64 0z" fill="url(#shine)" />
+</svg>
