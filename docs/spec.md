@@ -157,6 +157,10 @@ user can always type or paste values, including a manual cover URL.
 - **Optional: signing in to Spotify** (OAuth with PKCE, all in the browser, no
   client secret; `src/lib/spotify-auth.ts`) to control playback on the active
   device through the Web API: play an album, pause, skip, see what's playing.
+  Signed in, double-click (or Enter) plays the album on the active device, or
+  on the first available one; transport buttons sit left of the toolbar
+  display, which shows the playing track like iTunes. The player state is
+  polled every 5 s while the page is visible (Spotify doesn't push it).
   Needs Spotify Premium, and a Spotify app (developer dashboard) whose client ID
   is set at build time as `VITE_SPOTIFY_CLIENT_ID`; without one the feature is
   hidden. The app must list each address it runs on as a redirect URI

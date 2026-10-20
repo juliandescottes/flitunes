@@ -17,6 +17,7 @@
   import { Library } from "./lib/library.svelte.ts";
   import { findGenreByName, type Album } from "./lib/model.ts";
   import { downloadLibraryFile, repoSource } from "./lib/persistence.ts";
+  import { SpotifyPlayer } from "./lib/spotify-player.svelte.ts";
   import { browserSession } from "./lib/spotify-session.svelte.ts";
 
   const library = new Library(new LibraryDB(), repoSource);
@@ -31,6 +32,7 @@
     for (const name of handled) url.searchParams.delete(name);
     history.replaceState(history.state, "", url);
   });
+  const player = new SpotifyPlayer(spotify);
 
   // View preferences survive reloads (per browser only).
   const PREFS_KEY = "album-library:view";
@@ -78,6 +80,16 @@
 
   $effect(() => {
     if (spotify.error) error = spotify.error;
+  });
+
+  $effect(() => {
+    if (player.error) error = player.error;
+  });
+
+  // Follow what's playing while signed in.
+  $effect(() => {
+    if (spotify.status === "signed-in") return player.start();
+    player.playback = null;
   });
 
   $effect(() => {
@@ -156,8 +168,12 @@
 
   // --- Actions ---
 
+  // Signed in to Spotify, this plays the album on the active device;
+  // otherwise the link opens it in the Spotify app.
   function openInSpotify(album: Album) {
-    if (album.spotify) window.location.href = album.spotify;
+    if (!album.spotify) return;
+    if (spotify.status === "signed-in") player.play(album.spotify);
+    else window.location.href = album.spotify;
   }
 
   // From the column browser's Albums column: editions share a title, so
@@ -413,6 +429,10 @@
     canSaveToRepo={library.canSaveToRepo}
     spotifyStatus={spotify.status}
     spotifyUser={spotify.user}
+    playback={player.playback}
+    ontoggleplay={() => player.togglePlay()}
+    onnext={() => player.next()}
+    onprevious={() => player.previous()}
     onspotify={() => (spotify.status === "signed-in" ? spotify.signOut() : spotify.signIn())}
     bind:view
     bind:linkedOnly

@@ -50,6 +50,11 @@ window, and Get Info editing.
 - Optional Spotify sign-in (branch `spotify-login`): "Connect Spotify" in the
   toolbar when a client ID is configured; OAuth PKCE in `src/lib/spotify-auth.ts`,
   reactive state and Web API calls in `src/lib/spotify-session.svelte.ts`.
+- Playback (branch `spotify-playback`, on top of `spotify-login`): signed in,
+  double-click plays the album on the active device; previous/play-pause/next
+  in the toolbar; the display shows the playing track and its progress
+  (`src/lib/spotify-player.svelte.ts`). Only tested against a fake Spotify
+  API so far (no Spotify app configured yet).
 - 84 unit tests pass, `svelte-check` is clean.
 - GitHub Pages: `.github/workflows/pages.yml` tests, builds and deploys on
   every push to `main` (needs Settings → Pages → Source: GitHub Actions).
@@ -57,9 +62,8 @@ window, and Get Info editing.
 
 ## Next step
 
-Spotify playback, on top of the sign-in: now playing in the toolbar display
-with play/pause and next, double-click plays the album on the active device.
-Then an album details view with its track list (fetched live, never saved).
+Try sign-in and playback with a real Spotify app (below). Then an album
+details view with its track list (fetched live, never saved).
 
 To try the sign-in for real: create (or reuse) an app in the Spotify developer
 dashboard, add `http://127.0.0.1:5173/` and the Pages URL as redirect URIs,

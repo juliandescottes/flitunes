@@ -4,6 +4,7 @@
   // on the right.
   import type { ViewMode } from "../lib/browse.ts";
   import type { Album } from "../lib/model.ts";
+  import { currentProgress, formatTime, type Playback } from "../lib/spotify-player.svelte.ts";
   import type { SpotifyStatus } from "../lib/spotify-session.svelte.ts";
 
   let {
@@ -14,6 +15,10 @@
     spotifyStatus,
     spotifyUser,
     onspotify,
+    playback,
+    ontoggleplay,
+    onnext,
+    onprevious,
     view = $bindable(),
     linkedOnly = $bindable(),
     search = $bindable(),
@@ -31,6 +36,11 @@
     spotifyUser: string | null;
     /** Signs in to Spotify, or out when signed in. */
     onspotify: () => void;
+    /** What Spotify is playing, while signed in. */
+    playback: Playback | null;
+    ontoggleplay: () => void;
+    onnext: () => void;
+    onprevious: () => void;
     view: ViewMode;
     /** Hide albums without a Spotify link. */
     linkedOnly: boolean;
@@ -39,10 +49,43 @@
     ondownload: () => void;
     onimport: () => void;
   } = $props();
+
+  // A clock for the progress bar, ticking only while something plays.
+  let now = $state(Date.now());
+  $effect(() => {
+    if (!playback?.isPlaying) return;
+    now = Date.now();
+    const timer = setInterval(() => (now = Date.now()), 1000);
+    return () => clearInterval(timer);
+  });
+  const track = $derived(playback?.track ?? null);
+  const progress = $derived(playback && track ? currentProgress(playback, now) : 0);
 </script>
 
 <header class="toolbar">
   <div class="actions">
+    {#if spotifyStatus === "signed-in"}
+      <div class="transport" role="group" aria-label="Playback">
+        <button class="round" title="Previous" aria-label="Previous" onclick={onprevious}>
+          <svg viewBox="0 0 16 12" width="14" height="11" aria-hidden="true"><path d="M2 0h2v12H2zM15 0v12L9 6zM9 0v12L3 6z" fill="currentColor" /></svg>
+        </button>
+        <button
+          class="round big"
+          title={playback?.isPlaying ? "Pause" : "Play"}
+          aria-label={playback?.isPlaying ? "Pause" : "Play"}
+          onclick={ontoggleplay}
+        >
+          {#if playback?.isPlaying}
+            <svg viewBox="0 0 12 14" width="11" height="13" aria-hidden="true"><path d="M1 0h4v14H1zM7 0h4v14H7z" fill="currentColor" /></svg>
+          {:else}
+            <svg viewBox="0 0 12 14" width="11" height="13" aria-hidden="true"><path d="M1 0l11 7-11 7z" fill="currentColor" /></svg>
+          {/if}
+        </button>
+        <button class="round" title="Next" aria-label="Next" onclick={onnext}>
+          <svg viewBox="0 0 16 12" width="14" height="11" aria-hidden="true"><path d="M12 0h2v12h-2zM1 0v12l6-6zM7 0v12l6-6z" fill="currentColor" /></svg>
+        </button>
+      </div>
+    {/if}
     {#if canSaveToRepo}
       <button
         class="aqua"
@@ -72,7 +115,16 @@
   </div>
 
   <div class="lcd" aria-live="polite">
-    {#if album}
+    {#if track && playback}
+      <!-- Like iTunes, the display shows what's playing. -->
+      <div class="lcd-title">{track.name}</div>
+      <div class="lcd-sub">{track.artists.join(", ")} — {track.albumName}</div>
+      <div class="lcd-progress" title={playback.deviceName ? `Playing on ${playback.deviceName}` : undefined}>
+        <span>{formatTime(progress)}</span>
+        <span class="bar"><span class="fill" style:width="{(progress / Math.max(1, track.durationMs)) * 100}%"></span></span>
+        <span>-{formatTime(track.durationMs - progress)}</span>
+      </div>
+    {:else if album}
       <div class="lcd-title">{album.title}</div>
       <div class="lcd-sub">{album.artists.join(", ")}{album.year ? ` — ${album.year}` : ""}</div>
     {:else if selectedCount > 1}
@@ -141,7 +193,35 @@
   }
   .actions {
     display: flex;
+    align-items: center;
     gap: 6px;
+  }
+  .transport {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    margin-right: 8px;
+  }
+  /* Round, glossy transport buttons, like iTunes. */
+  .round {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    border: 1px solid #8f7783;
+    border-radius: 50%;
+    background: linear-gradient(#fffbfc, #e3cfd8);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
+    color: #3d3036;
+    cursor: default;
+  }
+  .round.big {
+    width: 32px;
+    height: 32px;
+  }
+  .round:active {
+    background: linear-gradient(#ddc7d1, #f3e7ec);
   }
   .lcd {
     height: 40px;
@@ -170,6 +250,27 @@
   }
   .lcd-sub {
     color: #444;
+  }
+  .lcd-progress {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 70%;
+    font-size: 9px;
+    color: #444;
+  }
+  .bar {
+    flex: 1;
+    height: 5px;
+    border: 1px solid #7d6670;
+    border-radius: 3px;
+    background: #fffafb;
+    overflow: hidden;
+  }
+  .fill {
+    display: block;
+    height: 100%;
+    background: #7d6670;
   }
   .right {
     display: flex;

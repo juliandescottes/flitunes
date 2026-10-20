@@ -58,6 +58,9 @@ Static Svelte 5 + Vite + TypeScript app, no backend.
   through it: it writes IndexedDB, bumps the unsaved-changes counter, and
   handles loading or conflicts against `library.json`.
 - `src/lib/persistence.ts`: `LibrarySource` (fetch/save `library.json`) and JSON download.
+- `src/lib/spotify-auth.ts`, `spotify-session.svelte.ts`, `spotify-player.svelte.ts`:
+  optional Spotify sign-in (PKCE), Web API calls, and playback (now playing is
+  polled every 5 s while the page is visible).
 - `vite-plugins/library-file.ts`: dev-only `GET/POST /__library` endpoint that
   reads and writes the library file in the data repo clone. The POST is
   validated and accepted only from the same origin as JSON.
