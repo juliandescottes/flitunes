@@ -1,27 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <!-- After the iTunes 10 icon (a note on a glossy disc), in pink. -->
+  <!-- After the iTunes 10 note, in pink, on its own so it fills the icon. -->
   <defs>
-    <linearGradient id="ring" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#f7a8c8" />
-      <stop offset="1" stop-color="#c2336f" />
-    </linearGradient>
-    <radialGradient id="disc" cx="0.5" cy="0.3" r="0.75">
-      <stop offset="0" stop-color="#ffffff" />
-      <stop offset="0.6" stop-color="#fde6ef" />
-      <stop offset="1" stop-color="#f4bcd3" />
-    </radialGradient>
     <linearGradient id="note" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#f06aa2" />
+      <stop offset="0" stop-color="#f483b2" />
       <stop offset="1" stop-color="#b0245f" />
     </linearGradient>
   </defs>
-  <circle cx="32" cy="32" r="31" fill="url(#ring)" />
-  <circle cx="32" cy="32" r="27" fill="url(#disc)" />
   <!-- Beamed eighth notes. -->
   <path
-    transform="translate(32 31) scale(1.15) translate(-36 -30)"
+    transform="translate(32 32) scale(1.62) translate(-33.4 -31.6)"
     fill="url(#note)"
     d="M25 19.5 47 14v24.6a5.6 4.6-20 1 1-3.4-4.3V22.4L28.4 26v17.6a5.6 4.6-20 1 1-3.4-4.3z"
   />
-  <ellipse cx="32" cy="17" rx="17" ry="7" fill="#fff" opacity="0.35" />
 </svg>
