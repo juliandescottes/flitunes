@@ -390,6 +390,7 @@
     unsavedChanges={library.unsavedChanges}
     canSaveToRepo={library.canSaveToRepo}
     bind:view
+    bind:linkedOnly
     bind:search
     onsave={save}
     ondownload={download}
@@ -415,7 +416,11 @@
   {/if}
 
   <div class="body">
-    <SourceList bind:source={() => source, selectSource} playlists={playlists(library.albums)} />
+    <SourceList
+      bind:source={() => source, selectSource}
+      playlists={playlists(library.albums)}
+      onadd={() => (addOpen = true)}
+    />
 
     <div class="content">
       <ColumnBrowser
@@ -471,7 +476,10 @@
 
   <footer class="status">
     <div class="buttons">
-      <button class="square" title="Add to Library…" aria-label="Add to Library" onclick={() => (addOpen = true)}>+</button>
+      <!-- Narrow windows hide the source list and its Add button. -->
+      <button class="square narrow-add" title="Add to Library…" aria-label="Add to Library" onclick={() => (addOpen = true)}
+        >+</button
+      >
     </div>
     <div class="count">
       {result.albums.length}
@@ -479,26 +487,7 @@
       {#if selectedAlbums.length > 1}· {selectedAlbums.length} selected{/if}
       {#if linkedOnly}· albums without a Spotify link hidden{/if}
     </div>
-    <div class="buttons end">
-      <button
-        class="square"
-        class:on={linkedOnly}
-        aria-pressed={linkedOnly}
-        title={linkedOnly ? "Show albums without a Spotify link" : "Hide albums without a Spotify link"}
-        aria-label="Only albums with a Spotify link"
-        onclick={() => (linkedOnly = !linkedOnly)}
-      >
-        <svg viewBox="0 0 14 14" width="13" height="13" aria-hidden="true">
-          <path
-            d="M6 8a3 3 0 0 0 4.2 0l2-2a3 3 0 0 0-4.2-4.2l-1 1M8 6a3 3 0 0 0-4.2 0l-2 2a3 3 0 0 0 4.2 4.2l1-1"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.6"
-            stroke-linecap="round"
-          />
-        </svg>
-      </button>
-    </div>
+    <div class="buttons"></div>
   </footer>
 </div>
 
@@ -619,20 +608,11 @@
     line-height: 1;
     color: #333;
   }
-  .square:active,
-  .square.on {
+  .square:active {
     background: linear-gradient(#bdbdbd, #e2e2e2);
   }
-  .square.on {
-    color: #1f5fbf;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25);
-  }
-  .square svg {
-    display: block;
-    margin: auto;
-  }
-  .buttons.end {
-    justify-self: end;
+  .narrow-add {
+    display: none;
   }
   /* Sheets slide down from the toolbar. */
   .sheet {
@@ -679,6 +659,9 @@
     }
     .body :global(.sources) {
       display: none;
+    }
+    .narrow-add {
+      display: block;
     }
   }
 </style>
