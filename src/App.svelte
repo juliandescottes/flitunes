@@ -145,6 +145,13 @@
     if (album.spotify) window.location.href = album.spotify;
   }
 
+  // From the column browser's Albums column: editions share a title, so
+  // open the first shown one that has a link.
+  function openTitleInSpotify(title: string) {
+    const album = result.albums.find((a) => a.title === title && a.spotify);
+    if (album) openInSpotify(album);
+  }
+
   async function run(action: () => Promise<unknown>) {
     error = null;
     try {
@@ -431,6 +438,7 @@
         artist={result.artist}
         album={result.album}
         onselect={selectColumn}
+        onopenalbum={openTitleInSpotify}
         {renamingGenre}
         ongenremenu={genreMenu}
         onrenamestart={(id) => (renamingGenre = id)}

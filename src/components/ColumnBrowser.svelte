@@ -1,6 +1,7 @@
 <script lang="ts">
   // iTunes column browser: Genres | Artists | Albums, each starting with "All (N)".
   // Genres can be renamed in place (double-click or the context menu).
+  // Double-click or Enter on an album opens it in Spotify.
   // Its height is resized by dragging its bottom edge.
   import type { ColumnItem } from "../lib/browse.ts";
 
@@ -14,6 +15,7 @@
     artist,
     album,
     onselect,
+    onopenalbum,
     renamingGenre,
     ongenremenu,
     onrenamestart,
@@ -27,6 +29,8 @@
     artist: string | null;
     album: string | null;
     onselect: (column: Column, key: string | null) => void;
+    /** Opens the album with this title in Spotify. */
+    onopenalbum: (title: string) => void;
     /** Genre id being renamed, if any. */
     renamingGenre: string | null;
     ongenremenu: (event: MouseEvent, id: string) => void;
@@ -94,6 +98,11 @@
 
   // Arrow keys move the selection within a column.
   function onkeydown(event: KeyboardEvent, column: (typeof columns)[number]) {
+    if (event.key === "Enter" && column.id === "album" && column.selected !== null) {
+      event.preventDefault();
+      onopenalbum(column.selected);
+      return;
+    }
     if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
     event.preventDefault();
     const keys = [null, ...column.items.map((i) => i.key)];
@@ -123,7 +132,10 @@
             aria-selected={column.selected === item.key}
             class:selected={column.selected === item.key}
             onmousedown={() => onselect(column.id, item.key)}
-            ondblclick={() => isGenre && onrenamestart(item.key)}
+            ondblclick={() => {
+              if (isGenre) onrenamestart(item.key);
+              else if (column.id === "album") onopenalbum(item.key);
+            }}
             oncontextmenu={(e) => {
               if (!isGenre) return;
               onselect("genre", item.key);
