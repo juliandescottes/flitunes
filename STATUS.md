@@ -64,7 +64,13 @@ window, and Get Info editing.
   the link filter in the toolbar, when a client ID is configured; OAuth PKCE in `src/lib/spotify-auth.ts`,
   reactive state and Web API calls in `src/lib/spotify-session.svelte.ts`.
 - Playback: previous/play-pause/next in the toolbar; the display shows the playing track
-  and its progress (`src/lib/spotify-player.svelte.ts`).
+  and its progress (`src/lib/spotify-player.svelte.ts`). A disc at the
+  display's right edge opens the playing album's tracks (matched by the
+  playback context, then the track's album); it stays there during playback
+  and is dimmed when the album isn't in the library or is already shown.
+- Devices (PR #25): a screen button after the transport buttons lists the
+  Spotify devices and moves playback to the one picked. A 404 on a player
+  command (idle device) is retried on a device by id, which wakes it up.
 - Album details: signed in, double-click or Enter shows the album's tracks
   (`AlbumTracks.svelte`, `src/lib/spotify-tracks.ts`); double-click a track to
   play the album from there. Play is explicit: ▶ on list rows, a translucent
