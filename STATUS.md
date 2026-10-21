@@ -51,6 +51,10 @@ window, and Get Info editing.
   shows the list with taller rows and each album's cover on the left
   (`AlbumList.svelte` with `covers`). It is the default view; List stays for
   dense curating.
+- Routes: the source, column picks, search and open tracks are in the URL
+  hash (`#/playlist/vinyl?genre=jazz&q=blue`, `src/lib/route.ts`), so Back
+  and Forward walk through them and a reload keeps the place. A search adds
+  one history entry, not one per key.
 - Performance (PR #11): lists, grid and column browser only render the rows in
   view (`src/lib/virtual.ts`), and `browse()` sorts the library once and
   filters afterwards. With 3000 albums every interaction takes under 25 ms.

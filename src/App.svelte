@@ -15,6 +15,7 @@
   import TopBar from "./components/TopBar.svelte";
   import { browse, playlists, typeAhead, type SortDir, type SortKey, type Source, type ViewMode } from "./lib/browse.ts";
   import { LibraryDB } from "./lib/db.ts";
+  import { parseHash, replacesEntry, routeToHash, type Route } from "./lib/route.ts";
   import { Library } from "./lib/library.svelte.ts";
   import { findGenreByName, type Album } from "./lib/model.ts";
   import { downloadLibraryFile, repoSource } from "./lib/persistence.ts";
@@ -40,11 +41,14 @@
   const PREFS_KEY = "album-library:view";
   const prefs = loadPrefs();
 
-  let source = $state<Source>({ kind: "music" });
-  let search = $state("");
-  let genre = $state<string | null>(null);
-  let artist = $state<string | null>(null);
-  let albumTitle = $state<string | null>(null);
+  // Where the main view is (source, column picks, search, tracks) comes from
+  // the address, so Back and Forward work (see src/lib/route.ts).
+  let shownRoute = parseHash(location.hash);
+  let source = $state<Source>(shownRoute.source);
+  let search = $state(shownRoute.search);
+  let genre = $state<string | null>(shownRoute.genre);
+  let artist = $state<string | null>(shownRoute.artist);
+  let albumTitle = $state<string | null>(shownRoute.album);
   let sortKey = $state<SortKey>(prefs.sortKey ?? "artist");
   let sortDir = $state<SortDir>(prefs.sortDir ?? "asc");
   let view = $state<ViewMode>(prefs.view ?? "albums");
@@ -58,8 +62,11 @@
   let anchor: string | null = null;
 
   // The album whose tracks the main area shows, instead of the list or grid.
-  let tracksFor = $state<string | null>(null);
-  const tracksAlbum = $derived(tracksFor ? (library.getAlbum(tracksFor) ?? null) : null);
+  let tracksFor = $state<string | null>(shownRoute.tracks);
+  // Only while signed in: an address with tracks may be opened signed out.
+  const tracksAlbum = $derived(
+    tracksFor && spotify.status === "signed-in" ? (library.getAlbum(tracksFor) ?? null) : null,
+  );
 
   let addOpen = $state(false);
   // Which form the Add sheet shows.
@@ -92,11 +99,42 @@
     if (player.error) error = player.error;
   });
 
-  // Searching goes back from an album's tracks to the results.
+  // Typing a search goes back from an album's tracks to the results (but
+  // not a search restored with the tracks by Back or Forward).
+  let routedSearch = shownRoute.search;
   $effect(() => {
-    void search;
+    if (search === routedSearch) return;
+    routedSearch = search;
     tracksFor = null;
   });
+
+  // Every change to where the main view is becomes a history entry, except
+  // the keys typed in a search after the first one.
+  const route: Route = $derived({ source, genre, artist, album: albumTitle, search, tracks: tracksFor });
+  $effect(() => {
+    const next = route;
+    const hash = routeToHash(next);
+    if (hash === routeToHash(shownRoute)) return;
+    const url = location.pathname + location.search + hash;
+    // Each entry remembers the one before it, for the tracks' Back button.
+    if (replacesEntry(shownRoute, next)) history.replaceState(history.state, "", url);
+    else history.pushState({ from: routeToHash(shownRoute) }, "", url);
+    shownRoute = next;
+  });
+
+  // Back, Forward, or an address edited by hand.
+  function followAddress() {
+    const next = parseHash(location.hash);
+    shownRoute = next;
+    routedSearch = next.search;
+    source = next.source;
+    genre = next.genre;
+    artist = next.artist;
+    albumTitle = next.album;
+    search = next.search;
+    tracksFor = next.tracks;
+    if (next.tracks === null && main?.contains(document.activeElement)) focusAlbums();
+  }
 
   // Follow what's playing while signed in.
   $effect(() => {
@@ -384,7 +422,13 @@
     tick().then(() => main.querySelector<HTMLElement>(".tracks")?.focus());
   }
 
+  // Back from the tracks: the browser's Back when it leads to the same list,
+  // so the history doesn't fill up with list → tracks → list.
   function closeTracks() {
+    if (history.state?.from === routeToHash({ ...route, tracks: null })) {
+      history.back();
+      return;
+    }
     tracksFor = null;
     focusAlbums();
   }
@@ -459,7 +503,7 @@
   }
 </script>
 
-<svelte:window onkeydown={onWindowKeydown} />
+<svelte:window onkeydown={onWindowKeydown} onpopstate={followAddress} />
 <svelte:head>
   <title>{library.unsavedChanges > 0 ? `FliTunes (${library.unsavedChanges} unsaved)` : "FliTunes"}</title>
 </svelte:head>
