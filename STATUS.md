@@ -125,6 +125,10 @@ on edit. In dev, a new album's cover is copied into `covers/` right away
 (`POST /__library/covers`); covers added on the site stay URLs until
 `scripts/covers/` runs.
 
+Installable as an app: `public/manifest.webmanifest` and icons made from the
+favicon. On macOS, with Firefox, it runs as an app through PWAsForFirefox
+(own Dock icon, no browser chrome; installed 2026-10-22).
+
 Next, in order (see `PLAN.md`):
 1. Ownership, the first step towards owning the music (`docs/spec.md` §11):
    how I own an album and a store link, with a "not owned yet" view.
