@@ -138,8 +138,8 @@
             <th>Name</th>
             <th class="time">Time</th>
             <th>Artist</th>
-            <th>Album</th>
-            <th>Genre</th>
+            <th class="album">Album</th>
+            <th class="genre">Genre</th>
             <th class="year">Year</th>
           </tr>
         </thead>
@@ -171,8 +171,8 @@
               <td class="name">{track.name}</td>
               <td class="time">{formatTime(track.durationMs)}</td>
               <td>{trackArtists(track, album.artists).join(", ")}</td>
-              <td>{album.title}</td>
-              <td>{genre ?? ""}</td>
+              <td class="album">{album.title}</td>
+              <td class="genre">{genre ?? ""}</td>
               <td class="year">{year ?? ""}</td>
             </tr>
           {/each}
@@ -353,6 +353,27 @@
   }
   .tracks:focus tr.selected .speaker {
     color: #fff;
+  }
+  /* Narrow: the album, genre and year are in the header already. */
+  @media (max-width: 640px) {
+    col.album,
+    col.genre,
+    col.year,
+    .album,
+    .genre,
+    .year {
+      display: none;
+    }
+  }
+  /* Short: a smaller header leaves more room for the tracks. */
+  @media (max-height: 640px) {
+    header {
+      padding: 10px 16px;
+    }
+    .cover {
+      width: 80px;
+      height: 80px;
+    }
   }
   .empty {
     margin: 24px;
