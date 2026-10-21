@@ -60,7 +60,7 @@ Optional sign-in, for playback only (§8). Spotify data is shown live, never sav
 - [x] Album List view, Triage source, URL routes (Back/Forward)
 - [x] Performance: virtualized lists, 3000 albums under 25 ms
 - [x] Color themes (Pink, Silver, Mint Green, Fresh Blue, Lavender)
-- [ ] Run your own FliTunes: README guide for forks, `LIBRARY_URL` (branch `run-your-own`)
+- [x] Run your own FliTunes: README guide for forks, `LIBRARY_URL`, MIT license
 - [ ] Strict validation when loading `library.json` (`spotify` URIs, `https:` covers)
 - [ ] Smart playlists (rule editor)
 - [ ] "Refresh cover" for dead cover URLs

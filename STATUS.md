@@ -110,12 +110,12 @@ window, and Get Info editing.
 
 ## Next step
 
-Waiting for review: branch `run-your-own` (README with a "Run your own
-FliTunes" guide for forks, `LIBRARY_URL` repository variable with a default
-from the fork's owner, MIT license, a not-affiliated note). The Pages site has
+Friends can run their own copy: `README.md` has the guide for forks, and
+the Pages build reads the `LIBRARY_URL` repository variable, else the fork
+owner's `spotify-viewer-album-library`. MIT license. The Pages site has
 `SPOTIFY_CLIENT_ID` set (checked 2026-10-21).
 
-Then, in order (see `PLAN.md`):
+Next, in order (see `PLAN.md`):
 1. Strict validation when loading `library.json`: `spotify` must be a
    `spotify:album:` or `spotify:playlist:` URI, `cover` an `https:` URL
    (`spotify` ends up in an `href`).
