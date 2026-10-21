@@ -68,7 +68,9 @@ window, and Get Info editing.
 - Album details: signed in, double-click or Enter shows the album's tracks
   (`AlbumTracks.svelte`, `src/lib/spotify-tracks.ts`); double-click a track to
   play the album from there. Play is explicit: ▶ on list rows, a translucent
-  ▶ over grid covers on hover, "Play" in the context menu.
+  ▶ over grid covers and over the tracks view's cover on hover, "Play" in the
+  context menu. The playing track has a pink speaker left of its number
+  (with sound waves while playing). Esc or the browser's Back returns.
 - Sign-in and playback confirmed with a real Spotify app on 2026-10-21
   (dev, `http://127.0.0.1:5173/`).
 - 96 unit tests pass, `svelte-check` is clean.

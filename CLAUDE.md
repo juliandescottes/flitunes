@@ -53,8 +53,13 @@ with unit tests.
 Fixes and features go through a pull request, not a direct commit to `main`.
 Work on a branch and commit there. The user pushes the branch and opens the
 PR. The PR description is the project's decision record (what changed, why,
-which alternatives were set aside): draft it in the chat for the user.
+which alternatives were set aside): draft it in the chat for the user, in a
+fenced code block so it copies cleanly, in a professional tone (product
+reasons, not personal habits or feelings).
 For a question that needs discussing, draft an issue for the user to file.
+
+Changes that only touch Markdown docs (`STATUS.md`, `PLAN.md`, `CLAUDE.md`,
+`docs/`) are committed straight to `main`, without a branch or PR.
 
 Never push, open PRs, create issues or comment on GitHub unless the user
 asks for that specific action: all of it is posted under the user's name.
