@@ -18,6 +18,8 @@
     onsort,
     onpick,
     onopen,
+    onplay,
+    signedIn,
     onrate,
     onmenu,
   }: {
@@ -30,7 +32,12 @@
     sortDir: SortDir;
     onsort: (key: SortKey) => void;
     onpick: (id: string, event: MouseEvent) => void;
+    /** Double-click: the album's tracks, or Play. */
     onopen: (album: Album) => void;
+    /** Plays the album, or opens it in the Spotify app when signed out. */
+    onplay: (album: Album) => void;
+    /** Signed in to Spotify: the row button plays instead of opening the app. */
+    signedIn: boolean;
     onrate: (album: Album, rating: number | null) => void;
     onmenu: (event: MouseEvent, album: Album) => void;
   } = $props();
@@ -111,7 +118,14 @@
           <td class="name">
             {album.title}
             {#if album.spotify}
-              <a class="go" href={album.spotify} title="Open in Spotify" aria-label="Open in Spotify" onmousedown={(e) => e.stopPropagation()}>➜</a>
+              <button
+                class="go"
+                title={signedIn ? "Play" : "Open in Spotify"}
+                aria-label={signedIn ? "Play" : "Open in Spotify"}
+                onmousedown={(e) => e.stopPropagation()}
+                ondblclick={(e) => e.stopPropagation()}
+                onclick={() => onplay(album)}>{signedIn ? "▶" : "➜"}</button
+              >
             {/if}
           </td>
           <td class="artist">{album.artists.join(", ")}</td>
@@ -235,8 +249,10 @@
     border-radius: 7px;
     background: #9a9a9a;
     color: #fff;
+    border: none;
+    font: inherit;
     font-size: 9px;
-    text-decoration: none;
+    cursor: default;
     /* Without this, its smaller font makes the line, and so the row, taller. */
     line-height: 1;
     vertical-align: middle;

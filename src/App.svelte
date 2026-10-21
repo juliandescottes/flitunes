@@ -182,19 +182,30 @@
 
   // --- Actions ---
 
-  // Signed in to Spotify, this plays the album on the active device;
-  // otherwise the link opens it in the Spotify app.
-  function openInSpotify(album: Album) {
+  function openInSpotifyApp(album: Album) {
+    if (album.spotify) window.location.href = album.spotify;
+  }
+
+  // The explicit Play action. Signed in to Spotify, it plays the album on
+  // the active device; otherwise the link opens it in the Spotify app.
+  function playAlbum(album: Album) {
     if (!album.spotify) return;
     if (spotify.status === "signed-in") player.play(album.spotify);
-    else window.location.href = album.spotify;
+    else openInSpotifyApp(album);
+  }
+
+  // Double-click or Enter: the album's tracks when signed in (albums only),
+  // otherwise Play.
+  function openAlbum(album: Album) {
+    if (spotify.status === "signed-in" && hasTrackList(album.spotify)) showTracks(album);
+    else playAlbum(album);
   }
 
   // From the column browser's Albums column: editions share a title, so
   // open the first shown one that has a link.
-  function openTitleInSpotify(title: string) {
+  function openTitle(title: string) {
     const album = result.albums.find((a) => a.title === title && a.spotify);
-    if (album) openInSpotify(album);
+    if (album) openAlbum(album);
   }
 
   async function run(action: () => Promise<unknown>) {
@@ -333,10 +344,13 @@
     const many = selectedSet.size > 1;
     openMenu(event, [
       { label: many ? "Get Info (Multiple Items)" : "Get Info", action: getInfo },
-      { label: "Open in Spotify", action: () => openInSpotify(album), disabled: many || !album.spotify },
       ...(spotify.status === "signed-in"
-        ? [{ label: "Show Tracks", action: () => showTracks(album), disabled: many || !hasTrackList(album.spotify) }]
+        ? [
+            { label: "Play", action: () => playAlbum(album), disabled: many || !album.spotify },
+            { label: "Show Tracks", action: () => showTracks(album), disabled: many || !hasTrackList(album.spotify) },
+          ]
         : []),
+      { label: "Open in Spotify", action: () => openInSpotifyApp(album), disabled: many || !album.spotify },
       "separator",
       { label: many ? `Delete ${selectedSet.size} Albums` : "Delete from Library", action: () => remove(selectedAlbums) },
     ]);
@@ -390,7 +404,7 @@
     else if (event.key === "ArrowUp") step = view === "grid" ? -gridColumns() : -1;
     else if (event.key === "ArrowRight" && view === "grid") step = 1;
     else if (event.key === "ArrowLeft" && view === "grid") step = -1;
-    else if (event.key === "Enter" && selectedAlbums.length === 1) openInSpotify(selectedAlbums[0]);
+    else if (event.key === "Enter" && selectedAlbums.length === 1) openAlbum(selectedAlbums[0]);
     else if (event.key === "Delete" || event.key === "Backspace") remove(selectedAlbums);
     else return;
     event.preventDefault();
@@ -505,7 +519,7 @@
         artist={result.artist}
         album={result.album}
         onselect={selectColumn}
-        onopenalbum={openTitleInSpotify}
+        onopenalbum={openTitle}
         {renamingGenre}
         ongenremenu={genreMenu}
         onrenamestart={(id) => (renamingGenre = id)}
@@ -541,7 +555,9 @@
             {sortDir}
             onsort={sortBy}
             onpick={pick}
-            onopen={openInSpotify}
+            onopen={openAlbum}
+            onplay={playAlbum}
+            signedIn={spotify.status === "signed-in"}
             onrate={rate}
             onmenu={albumMenu}
           />
@@ -551,7 +567,9 @@
             selected={selectedSet}
             {cursor}
             onpick={pick}
-            onopen={openInSpotify}
+            onopen={openAlbum}
+            onplay={playAlbum}
+            signedIn={spotify.status === "signed-in"}
             onmenu={albumMenu}
           />
         {/if}

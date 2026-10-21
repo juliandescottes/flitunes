@@ -56,7 +56,7 @@ The target is the iTunes 10 window, with albums instead of songs.
    - **Main view**: a sortable list (Name, Artist, Year, Genre, Rating,
      Date Added) or a cover grid.
    - Status bar at the bottom: "N albums".
-2. **Open in Spotify**: double-click or Enter opens `spotify:album:<id>` (§8).
+2. **Open in Spotify**: double-click or Enter opens `spotify:album:<id>`, or the album's tracks when signed in to Spotify (§8).
 3. **Get Info** (⌘I): the edit dialog, with iTunes-style tabs (Info, Artwork),
    for one album or a multi-selection (bulk genre/tags/rating).
 4. **Ratings**: 1–5 stars, editable inline in the list like iTunes.
@@ -151,26 +151,31 @@ user can always type or paste values, including a manual cover URL.
 
 ## 8. "Play in Spotify"
 
-- **Open in Spotify** button links to `spotify:album:<id>`, which opens the desktop
-  app on the album. A secondary link to `https://open.spotify.com/album/<id>` opens the web player.
-- The link opens the album page, not playback.
+- **Open in Spotify** links to `spotify:album:<id>`, which opens the desktop
+  app on the album page (not playback). A secondary link to
+  `https://open.spotify.com/album/<id>` opens the web player.
 - **Optional: signing in to Spotify** (OAuth with PKCE, all in the browser, no
   client secret; `src/lib/spotify-auth.ts`) to control playback on the active
   device through the Web API: play an album, pause, skip, see what's playing.
-  Signed in, double-click (or Enter) plays the album on the active device, or
-  on the first available one; transport buttons sit left of the toolbar
-  display, which shows the playing track like iTunes. The player state is
-  polled every 5 s while the page is visible (Spotify doesn't push it).
-- **Album details** (signed in): "Show Tracks" in an album's context menu
-  shows its cover, info and track list (`GET /albums/{id}/tracks`, cached for
-  the session, never saved). Double-click or Enter on a track plays the album
-  from that track; the playing track is marked. Esc or Back returns.
   Needs Spotify Premium, and a Spotify app (developer dashboard) whose client ID
   is set at build time as `VITE_SPOTIFY_CLIENT_ID`; without one the feature is
   hidden. The app must list each address it runs on as a redirect URI
-  (`http://127.0.0.1:5173/` in dev, the Pages URL). In Development Mode (2026 rules),
-  only up to 5 accounts added in the dashboard can sign in, and the app's
-  owner needs Premium.
+  (`http://127.0.0.1:5173/` in dev, the Pages URL). In Development Mode (2026
+  rules), only up to 5 accounts added in the dashboard can sign in, and the
+  app's owner needs Premium.
+- **Gestures.** Signed out, double-click, Enter and the row/cover buttons open
+  the album in the Spotify app. Signed in:
+  - double-click or Enter opens the album's tracks (albums; a playlist link plays);
+  - **Play** is explicit: the ▶ button on a list row (hover or selection), a
+    translucent ▶ over the cover when hovering in the grid, or "Play" in the
+    context menu. It plays on the active device, or on the first available one.
+  - transport buttons sit left of the toolbar display, which shows the playing
+    track like iTunes. The player state is polled every 5 s while the page is
+    visible (Spotify doesn't push it).
+- **Album details** (signed in): the album's cover, info and track list
+  (`GET /albums/{id}/tracks`, cached for the session, never saved).
+  Double-click or Enter on a track plays the album from that track; the
+  playing track is marked. Esc, Back, a search or another source returns.
 
 ## 9. Tech stack
 

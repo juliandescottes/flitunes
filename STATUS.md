@@ -12,7 +12,8 @@ window, and Get Info editing.
   Playlists = tags), Genres | Artists | Albums column browser, striped list
   or cover grid, status bar with "+". Look and colors live in `src/app.css`.
 - Selection: click, ⌘/Ctrl-click to toggle, Shift-click or Shift-arrows for a
-  range, ⌘A selects all. Enter or double-click opens in Spotify, Delete removes.
+  range, ⌘A selects all. Enter or double-click opens the album (its tracks
+  when signed in to Spotify, else the Spotify app), Delete removes.
 - Type-ahead: typing letters in the list or grid jumps to the first album whose
   sorted column starts with them (name when sorted by rating or date added).
 - Get Info (⌘I or right-click): one album → Info and Artwork tabs with
@@ -50,26 +51,25 @@ window, and Get Info editing.
 - Optional Spotify sign-in (branch `spotify-login`): "Connect Spotify" in the
   toolbar when a client ID is configured; OAuth PKCE in `src/lib/spotify-auth.ts`,
   reactive state and Web API calls in `src/lib/spotify-session.svelte.ts`.
-- Playback (branch `spotify-playback`, on top of `spotify-login`): signed in,
-  double-click plays the album on the active device; previous/play-pause/next
-  in the toolbar; the display shows the playing track and its progress
-  (`src/lib/spotify-player.svelte.ts`).
+- Playback (branch `spotify-playback`, on top of `spotify-login`):
+  previous/play-pause/next in the toolbar; the display shows the playing track
+  and its progress (`src/lib/spotify-player.svelte.ts`).
 - Album details (branch `spotify-tracks`, on top of `spotify-playback`):
-  "Show Tracks" in the context menu shows the album's tracks
+  signed in, double-click or Enter shows the album's tracks
   (`AlbumTracks.svelte`, `src/lib/spotify-tracks.ts`); double-click a track to
-  play the album from there.
+  play the album from there. Play is explicit: ▶ on list rows, a translucent
+  ▶ over grid covers on hover, "Play" in the context menu.
 - Sign-in and playback confirmed with a real Spotify app on 2026-10-21
   (dev, `http://127.0.0.1:5173/`).
-- 84 unit tests pass, `svelte-check` is clean.
+- 96 unit tests pass, `svelte-check` is clean.
 - GitHub Pages: `.github/workflows/pages.yml` tests, builds and deploys on
   every push to `main` (needs Settings → Pages → Source: GitHub Actions).
   Pages is the everywhere-viewer; curation happens locally, then push.
 
 ## Next step
 
-Open question: which gesture opens an album's tracks (now only the context
-menu; double-click plays). Set the `SPOTIFY_CLIENT_ID` repository variable
-for the Pages build.
+Set the `SPOTIFY_CLIENT_ID` repository variable for the Pages build, then
+merge the three Spotify branches (login → playback → tracks).
 
 To try the sign-in for real: create (or reuse) an app in the Spotify developer
 dashboard, add `http://127.0.0.1:5173/` and the Pages URL as redirect URIs,

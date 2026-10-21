@@ -1,7 +1,7 @@
 <script lang="ts">
   // iTunes column browser: Genres | Artists | Albums, each starting with "All (N)".
   // Genres can be renamed in place (double-click or the context menu).
-  // Double-click or Enter on an album opens it in Spotify.
+  // Double-click or Enter on an album opens it (see openAlbum in App.svelte).
   // Its height is resized by dragging its bottom edge. Each column only
   // renders the entries in view (entries have a fixed height).
   import type { ColumnItem } from "../lib/browse.ts";
@@ -31,7 +31,7 @@
     artist: string | null;
     album: string | null;
     onselect: (column: Column, key: string | null) => void;
-    /** Opens the album with this title in Spotify. */
+    /** Opens the album with this title. */
     onopenalbum: (title: string) => void;
     /** Genre id being renamed, if any. */
     renamingGenre: string | null;
