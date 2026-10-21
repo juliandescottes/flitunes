@@ -78,7 +78,7 @@
     {#if spotifyStatus === "signed-in"}
       <div class="transport" role="group" aria-label="Playback">
         <button class="round" title="Previous" aria-label="Previous" onclick={onprevious}>
-          <svg viewBox="0 0 16 12" width="15" height="11" aria-hidden="true"><path d="M8 0v12L2 6zM14 0v12L8 6z" fill="currentColor" /></svg>
+          <svg viewBox="0 0 16 12" width="16" height="12" aria-hidden="true"><path d="M8 0v12L2 6zM14 0v12L8 6z" fill="currentColor" /></svg>
         </button>
         <button
           class="round big"
@@ -93,7 +93,7 @@
           {/if}
         </button>
         <button class="round" title="Next" aria-label="Next" onclick={onnext}>
-          <svg viewBox="0 0 16 12" width="15" height="11" aria-hidden="true"><path d="M2 0v12l6-6zM8 0v12l6-6z" fill="currentColor" /></svg>
+          <svg viewBox="0 0 16 12" width="16" height="12" aria-hidden="true"><path d="M2 0v12l6-6zM8 0v12l6-6z" fill="currentColor" /></svg>
         </button>
         <!-- Like iTunes' AirPlay menu: where to play. -->
         <button
@@ -104,9 +104,9 @@
           onclick={(e) => ondevices(e.currentTarget)}
         >
           <!-- A screen on its stand. -->
-          <svg viewBox="0 0 14 13" width="13" height="12" aria-hidden="true">
-            <rect x="1" y="1" width="12" height="8" rx="1" fill="none" stroke="currentColor" stroke-width="1.4" />
-            <path d="M7 9.5v2M4.5 12h5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+          <svg viewBox="0 0 14 12" width="14" height="12" aria-hidden="true">
+            <rect x="1" y="0.7" width="12" height="7.6" rx="1" fill="none" stroke="currentColor" stroke-width="1.4" />
+            <path d="M7 9v2M4.5 11.3h5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
           </svg>
         </button>
       </div>
@@ -263,7 +263,10 @@
     gap: 6px;
     margin-right: 8px;
   }
-  /* Round, glossy transport buttons, like iTunes. */
+  /* Round, glossy transport buttons, like iTunes. Each icon's width and
+     height have the same parity as its button's inner size (30px buttons:
+     even icons; the 24px screen button: even too), so it centers on whole
+     pixels. */
   .round {
     display: grid;
     place-items: center;
