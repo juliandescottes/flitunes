@@ -70,6 +70,10 @@
   <header>
     <div class="cover">
       {#if album.cover}<img src={album.cover} alt="" />{:else}<div class="blank" aria-hidden="true">♫</div>{/if}
+      <!-- Shown over the cover while hovering it, like the grid. -->
+      <button class="play" title="Play" aria-label="Play {album.title}" onclick={() => onplay()}>
+        <svg viewBox="0 0 12 14" width="16" height="18" aria-hidden="true"><path d="M2 0l10 7-10 7z" fill="currentColor" /></svg>
+      </button>
     </div>
     <div class="info">
       <h2>{album.title}</h2>
@@ -78,10 +82,6 @@
         {[album.year, tracks && `${tracks.length} ${tracks.length === 1 ? "song" : "songs"}`, tracks && formatTime(totalMs)]
           .filter(Boolean)
           .join(" · ")}
-      </div>
-      <div class="buttons">
-        <button class="aqua default" onclick={() => onplay()} disabled={!tracks?.length}>▶ Play</button>
-        <button class="aqua" onclick={onback} title="Back to the library (Esc)">Back</button>
       </div>
     </div>
   </header>
@@ -104,6 +104,7 @@
       <table>
         <!-- Widths here: with a fixed layout, the first row (maybe a disc row) would set them. -->
         <colgroup>
+          <col class="state" />
           <col class="num" />
           <col />
           <col class="artist" />
@@ -113,7 +114,7 @@
           {#each tracks as track, i (track.uri + i)}
             {@const playing = track.uri === playingUri}
             {#if discs && (i === 0 || tracks[i - 1].disc !== track.disc)}
-              <tr class="disc"><td colspan="4">Disc {track.disc}</td></tr>
+              <tr class="disc"><td colspan="5">Disc {track.disc}</td></tr>
             {/if}
             <tr
               class:selected={i === selected}
@@ -122,9 +123,18 @@
               onmousedown={() => (selected = i)}
               ondblclick={() => onplay(track.uri)}
             >
-              <td class="num">
-                {#if playing}<span class="speaker" title={isPlaying ? "Playing" : "Paused"}>{isPlaying ? "🔊" : "🔈"}</span>{:else}{track.number}{/if}
+              <td class="state">
+                {#if playing}
+                  <!-- Like iTunes: a speaker left of the number, with sound waves while playing. -->
+                  <svg class="speaker" viewBox="0 0 13 10" width="13" height="10" role="img" aria-label={isPlaying ? "Playing" : "Paused"}>
+                    <path d="M0 3.3h2.6L6 .6v8.8L2.6 6.7H0z" fill="currentColor" />
+                    {#if isPlaying}
+                      <path d="M8 3.2a2.4 2.4 0 0 1 0 3.6M10 1.4a5 5 0 0 1 0 7.2" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                    {/if}
+                  </svg>
+                {/if}
               </td>
+              <td class="num">{track.number}</td>
               <td class="name">{track.name}</td>
               <td class="artist">
                 {track.artists.some((a) => !albumArtists.has(a)) ? track.artists.join(", ") : ""}
@@ -153,6 +163,7 @@
     border-bottom: 1px solid var(--rule);
   }
   .cover {
+    position: relative;
     flex: none;
     width: 140px;
     height: 140px;
@@ -189,10 +200,34 @@
   .meta {
     color: var(--text-dim);
   }
-  .buttons {
-    margin-top: auto;
-    display: flex;
-    gap: 6px;
+  .play {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 44px;
+    height: 44px;
+    margin: -22px 0 0 -22px;
+    padding: 0 0 0 3px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.45);
+    color: #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transition: opacity 0.15s;
+    cursor: default;
+  }
+  .cover:hover .play,
+  .play:focus-visible {
+    opacity: 1;
+  }
+  .play:hover {
+    background: rgba(0, 0, 0, 0.6);
+  }
+  .play:active {
+    background: rgba(0, 0, 0, 0.75);
   }
   .tracks {
     flex: 1;
@@ -215,8 +250,11 @@
   tbody tr:nth-child(even) td {
     background: var(--stripe);
   }
+  col.state {
+    width: 20px;
+  }
   col.num {
-    width: 36px;
+    width: 30px;
   }
   col.artist {
     width: 30%;
@@ -248,8 +286,15 @@
     background: var(--select) !important;
     color: #fff;
   }
+  td.state {
+    padding: 0 0 0 6px;
+  }
   .speaker {
-    font-size: 10px;
+    display: block;
+    color: var(--select);
+  }
+  .tracks:focus tr.selected .speaker {
+    color: #fff;
   }
   .empty {
     margin: 24px;
