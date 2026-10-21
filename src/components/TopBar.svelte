@@ -18,6 +18,7 @@
     ontoggleplay,
     onnext,
     onprevious,
+    ondevices,
     playingAlbum,
     playingShown,
     onshowplaying,
@@ -39,6 +40,8 @@
     ontoggleplay: () => void;
     onnext: () => void;
     onprevious: () => void;
+    /** Opens the menu of devices to play on, below the given button. */
+    ondevices: (button: HTMLElement) => void;
     /** The library album of the playing track, if it's in the library. */
     playingAlbum: Album | null;
     /** The playing album's tracks are what the main view shows. */
@@ -84,6 +87,20 @@
         </button>
         <button class="round" title="Next" aria-label="Next" onclick={onnext}>
           <svg viewBox="0 0 16 12" width="15" height="11" aria-hidden="true"><path d="M2 0v12l6-6zM8 0v12l6-6z" fill="currentColor" /></svg>
+        </button>
+        <!-- Like iTunes' AirPlay menu: where to play. -->
+        <button
+          class="round small"
+          title={playback?.deviceName ? `Playing on ${playback.deviceName}. Click to choose a device.` : "Choose a device to play on"}
+          aria-label="Devices"
+          aria-haspopup="menu"
+          onclick={(e) => ondevices(e.currentTarget)}
+        >
+          <!-- A screen on its stand. -->
+          <svg viewBox="0 0 14 13" width="13" height="12" aria-hidden="true">
+            <rect x="1" y="1" width="12" height="8" rx="1" fill="none" stroke="currentColor" stroke-width="1.4" />
+            <path d="M7 9.5v2M4.5 12h5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+          </svg>
         </button>
       </div>
     {/if}
@@ -242,6 +259,11 @@
   .round.big {
     width: 36px;
     height: 36px;
+  }
+  .round.small {
+    width: 24px;
+    height: 24px;
+    margin-left: 4px;
   }
   .round:active {
     background: linear-gradient(#ddc7d1, #f3e7ec);

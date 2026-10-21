@@ -3,7 +3,7 @@
 // doesn't push changes, so the state is polled while the page is visible,
 // and refreshed right after each action.
 
-import type { SpotifySession } from "./spotify-session.svelte.ts";
+import { SpotifyError, type SpotifySession } from "./spotify-session.svelte.ts";
 
 /** Polling interval while the page is visible. */
 export const POLL_MS = 5000;
@@ -71,6 +71,23 @@ export function parsePlayback(data: unknown, now: number): Playback | null {
   };
 }
 
+/** A device Spotify can play on (a computer, a phone, a speaker…). */
+export interface Device {
+  id: string;
+  name: string;
+  isActive: boolean;
+  /** False when Spotify doesn't let the Web API control it. */
+  usable: boolean;
+}
+
+/** Reads GET /me/player/devices. Devices without an id can't be controlled: they're left out. */
+export function parseDevices(data: unknown): Device[] {
+  const list = ((data ?? {}) as { devices?: { id?: string | null; name?: string; is_active?: boolean; is_restricted?: boolean }[] }).devices;
+  return (list ?? []).flatMap((d) =>
+    d.id ? [{ id: d.id, name: d.name ?? "Unknown device", isActive: d.is_active === true, usable: d.is_restricted !== true }] : [],
+  );
+}
+
 /** The current position: the fetched one, plus the time since if playing. */
 export function currentProgress(playback: Playback, now: number): number {
   const elapsed = playback.isPlaying ? now - playback.fetchedAt : 0;
@@ -89,6 +106,8 @@ export class SpotifyPlayer {
 
   #session: SpotifySession;
   #now: () => number;
+  /** The device picked in FliTunes, for commands sent while none is active. */
+  #deviceId: string | null = null;
 
   constructor(session: SpotifySession, now = Date.now) {
     this.#session = session;
@@ -113,20 +132,11 @@ export class SpotifyPlayer {
 
   /**
    * Plays an album or playlist (a spotify: URI), optionally from one of its
-   * tracks. Without an active device, plays on the first available one.
+   * tracks. Without an active device, plays on the chosen or first available one.
    */
   async play(contextUri: string, fromTrackUri?: string): Promise<void> {
     const body = JSON.stringify({ context_uri: contextUri, ...(fromTrackUri ? { offset: { uri: fromTrackUri } } : {}) });
-    await this.#act(async () => {
-      try {
-        await this.#session.api("/me/player/play", { method: "PUT", body });
-      } catch (e) {
-        if (!/no active device/i.test((e as Error).message)) throw e;
-        const device = await this.#firstDevice();
-        if (!device) throw new Error("Open Spotify on one of your devices first, then try again.");
-        await this.#session.api(`/me/player/play?device_id=${encodeURIComponent(device)}`, { method: "PUT", body });
-      }
-    });
+    await this.#act(() => this.#command("/me/player/play", { method: "PUT", body }));
   }
 
   async togglePlay(): Promise<void> {
@@ -137,15 +147,33 @@ export class SpotifyPlayer {
       const now = this.#now();
       this.playback = { ...playback, isPlaying: !playing, progressMs: currentProgress(playback, now), fetchedAt: now };
     }
-    await this.#act(() => this.#session.api(playing ? "/me/player/pause" : "/me/player/play", { method: "PUT" }));
+    await this.#act(() => this.#command(playing ? "/me/player/pause" : "/me/player/play", { method: "PUT" }));
   }
 
   async next(): Promise<void> {
-    await this.#act(() => this.#session.api("/me/player/next", { method: "POST" }));
+    await this.#act(() => this.#command("/me/player/next", { method: "POST" }));
   }
 
   async previous(): Promise<void> {
-    await this.#act(() => this.#session.api("/me/player/previous", { method: "POST" }));
+    await this.#act(() => this.#command("/me/player/previous", { method: "POST" }));
+  }
+
+  /** The devices Spotify can play on, or null (with the error set) if they can't be listed. */
+  async loadDevices(): Promise<Device[] | null> {
+    this.error = null;
+    try {
+      return parseDevices(await this.#session.api("/me/player/devices"));
+    } catch (e) {
+      this.error = (e as Error).message;
+      return null;
+    }
+  }
+
+  /** Moves playback to a device, which then also gets the commands sent without an active device. */
+  async selectDevice(id: string): Promise<void> {
+    this.#deviceId = id;
+    const body = JSON.stringify({ device_ids: [id], play: this.playback?.isPlaying ?? false });
+    await this.#act(() => this.#session.api("/me/player", { method: "PUT", body }));
   }
 
   /** Polls while the page is visible. Returns a function that stops it. */
@@ -176,8 +204,26 @@ export class SpotifyPlayer {
     await this.refresh();
   }
 
-  async #firstDevice(): Promise<string | null> {
-    const data = (await this.#session.api("/me/player/devices")) as { devices?: { id: string | null; is_restricted?: boolean }[] } | null;
-    return data?.devices?.find((d) => d.id && !d.is_restricted)?.id ?? null;
+  /**
+   * Sends a player command. Spotify answers 404 when no device is active, and
+   * also when the active one has gone idle ("Not found."): the command is then
+   * sent again to a device by its id, which wakes it up.
+   */
+  async #command(path: string, init: RequestInit): Promise<unknown> {
+    try {
+      return await this.#session.api(path, init);
+    } catch (e) {
+      if (!(e instanceof SpotifyError && e.status === 404)) throw e;
+      const device = await this.#targetDevice();
+      if (!device) throw new Error("Open Spotify on one of your devices first, then try again.");
+      return this.#session.api(`${path}?device_id=${encodeURIComponent(device)}`, init);
+    }
+  }
+
+  /** The chosen device if Spotify still lists it, else the active one, else the first usable one. */
+  async #targetDevice(): Promise<string | null> {
+    const devices = parseDevices(await this.#session.api("/me/player/devices")).filter((d) => d.usable);
+    const device = devices.find((d) => d.id === this.#deviceId) ?? devices.find((d) => d.isActive) ?? devices[0];
+    return device?.id ?? null;
   }
 }
