@@ -28,7 +28,9 @@ export class Library {
   albums = $state.raw<Album[]>([]);
   genres = $state.raw<Genre[]>([]);
   unsavedChanges = $state(0);
-  status = $state<LibraryStatus>({ kind: "loading" });
+  // Raw too: a conflict holds the library file, which is written to IndexedDB
+  // as is (a deep state proxy can't be cloned there).
+  status = $state.raw<LibraryStatus>({ kind: "loading" });
 
   #db: LibraryDB;
   #source: LibrarySource;
