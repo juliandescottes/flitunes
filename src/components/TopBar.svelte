@@ -18,6 +18,8 @@
     ontoggleplay,
     onnext,
     onprevious,
+    playingAlbum,
+    onshowplaying,
     view = $bindable(),
     linkedOnly = $bindable(),
     search = $bindable(),
@@ -36,6 +38,10 @@
     ontoggleplay: () => void;
     onnext: () => void;
     onprevious: () => void;
+    /** The library album of the playing track, if it's in the library. */
+    playingAlbum: Album | null;
+    /** Shows the playing album's tracks. */
+    onshowplaying: () => void;
     view: ViewMode;
     /** Hide albums without a Spotify link. */
     linkedOnly: boolean;
@@ -80,7 +86,7 @@
     {/if}
   </div>
 
-  <div class="lcd" aria-live="polite">
+  <div class="lcd" class:with-disc={track && playingAlbum} aria-live="polite">
     {#if track && playback}
       <!-- Like iTunes, the display shows what's playing. -->
       <div class="lcd-title">{track.name}</div>
@@ -90,6 +96,18 @@
         <span class="bar"><span class="fill" style:width="{(progress / Math.max(1, track.durationMs)) * 100}%"></span></span>
         <span>-{formatTime(track.durationMs - progress)}</span>
       </div>
+      {#if playingAlbum}
+        <button class="show-playing" title="Show the album's tracks" aria-label="Show the tracks of {playingAlbum.title}" onclick={onshowplaying}>
+          <svg viewBox="0 0 14 14" width="16" height="16" aria-hidden="true">
+            <path
+              d="M7 .5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zm0 4.6a1.9 1.9 0 1 1 0 3.8 1.9 1.9 0 0 1 0-3.8z"
+              fill="currentColor"
+              fill-rule="evenodd"
+            />
+            <path d="M7 2.4a4.6 4.6 0 0 1 4.6 4.6" fill="none" stroke="#fff" stroke-opacity="0.55" stroke-width="0.9" />
+          </svg>
+        </button>
+      {/if}
     {:else if album}
       <div class="lcd-title">{album.title}</div>
       <div class="lcd-sub">{album.artists.join(", ")}{album.year ? ` — ${album.year}` : ""}</div>
@@ -236,6 +254,32 @@
     overflow: hidden;
     padding: 0 12px;
     user-select: none;
+  }
+  .lcd {
+    position: relative;
+  }
+  /* Room for the disc, on both sides so the text stays centered. */
+  .lcd.with-disc {
+    padding: 0 34px;
+  }
+  /* A disc at the display's right edge: shows the playing album's tracks. */
+  .show-playing {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    margin-top: -10px;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    border: none;
+    background: none;
+    color: #7d6670;
+    cursor: default;
+  }
+  .show-playing:hover {
+    color: var(--select);
   }
   .lcd > div {
     max-width: 100%;

@@ -88,6 +88,13 @@
   const selectedSet = $derived(new Set(selection));
   // Only albums still shown count as selected.
   const selectedAlbums = $derived(result.albums.filter((a) => selectedSet.has(a.id)));
+  // The library album that the playing track comes from, for the display's
+  // "show tracks" button. Hidden while its tracks are already shown.
+  const playingAlbum = $derived.by(() => {
+    const uri = player.playback?.track?.albumUri;
+    const album = uri ? library.albums.find((a) => a.spotify === uri) : undefined;
+    return album && album.id !== tracksAlbum?.id ? album : null;
+  });
   const infoAlbums = $derived(infoIds.flatMap((id) => library.getAlbum(id) ?? []));
   const infoIndex = $derived(infoIds.length === 1 ? result.albums.findIndex((a) => a.id === infoIds[0]) : -1);
 
@@ -519,6 +526,8 @@
     ontoggleplay={() => player.togglePlay()}
     onnext={() => player.next()}
     onprevious={() => player.previous()}
+    {playingAlbum}
+    onshowplaying={() => playingAlbum && showTracks(playingAlbum)}
     onspotify={() => (spotify.status === "signed-in" ? spotify.signOut() : spotify.signIn())}
     bind:view
     bind:linkedOnly
