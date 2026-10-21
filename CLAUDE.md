@@ -99,7 +99,12 @@ Static Svelte 5 + Vite + TypeScript app, no backend.
   missing, so that `library.json` keeps a stable shape.
 - Genres are a flat, curated list, referenced by slug id. The first genre on an album is the primary one.
 - One album entry per edition. Compilations use the artist `"Various Artists"` (`VARIOUS_ARTISTS`).
-- Covers are stored as URLs only. No image files in the repo.
+- A cover is a file in the library repo's `covers/` folder (`"covers/<album id>.jpg"`,
+  resolved next to `library.json` by `coverSrc` in `persistence.ts`) or an `https:` URL.
+  New covers come in as URLs; `scripts/covers/` copies them into `covers/`. No image
+  files in the app repo.
+- `library.json` is validated strictly, on load and on every edit (`isValidCover`,
+  `isValidSpotifyUri` in `model.ts`), so a saved file always loads again.
 - Everything is hand curated. The only external lookup is Spotify oEmbed (title +
   cover from a pasted link). No metadata services (iTunes, MusicBrainz, …).
 - Signing in to Spotify is optional and only for playback (Web API, OAuth PKCE in

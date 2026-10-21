@@ -187,7 +187,9 @@ user can always type or paste values, including a manual cover URL.
 - **Dexie** for IndexedDB, wrapped in a small store module that exposes Svelte
   runes-based reactive state to the UI.
 - No backend. Only the dev-server plugin writes `library.json`.
-- Covers: stored as URLs only, relying on the browser's HTTP cache. No image files in the repo.
+- Covers: files in the library repo's `covers/` folder (copied once from
+  their URLs by `scripts/covers/`), or `https:` URLs for covers not copied
+  yet. No image files in the app repo.
 
 ## 10. Decisions
 
