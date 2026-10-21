@@ -107,3 +107,8 @@ npm run build    # static build in dist/
 ```
 
 The spec and design notes are in [`docs/spec.md`](docs/spec.md).
+
+## License
+
+[MIT](LICENSE). The look follows iTunes 10 as a design reference only: no
+Apple code, artwork or data is included.
