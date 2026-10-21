@@ -81,6 +81,16 @@ window, and Get Info editing.
 - Devices (PR #25): a screen button after the transport buttons lists the
   Spotify devices and moves playback to the one picked. A 404 on a player
   command (idle device) is retried on a device by id, which wakes it up.
+- Themes (PR #32): Pink, Silver, Mint Green, Fresh Blue, Lavender, picked
+  from a swatch next to Import (`src/lib/themes.ts`). Every tinted CSS color
+  is `oklch(L calc(C * var(--tint)) var(--hue))`, so a theme is a hue and a
+  chroma scale; semantic colors (errors, warnings) keep their own. The
+  favicon follows the theme. Gold (turns brown under white text) and a grey
+  "Carbon" (too close to Silver) were tried and dropped.
+- Spotify robustness (PR #31 and after): a response body that isn't JSON
+  counts as empty (previous/next answer 200 with one), and the console logs
+  every Web API call, token refresh, retry and player change as
+  `[Spotify]` debug messages, to diagnose the idle-device problem.
 - Album details: signed in, double-click or Enter shows the album's tracks
   (`AlbumTracks.svelte`, `src/lib/spotify-tracks.ts`); double-click a track to
   play the album from there. Play is explicit: ▶ on list rows, a translucent
@@ -93,25 +103,29 @@ window, and Get Info editing.
   one unless Spotify lists others on the track.
 - Sign-in and playback confirmed with a real Spotify app on 2026-10-21
   (dev, `http://127.0.0.1:5173/`).
-- 96 unit tests pass, `svelte-check` is clean.
+- 130 unit tests pass, `svelte-check` is clean.
 - GitHub Pages: `.github/workflows/pages.yml` tests, builds and deploys on
   every push to `main` (needs Settings → Pages → Source: GitHub Actions).
   Pages is the everywhere-viewer; curation happens locally, then push.
 
 ## Next step
 
-The Spotify work (sign-in, playback, album tracks) is merged. For it to show
-on the Pages site, the repository variable `SPOTIFY_CLIENT_ID` must be set and
-the Pages URL listed as a redirect URI in the Spotify app.
+Waiting for review: branch `run-your-own` (README with a "Run your own
+FliTunes" guide for forks, `LIBRARY_URL` repository variable with a default
+from the fork's owner, MIT license, a not-affiliated note). The Pages site has
+`SPOTIFY_CLIENT_ID` set (checked 2026-10-21).
 
-Next feature: friends' libraries, in three PRs:
-1. Strict validation when loading `library.json` (`spotify` must be a
-   `spotify:album:` or `spotify:playlist:` URI, `cover` an `https:` URL).
-2. `?library=<url>` in the page address, overriding `VITE_LIBRARY_URL`.
-3. One IndexedDB working copy per library URL (the default keeps
-   `album-library`).
+Then, in order (see `PLAN.md`):
+1. Strict validation when loading `library.json`: `spotify` must be a
+   `spotify:album:` or `spotify:playlist:` URI, `cover` an `https:` URL
+   (`spotify` ends up in an `href`).
+2. Ownership, the first step towards owning the music (`docs/spec.md` §11):
+   how I own an album and a store link, with a "not owned yet" view.
+3. Smart playlists, "Refresh cover", Cover Flow.
 
-Still open from Phase 2: smart playlists, Cover Flow, "Refresh cover".
+Open: the first Spotify command after a while idle sometimes does nothing,
+with no error. The `[Spotify]` console log should show whether a request
+hangs, the device ignores the command, or the token refresh is slow.
 
 The library import (Last.fm, Spotify links, early years by artist) is notes
 and scripts in the git-ignored `import/` folder: see `import/README.md`.
@@ -127,11 +141,14 @@ and scripts in the git-ignored `import/` folder: see `import/README.md`.
 | 2026-10-17 | One entry per edition. Compilations → artist "Various Artists". |
 | 2026-10-17 | Covers: store URLs only. |
 | 2026-10-17 | Everything hand curated: no metadata lookups (iTunes Search removed). "iTunes-style" = the 2010 iTunes 10 UI only. |
-| 2026-10-17 | Scope: an old-school iTunes 10 experience, plus a few import paths, and not much more. Tags show as playlists. Embedded player and track lists dropped. |
+| 2026-10-17 | Scope: an old-school iTunes 10 experience, plus a few import paths, and not much more. Tags show as playlists. Embedded player and track lists dropped (track lists came back on 2026-10-21 with the Spotify sign-in). |
 | 2026-10-17 | Last.fm import deferred (scraping is blocked; would need an API key). |
 | 2026-10-18 | Code changes go through PRs; the user pushes, opens PRs and files issues. |
 | 2026-10-18 | Content apart from code: `library.json` moved to its own repo, `spotify-viewer-album-library` (history kept). The site fetches it from there; dev reads/writes a clone next to the app. |
 | 2026-10-21 | Optional Spotify sign-in (OAuth PKCE, no backend) for playback control only. Spotify data shown while signed in is fetched live, never saved; the library stays hand curated. |
+| 2026-10-21 | Themes change the tint only (hue and chroma); no full palettes per theme. |
+| 2026-10-21 | Friends run their own fork (README guide), not one shared site with `?library=<url>`: each needs their own Spotify app anyway. MIT license. |
+| 2026-10-21 | Long-term direction: own the music (DRM-free purchases) and play it from my own Subsonic server (e.g. Navidrome), FliTunes as the front end, Spotify as the fallback (`docs/spec.md` §11). |
 
 ## Known issues / notes
 

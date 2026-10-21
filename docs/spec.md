@@ -80,8 +80,10 @@ The target is the iTunes 10 window, with albums instead of songs.
 - "Refresh cover" to re-fetch a dead cover URL via oEmbed.
 
 ### Later / maybe
-- One-off import from Last.fm (`user.getTopAlbums`, needs an API key).
-- Optional Spotify login (PKCE) for a one-off bulk import of saved albums.
+- Owning the music and playing it from my own server (§11).
+- (Done another way: Last.fm top albums came in through the CSV import, and
+  saved Spotify albums through a script on the listening-history export,
+  `scripts/spotify-history/`, instead of a Spotify login.)
 
 ## 6. Storage & persistence
 
@@ -190,3 +192,61 @@ user can always type or paste values, including a manual cover URL.
 ## 10. Decisions
 
 The decisions log lives in `STATUS.md`.
+
+## 11. Long-term direction: owning the music
+
+The goal is to move my library off Spotify: buy the albums DRM-free
+(Bandcamp and other stores, CDs), serve them myself, and keep FliTunes as the
+front end. The hand-curated library is already independent of Spotify, so
+this adds a second way to play rather than a rebuild.
+
+### What changes
+
+- **Album links.** Today `spotify` is the only link. An album will carry
+  several, each optional: Spotify, a store page (e.g. Bandcamp), and my own
+  copy on the music server.
+- **Ownership.** Each album records whether and how I own it (Bandcamp, CD,
+  files…). "Not owned yet" becomes a view, or a smart playlist: the shopping
+  list.
+- **Covers.** Covers are Spotify image URLs (`i.scdn.co`) and would break if
+  Spotify drops an album. They should come from my own copies or server, never
+  as image files in the app repo.
+- **Playback.** Owned albums play in the browser from the music server
+  (`<audio>`; FLAC plays in current Firefox, Chrome and Safari), with track
+  lists from the files' tags. The toolbar, display and track list stay the
+  same: a second player provides the same playback state as the Spotify one.
+  Spotify remains the fallback for albums I don't own, and becomes optional.
+
+### Serving the music
+
+Use an existing music server rather than writing one:
+[Navidrome](https://www.navidrome.org/) (open source, light enough for a NAS
+or a small server). It scans the folders, reads tags, serves covers,
+transcodes for mobile, and speaks the **Subsonic API**, the shared standard of
+many music players. FliTunes becomes one more Subsonic client, and stays a
+static app with no backend of its own. `library.json` stays the source of
+truth; each album records the matching server album.
+
+Set aside: plain files on a web server with a script that lists the tracks
+as JSON. Simpler on paper, but authentication, transcoding and covers would
+all be ours to build.
+
+Constraints:
+- The site is served over HTTPS, so the music server must be reachable over
+  HTTPS and allow the site's origin (CORS). A private network such as
+  Tailscale avoids exposing it publicly.
+- Purchases stay manual: Bandcamp has no public API for a fan's collection,
+  and a hand-curated library fits manual downloads.
+
+### Steps
+
+Each step is useful before the next exists:
+
+1. **Ownership:** an owned field (how I have the album) and a store link,
+   editable in Get Info, with a "not owned yet" view.
+2. **Covers kept:** a script that copies covers out of Spotify's CDN to
+   storage I control, and rewrites the URLs.
+3. **Own playback:** sign in to a Subsonic server, match albums, play owned
+   albums from it, and fall back to Spotify for the rest.
+4. **Spotify optional:** with most albums owned, the Spotify sign-in can stay
+   off.
