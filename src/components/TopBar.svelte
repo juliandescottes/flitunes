@@ -97,21 +97,6 @@
     {/if}
     <button class="aqua" onclick={ondownload} title="Download library.json">Export</button>
     <button class="aqua" onclick={onimport} title="Replace the library with a library.json file">Import</button>
-    {#if spotifyStatus === "signed-in"}
-      <button
-        class="aqua"
-        onclick={onspotify}
-        title={spotifyUser ? `Signed in to Spotify as ${spotifyUser}. Click to disconnect.` : "Disconnect from Spotify"}
-        >Disconnect Spotify</button
-      >
-    {:else if spotifyStatus !== "disabled"}
-      <button
-        class="aqua"
-        onclick={onspotify}
-        disabled={spotifyStatus === "signing-in"}
-        title="Sign in to Spotify to control playback from here">Connect Spotify</button
-      >
-    {/if}
   </div>
 
   <div class="lcd" aria-live="polite">
@@ -139,6 +124,31 @@
   </div>
 
   <div class="right">
+    {#if spotifyStatus !== "disabled"}
+      <div class="segmented">
+        <button
+          class:on={spotifyStatus === "signed-in"}
+          aria-pressed={spotifyStatus === "signed-in"}
+          aria-label="Connected to Spotify"
+          disabled={spotifyStatus === "signing-in"}
+          title={spotifyStatus === "signed-in"
+            ? `Connected to Spotify${spotifyUser ? ` as ${spotifyUser}` : ""}. Click to disconnect.`
+            : "Connect to Spotify, to control playback from here"}
+          onclick={onspotify}
+        >
+          <!-- Sound waves: generic, not Spotify's logo. -->
+          <svg viewBox="0 0 14 14" width="13" height="13" aria-hidden="true">
+            <path
+              d="M2.5 4.6c3-1 6.2-.8 9 .6M3 7.4c2.5-.8 5-.6 7.3.5M3.6 10c1.9-.5 3.7-.4 5.4.4"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.6"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+      </div>
+    {/if}
     <div class="segmented">
       <button
         class:on={linkedOnly}

@@ -48,8 +48,8 @@ window, and Get Info editing.
   filters afterwards. With 3000 albums every interaction takes under 25 ms.
   `src/lib/mock.ts` / `scripts/mock-library.ts` make mock libraries;
   `browse.perf.test.ts` keeps budgets.
-- Optional Spotify sign-in (branch `spotify-login`): "Connect Spotify" in the
-  toolbar when a client ID is configured; OAuth PKCE in `src/lib/spotify-auth.ts`,
+- Optional Spotify sign-in (branch `spotify-login`): a Spotify toggle next to
+  the link filter in the toolbar, when a client ID is configured; OAuth PKCE in `src/lib/spotify-auth.ts`,
   reactive state and Web API calls in `src/lib/spotify-session.svelte.ts`.
 - Playback (branch `spotify-playback`, on top of `spotify-login`):
   previous/play-pause/next in the toolbar; the display shows the playing track
