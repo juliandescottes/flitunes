@@ -112,3 +112,6 @@ The spec and design notes are in [`docs/spec.md`](docs/spec.md).
 
 [MIT](LICENSE). The look follows iTunes 10 as a design reference only: no
 Apple code, artwork or data is included.
+
+FliTunes is not affiliated with or endorsed by Apple or Spotify. iTunes is a
+trademark of Apple Inc. Spotify is a trademark of Spotify AB.
