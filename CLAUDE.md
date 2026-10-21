@@ -35,6 +35,18 @@ repo (`VITE_LIBRARY_URL`) when it opens, so library pushes need no redeploy
 (GitHub caches the file for a few minutes). Edits made on the site stay in
 that browser, and Save downloads the file.
 
+## Testing in the browser
+
+Check UI changes live in a browser (e.g. with firefox-devtools-mcp), not only
+with unit tests.
+
+- Use another port and a mock library, so the real library and the user's dev
+  server (port 5173) are never touched: `node scripts/mock-library.ts
+  <scratch>/mock.json`, then `LIBRARY_PATH=<scratch>/mock.json npx vite --port
+  5182 --strictPort`. Stop it when done.
+- Never play on the user's Spotify account from a test: use a fake
+  `VITE_SPOTIFY_CLIENT_ID` and stub `fetch`.
+
 ## Workflow
 
 Fixes and features go through a pull request, not a direct commit to `main`.
