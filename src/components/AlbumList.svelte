@@ -1,7 +1,8 @@
 <script lang="ts">
   // iTunes list view: striped rows, sortable column headers, inline ratings.
-  // Only the rows in view are rendered (rows have a fixed height), so long
-  // libraries stay fast.
+  // With `covers`, it is iTunes 10's Album List: taller rows with each
+  // album's cover on the left. Only the rows in view are rendered (rows have
+  // a fixed height), so long libraries stay fast.
   import { untrack } from "svelte";
   import { genreName, type SortDir, type SortKey } from "../lib/browse.ts";
   import type { Album } from "../lib/model.ts";
@@ -10,6 +11,7 @@
 
   let {
     albums,
+    covers = false,
     genreNames,
     selected,
     cursor,
@@ -24,6 +26,8 @@
     onmenu,
   }: {
     albums: Album[];
+    /** Album List: taller rows that show the cover. */
+    covers?: boolean;
     genreNames: Map<string, string>;
     selected: Set<string>;
     /** The row last clicked or reached with the keyboard; kept in view. */
@@ -53,8 +57,8 @@
 
   const dateFormat = new Intl.DateTimeFormat(undefined, { dateStyle: "short", timeStyle: "short" });
 
-  /** Row height in pixels, matching the CSS. */
-  const ROW = 18;
+  /** Row height in pixels, set on the scroller as --row for the CSS. */
+  const ROW = $derived(covers ? 46 : 18);
 
   let scroller: HTMLDivElement;
   let scrollTop = $state(0);
@@ -84,6 +88,7 @@
   aria-rowcount={albums.length + 1}
   bind:this={scroller}
   bind:clientHeight={viewport}
+  style:--row="{ROW}px"
   onscroll={() => (scrollTop = scroller.scrollTop)}
 >
   <table>
@@ -116,6 +121,13 @@
           oncontextmenu={(e) => onmenu(e, album)}
         >
           <td class="name">
+            {#if covers}
+              {#if album.cover}
+                <img class="thumb" src={album.cover} alt="" loading="lazy" />
+              {:else}
+                <span class="thumb blank" aria-hidden="true">♫</span>
+              {/if}
+            {/if}
             {album.title}
             {#if album.spotify}
               <button
@@ -124,8 +136,10 @@
                 aria-label={signedIn ? "Play" : "Open in Spotify"}
                 onmousedown={(e) => e.stopPropagation()}
                 ondblclick={(e) => e.stopPropagation()}
-                onclick={() => onplay(album)}>{signedIn ? "▶" : "➜"}</button
+                onclick={() => onplay(album)}
               >
+                <svg viewBox="0 0 8 9" width="6" height="7" aria-hidden="true"><path d="M0 0l8 4.5L0 9z" fill="currentColor" /></svg>
+              </button>
             {/if}
           </td>
           <td class="artist">{album.artists.join(", ")}</td>
@@ -152,7 +166,7 @@
     overflow: auto;
     height: 100%;
     /* Keep the stripes going below the last row, like iTunes. */
-    background: repeating-linear-gradient(#fff 0 18px, var(--stripe) 18px 36px);
+    background: repeating-linear-gradient(#fff 0 var(--row), var(--stripe) var(--row) calc(2 * var(--row)));
     background-attachment: local;
     background-position: 0 18px;
     user-select: none;
@@ -214,11 +228,11 @@
     width: 18%;
   }
   td {
-    /* Rows must be exactly 18px (ROW) for the virtual scrolling. */
+    /* Rows must be exactly ROW (--row) tall for the virtual scrolling. */
     box-sizing: border-box;
-    height: 18px;
-    max-height: 18px;
-    line-height: 18px;
+    height: var(--row);
+    max-height: var(--row);
+    line-height: var(--row);
     padding: 0 5px;
     white-space: nowrap;
     overflow: hidden;
@@ -242,24 +256,45 @@
     background: var(--select);
     color: #fff;
   }
+  .thumb {
+    display: inline-block;
+    width: 38px;
+    height: 38px;
+    margin-right: 7px;
+    vertical-align: middle;
+    object-fit: cover;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+    background: #eee;
+  }
+  .thumb.blank {
+    line-height: 38px;
+    text-align: center;
+    color: #aaa;
+  }
+  /* A round play button, like iTunes' arrow links. */
   .go {
     display: none;
-    margin-left: 4px;
-    padding: 0 3px;
-    border-radius: 7px;
+    place-items: center;
+    width: 14px;
+    height: 14px;
+    margin-left: 5px;
+    /* Nudges the triangle right so it looks centered. */
+    padding: 0 0 0 1px;
+    border-radius: 50%;
     background: #9a9a9a;
     color: #fff;
     border: none;
-    font: inherit;
-    font-size: 9px;
     cursor: default;
-    /* Without this, its smaller font makes the line, and so the row, taller. */
-    line-height: 1;
-    vertical-align: middle;
+    /* Centered in the row: "middle" follows the text and sits too low. */
+    vertical-align: top;
+    margin-top: calc((var(--row) - 14px) / 2);
+  }
+  .go:hover {
+    background: #7d7d7d;
   }
   tr:hover .go,
   tr.selected .go {
-    display: inline;
+    display: inline-grid;
   }
   .scroller:focus-within tr.selected .go {
     background: #fff;
