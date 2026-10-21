@@ -104,6 +104,7 @@
       <table>
         <!-- Widths here: with a fixed layout, the first row (maybe a disc row) would set them. -->
         <colgroup>
+          <col class="state" />
           <col class="num" />
           <col />
           <col class="artist" />
@@ -113,7 +114,7 @@
           {#each tracks as track, i (track.uri + i)}
             {@const playing = track.uri === playingUri}
             {#if discs && (i === 0 || tracks[i - 1].disc !== track.disc)}
-              <tr class="disc"><td colspan="4">Disc {track.disc}</td></tr>
+              <tr class="disc"><td colspan="5">Disc {track.disc}</td></tr>
             {/if}
             <tr
               class:selected={i === selected}
@@ -122,9 +123,18 @@
               onmousedown={() => (selected = i)}
               ondblclick={() => onplay(track.uri)}
             >
-              <td class="num">
-                {#if playing}<span class="speaker" title={isPlaying ? "Playing" : "Paused"}>{isPlaying ? "🔊" : "🔈"}</span>{:else}{track.number}{/if}
+              <td class="state">
+                {#if playing}
+                  <!-- Like iTunes: a speaker left of the number, with sound waves while playing. -->
+                  <svg class="speaker" viewBox="0 0 13 10" width="13" height="10" role="img" aria-label={isPlaying ? "Playing" : "Paused"}>
+                    <path d="M0 3.3h2.6L6 .6v8.8L2.6 6.7H0z" fill="currentColor" />
+                    {#if isPlaying}
+                      <path d="M8 3.2a2.4 2.4 0 0 1 0 3.6M10 1.4a5 5 0 0 1 0 7.2" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+                    {/if}
+                  </svg>
+                {/if}
               </td>
+              <td class="num">{track.number}</td>
               <td class="name">{track.name}</td>
               <td class="artist">
                 {track.artists.some((a) => !albumArtists.has(a)) ? track.artists.join(", ") : ""}
@@ -215,8 +225,11 @@
   tbody tr:nth-child(even) td {
     background: var(--stripe);
   }
+  col.state {
+    width: 20px;
+  }
   col.num {
-    width: 36px;
+    width: 30px;
   }
   col.artist {
     width: 30%;
@@ -248,8 +261,15 @@
     background: var(--select) !important;
     color: #fff;
   }
+  td.state {
+    padding: 0 0 0 6px;
+  }
   .speaker {
-    font-size: 10px;
+    display: block;
+    color: var(--select);
+  }
+  .tracks:focus tr.selected .speaker {
+    color: #fff;
   }
   .empty {
     margin: 24px;
