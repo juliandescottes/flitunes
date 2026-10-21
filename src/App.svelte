@@ -91,13 +91,13 @@
   // The library album that is playing, for the display's "show tracks"
   // button. Matched by what was played (the link FliTunes played), else by
   // the track's album, which Spotify may report as another edition. Only
-  // albums have a track list, and it's hidden while already shown.
+  // albums have a track list.
   const playingAlbum = $derived.by(() => {
     const playback = player.playback;
     if (!playback?.track) return null;
     const uris = [playback.contextUri, playback.track.albumUri].filter(Boolean);
     const album = uris.map((uri) => library.albums.find((a) => a.spotify === uri)).find(Boolean);
-    return album && hasTrackList(album.spotify) && album.id !== tracksAlbum?.id ? album : null;
+    return album && hasTrackList(album.spotify) ? album : null;
   });
   const infoAlbums = $derived(infoIds.flatMap((id) => library.getAlbum(id) ?? []));
   const infoIndex = $derived(infoIds.length === 1 ? result.albums.findIndex((a) => a.id === infoIds[0]) : -1);
@@ -531,6 +531,7 @@
     onnext={() => player.next()}
     onprevious={() => player.previous()}
     {playingAlbum}
+    playingShown={playingAlbum !== null && playingAlbum.id === tracksAlbum?.id}
     onshowplaying={() => playingAlbum && showTracks(playingAlbum)}
     onspotify={() => (spotify.status === "signed-in" ? spotify.signOut() : spotify.signIn())}
     bind:view

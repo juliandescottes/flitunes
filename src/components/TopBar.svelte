@@ -19,6 +19,7 @@
     onnext,
     onprevious,
     playingAlbum,
+    playingShown,
     onshowplaying,
     view = $bindable(),
     linkedOnly = $bindable(),
@@ -40,6 +41,8 @@
     onprevious: () => void;
     /** The library album of the playing track, if it's in the library. */
     playingAlbum: Album | null;
+    /** The playing album's tracks are what the main view shows. */
+    playingShown: boolean;
     /** Shows the playing album's tracks. */
     onshowplaying: () => void;
     view: ViewMode;
@@ -86,7 +89,7 @@
     {/if}
   </div>
 
-  <div class="lcd" class:with-disc={track && playingAlbum} aria-live="polite">
+  <div class="lcd" class:with-disc={track && playback} aria-live="polite">
     {#if track && playback}
       <!-- Like iTunes, the display shows what's playing. -->
       <div class="lcd-title">{track.name}</div>
@@ -96,18 +99,23 @@
         <span class="bar"><span class="fill" style:width="{(progress / Math.max(1, track.durationMs)) * 100}%"></span></span>
         <span>-{formatTime(track.durationMs - progress)}</span>
       </div>
-      {#if playingAlbum}
-        <button class="show-playing" title="Show the album's tracks" aria-label="Show the tracks of {playingAlbum.title}" onclick={onshowplaying}>
-          <svg viewBox="0 0 14 14" width="16" height="16" aria-hidden="true">
-            <path
-              d="M7 .5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zm0 4.6a1.9 1.9 0 1 1 0 3.8 1.9 1.9 0 0 1 0-3.8z"
-              fill="currentColor"
-              fill-rule="evenodd"
-            />
-            <path d="M7 2.4a4.6 4.6 0 0 1 4.6 4.6" fill="none" stroke="#fff" stroke-opacity="0.55" stroke-width="0.9" />
-          </svg>
-        </button>
-      {/if}
+      <!-- Always there while a track plays (dimmed when it can't be used), so the display doesn't shift. -->
+      <button
+        class="show-playing"
+        disabled={!playingAlbum || playingShown}
+        title={!playingAlbum ? "This album isn't in your library" : playingShown ? "Showing this album's tracks" : "Show the album's tracks"}
+        aria-label="Show the playing album's tracks"
+        onclick={onshowplaying}
+      >
+        <svg viewBox="0 0 14 14" width="16" height="16" aria-hidden="true">
+          <path
+            d="M7 .5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zm0 4.6a1.9 1.9 0 1 1 0 3.8 1.9 1.9 0 0 1 0-3.8z"
+            fill="currentColor"
+            fill-rule="evenodd"
+          />
+          <path d="M7 2.4a4.6 4.6 0 0 1 4.6 4.6" fill="none" stroke="#fff" stroke-opacity="0.55" stroke-width="0.9" />
+        </svg>
+      </button>
     {:else if album}
       <div class="lcd-title">{album.title}</div>
       <div class="lcd-sub">{album.artists.join(", ")}{album.year ? ` — ${album.year}` : ""}</div>
@@ -278,8 +286,11 @@
     color: #7d6670;
     cursor: default;
   }
-  .show-playing:hover {
+  .show-playing:hover:not(:disabled) {
     color: var(--select);
+  }
+  .show-playing:disabled {
+    opacity: 0.35;
   }
   .lcd > div {
     max-width: 100%;
