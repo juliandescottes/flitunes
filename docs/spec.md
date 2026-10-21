@@ -62,7 +62,7 @@ The target is the iTunes 10 window, with albums instead of songs.
 4. **Ratings**: 1–5 stars, editable inline in the list like iTunes.
 5. **Search**: the top-right field filters instantly.
 6. **Add / import**
-   - "Add to Library…": paste a Spotify album link. oEmbed prefills the
+   - "+ Add Album(s)" (bottom of the sidebar): paste a Spotify album link. oEmbed prefills the
      title and cover (§7); artist, year and genres are typed by hand. No
      metadata lookup service. Manual entry with no link works too.
      A playlist link is accepted as a fallback for albums Spotify doesn't

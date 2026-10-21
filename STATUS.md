@@ -7,10 +7,13 @@ _Last updated: 2026-10-21_
 The MVP is done (milestones 1–4): storage, adding albums, the iTunes 10
 window, and Get Info editing.
 
-- Window (`src/App.svelte` + `src/components/`): toolbar (Save/Export/Import,
-  LCD, List/Grid, search), source list (Music, Recently Added = last 30 days,
-  Playlists = tags), Genres | Artists | Albums column browser, striped list
-  or cover grid, status bar with "+". Look and colors live in `src/app.css`.
+- Window (`src/App.svelte` + `src/components/`): toolbar (playback buttons
+  when signed in to Spotify, LCD, Spotify and link toggles, List/Grid,
+  search), source list (Music, Recently Added = last 30 days, Playlists =
+  tags) ending with "+ Add Album(s)" and Save / Export / Import, Genres |
+  Artists | Albums column browser, striped list or cover grid, status bar
+  with the album count (and the sidebar's buttons on narrow screens). Look
+  and colors live in `src/app.css`.
 - Selection: click, ⌘/Ctrl-click to toggle, Shift-click or Shift-arrows for a
   range, ⌘A selects all. Enter or double-click opens the album (its tracks
   when signed in to Spotify, else the Spotify app), Delete removes.
@@ -39,8 +42,8 @@ window, and Get Info editing.
 - Browse logic is pure and tested in `src/lib/browse.ts`; the store gained
   `updateAlbums` (bulk) and `mergeGenre`.
 - Since then (PRs #3–#11): the column browser is resizable; playlist links
-  are accepted; a toolbar toggle hides albums without a Spotify link; "+ Add to
-  Library" sits at the bottom of the sidebar; double-click or Enter in the
+  are accepted; a toolbar toggle hides albums without a Spotify link; "+ Add Album(s)"
+  and Save / Export / Import sit at the bottom of the sidebar; double-click or Enter in the
   Albums column opens the album; the app is called **FliTunes**, tinted pink,
   with a pink note favicon.
 - Performance (PR #11): lists, grid and column browser only render the rows in

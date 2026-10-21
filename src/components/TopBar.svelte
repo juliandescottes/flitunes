@@ -11,7 +11,6 @@
     album,
     selectedCount,
     unsavedChanges,
-    canSaveToRepo,
     spotifyStatus,
     spotifyUser,
     onspotify,
@@ -22,15 +21,11 @@
     view = $bindable(),
     linkedOnly = $bindable(),
     search = $bindable(),
-    onsave,
-    ondownload,
-    onimport,
   }: {
     /** The selected album when exactly one is selected. */
     album: Album | null;
     selectedCount: number;
     unsavedChanges: number;
-    canSaveToRepo: boolean;
     spotifyStatus: SpotifyStatus;
     /** Display name of the signed-in Spotify account. */
     spotifyUser: string | null;
@@ -45,9 +40,6 @@
     /** Hide albums without a Spotify link. */
     linkedOnly: boolean;
     search: string;
-    onsave: () => void;
-    ondownload: () => void;
-    onimport: () => void;
   } = $props();
 
   // A clock for the progress bar, ticking only while something plays.
@@ -86,17 +78,6 @@
         </button>
       </div>
     {/if}
-    {#if canSaveToRepo}
-      <button
-        class="aqua"
-        class:default={unsavedChanges > 0}
-        onclick={onsave}
-        disabled={unsavedChanges === 0}
-        title="Write library.json (⌘S)">Save</button
-      >
-    {/if}
-    <button class="aqua" onclick={ondownload} title="Download library.json">Export</button>
-    <button class="aqua" onclick={onimport} title="Replace the library with a library.json file">Import</button>
   </div>
 
   <div class="lcd" aria-live="polite">

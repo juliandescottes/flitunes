@@ -469,7 +469,6 @@
     album={selectedAlbums.length === 1 ? selectedAlbums[0] : null}
     selectedCount={selectedAlbums.length}
     unsavedChanges={library.unsavedChanges}
-    canSaveToRepo={library.canSaveToRepo}
     spotifyStatus={spotify.status}
     spotifyUser={spotify.user}
     playback={player.playback}
@@ -480,9 +479,6 @@
     bind:view
     bind:linkedOnly
     bind:search
-    onsave={save}
-    ondownload={download}
-    onimport={() => fileInput.click()}
   />
   <input type="file" accept="application/json,.json" hidden bind:this={fileInput} onchange={importFile} />
 
@@ -508,6 +504,11 @@
       bind:source={() => source, selectSource}
       playlists={playlists(library.albums)}
       onadd={() => (addOpen = true)}
+      unsavedChanges={library.unsavedChanges}
+      canSaveToRepo={library.canSaveToRepo}
+      onsave={save}
+      ondownload={download}
+      onimport={() => fileInput.click()}
     />
 
     <div class="content">
@@ -579,8 +580,8 @@
 
   <footer class="status">
     <div class="buttons">
-      <!-- Narrow windows hide the source list and its Add button. -->
-      <button class="square narrow-add" title="Add to Library…" aria-label="Add to Library" onclick={() => (addOpen = true)}
+      <!-- Narrow windows hide the source list and its buttons: they show here instead. -->
+      <button class="square narrow" title="Add Album(s)…" aria-label="Add Album(s)" onclick={() => (addOpen = true)}
         >+</button
       >
     </div>
@@ -590,7 +591,13 @@
       {#if selectedAlbums.length > 1}· {selectedAlbums.length} selected{/if}
       {#if linkedOnly}· albums without a Spotify link hidden{/if}
     </div>
-    <div class="buttons"></div>
+    <div class="buttons end">
+      {#if library.canSaveToRepo}
+        <button class="aqua narrow" disabled={library.unsavedChanges === 0} onclick={save}>Save</button>
+      {/if}
+      <button class="aqua narrow" onclick={download}>Export</button>
+      <button class="aqua narrow" onclick={() => fileInput.click()}>Import</button>
+    </div>
   </footer>
 </div>
 
@@ -714,8 +721,13 @@
   .square:active {
     background: linear-gradient(#bdbdbd, #f1e2e8);
   }
-  .narrow-add {
+  .narrow {
     display: none;
+  }
+  .buttons.end {
+    display: flex;
+    justify-content: flex-end;
+    gap: 4px;
   }
   /* Sheets slide down from the toolbar. */
   .sheet {
@@ -763,7 +775,7 @@
     .body :global(.sources) {
       display: none;
     }
-    .narrow-add {
+    .narrow {
       display: block;
     }
   }
