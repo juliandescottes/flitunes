@@ -75,3 +75,39 @@ async function fetchAll(session: SpotifySession, albumUri: string): Promise<Trac
   }
   return tracks;
 }
+
+/** The year from a Spotify release date ("1959-08-17", "1959-08" or "1959"). */
+export function releaseYear(album: unknown): number | null {
+  const date = (album as { release_date?: unknown } | null)?.release_date;
+  const year = typeof date === "string" ? Number.parseInt(date.slice(0, 4), 10) : NaN;
+  return Number.isFinite(year) ? year : null;
+}
+
+const years = new Map<string, Promise<number | null>>();
+
+/**
+ * An album's release year from Spotify (a spotify:album: URI), cached for the
+ * session: the fallback when the library has no year. Null if it fails.
+ */
+export function albumYear(session: SpotifySession, albumUri: string): Promise<number | null> {
+  let year = years.get(albumUri);
+  if (!year) {
+    const id = albumUri.split(":")[2];
+    year = session.api(`/albums/${encodeURIComponent(id)}`).then(releaseYear, () => {
+      years.delete(albumUri);
+      return null;
+    });
+    years.set(albumUri, year);
+  }
+  return year;
+}
+
+/**
+ * The artists shown for a track: the album's curated artists when the track
+ * is only by them (or Spotify lists no one), else Spotify's own (features,
+ * compilations).
+ */
+export function trackArtists(track: Track, albumArtists: string[]): string[] {
+  const curated = new Set(albumArtists);
+  return track.artists.every((a) => curated.has(a)) ? albumArtists : track.artists;
+}

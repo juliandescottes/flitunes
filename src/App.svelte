@@ -13,14 +13,14 @@
   import GetInfo from "./components/GetInfo.svelte";
   import SourceList from "./components/SourceList.svelte";
   import TopBar from "./components/TopBar.svelte";
-  import { browse, playlists, typeAhead, type SortDir, type SortKey, type Source, type ViewMode } from "./lib/browse.ts";
+  import { browse, genreName, playlists, typeAhead, type SortDir, type SortKey, type Source, type ViewMode } from "./lib/browse.ts";
   import { LibraryDB } from "./lib/db.ts";
   import { parseHash, replacesEntry, routeToHash, type Route } from "./lib/route.ts";
   import { Library } from "./lib/library.svelte.ts";
   import { findGenreByName, type Album } from "./lib/model.ts";
   import { downloadLibraryFile, repoSource } from "./lib/persistence.ts";
   import { SpotifyPlayer } from "./lib/spotify-player.svelte.ts";
-  import { albumTracks, hasTrackList } from "./lib/spotify-tracks.ts";
+  import { albumTracks, albumYear, hasTrackList } from "./lib/spotify-tracks.ts";
   import { browserSession } from "./lib/spotify-session.svelte.ts";
 
   const library = new Library(new LibraryDB(), repoSource);
@@ -607,7 +607,9 @@
           {@const uri = tracksAlbum.spotify}
           <AlbumTracks
             album={tracksAlbum}
+            genre={genreName(tracksAlbum, genreNames)}
             load={() => albumTracks(spotify, uri)}
+            loadYear={() => albumYear(spotify, uri)}
             playingUri={player.playback?.track?.uri ?? null}
             isPlaying={player.playback?.isPlaying ?? false}
             onplay={(trackUri) => player.play(uri, trackUri)}

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { SpotifySession } from "./spotify-session.svelte.ts";
-import { albumTracks, hasTrackList, parseTracks } from "./spotify-tracks.ts";
+import { albumTracks, albumYear, hasTrackList, parseTracks, releaseYear, trackArtists, type Track } from "./spotify-tracks.ts";
 
 const item = (n: number) => ({
   uri: `spotify:track:t${n}`,
@@ -58,5 +58,41 @@ describe("albumTracks", () => {
     await expect(albumTracks(session, "spotify:album:a2")).rejects.toThrow("rate limited");
     fail = false;
     expect(await albumTracks(session, "spotify:album:a2")).toHaveLength(1);
+  });
+});
+
+describe("releaseYear", () => {
+  it("reads the year at any precision", () => {
+    expect(releaseYear({ release_date: "1959-08-17" })).toBe(1959);
+    expect(releaseYear({ release_date: "1971-03" })).toBe(1971);
+    expect(releaseYear({ release_date: "1999" })).toBe(1999);
+    expect(releaseYear({})).toBeNull();
+    expect(releaseYear(null)).toBeNull();
+  });
+});
+
+describe("albumYear", () => {
+  it("is cached, and null after a failure", async () => {
+    let calls = 0;
+    const ok = { async api() { calls++; return { release_date: "1998-01-16" }; } } as unknown as SpotifySession;
+    expect(await albumYear(ok, "spotify:album:y1")).toBe(1998);
+    expect(await albumYear(ok, "spotify:album:y1")).toBe(1998);
+    expect(calls).toBe(1);
+    const failing = { async api() { throw new Error("Spotify: HTTP 403"); } } as unknown as SpotifySession;
+    expect(await albumYear(failing, "spotify:album:y2")).toBeNull();
+  });
+});
+
+describe("trackArtists", () => {
+  const track = (artists: string[]): Track => ({ uri: "spotify:track:t", disc: 1, number: 1, name: "T", artists, durationMs: 0 });
+
+  it("uses the curated artists when the track is only by them", () => {
+    expect(trackArtists(track(["Air"]), ["Air"])).toEqual(["Air"]);
+    expect(trackArtists(track([]), ["Air"])).toEqual(["Air"]);
+  });
+
+  it("uses Spotify's artists for features and compilations", () => {
+    expect(trackArtists(track(["Air", "Beth Hirsch"]), ["Air"])).toEqual(["Air", "Beth Hirsch"]);
+    expect(trackArtists(track(["Daft Punk"]), ["Various Artists"])).toEqual(["Daft Punk"]);
   });
 });
