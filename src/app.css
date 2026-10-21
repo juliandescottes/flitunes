@@ -1,22 +1,26 @@
-/* iTunes 10 (2010, Mac OS X 10.6) look, tinted pink. */
+/* iTunes 10 (2010, Mac OS X 10.6) look, tinted pink by default. Tinted
+   colors take their hue from --hue and scale their chroma by --tint: the
+   themes in src/lib/themes.ts set those two. */
 :root {
+  --hue: 352;
+  --tint: 1;
   --font: "Lucida Grande", "Lucida Sans Unicode", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --text: #000;
-  --text-dim: #7d6670;
-  --toolbar: linear-gradient(#f3e6ec, #d6bcc8);
-  --toolbar-border: #8f7381;
-  --header: linear-gradient(#ffffff, #f1e2e8);
-  --header-border: #c3a8b4;
-  --source-bg: #f2e1e8;
-  --source-heading: #8d6a7a;
-  --stripe: #fcf2f6;
-  --rule: #eddce3;
+  --text-dim: oklch(53.6% calc(0.033 * var(--tint)) var(--hue));
+  --toolbar: linear-gradient(oklch(93.7% calc(0.016 * var(--tint)) var(--hue)), oklch(82.1% calc(0.034 * var(--tint)) var(--hue)));
+  --toolbar-border: oklch(58.7% calc(0.040 * var(--tint)) var(--hue));
+  --header: linear-gradient(#ffffff, oklch(92.6% calc(0.018 * var(--tint)) var(--hue)));
+  --header-border: oklch(75.9% calc(0.035 * var(--tint)) var(--hue));
+  --source-bg: oklch(92.5% calc(0.021 * var(--tint)) var(--hue));
+  --source-heading: oklch(56.4% calc(0.050 * var(--tint)) var(--hue));
+  --stripe: oklch(97.0% calc(0.012 * var(--tint)) var(--hue));
+  --rule: oklch(91.0% calc(0.021 * var(--tint)) var(--hue));
   /* Selection: pink when the pane has focus, muted pink otherwise. */
-  --select: #d9457f;
-  --select-inactive: #e2ccd5;
-  --select-source: linear-gradient(#f28db6, #d3487f);
-  --select-source-inactive: linear-gradient(#d3afbf, #b88d9f);
-  --lcd: linear-gradient(#fffafb, #f1e3e8);
+  --select: oklch(61.5% calc(0.190 * var(--tint)) var(--hue));
+  --select-inactive: oklch(86.6% calc(0.027 * var(--tint)) var(--hue));
+  --select-source: linear-gradient(oklch(76.2% calc(0.131 * var(--tint)) var(--hue)), oklch(60.9% calc(0.180 * var(--tint)) var(--hue)));
+  --select-source-inactive: linear-gradient(oklch(79.0% calc(0.047 * var(--tint)) var(--hue)), oklch(69.0% calc(0.057 * var(--tint)) var(--hue)));
+  --lcd: linear-gradient(oklch(98.9% calc(0.005 * var(--tint)) var(--hue)), oklch(92.8% calc(0.017 * var(--tint)) var(--hue)));
   color-scheme: light;
 }
 
@@ -42,16 +46,16 @@ button {
 .aqua {
   font-size: 11px;
   padding: 2px 10px;
-  border: 1px solid #8f7783;
+  border: 1px solid oklch(59.6% calc(0.034 * var(--tint)) var(--hue));
   border-radius: 11px;
-  background: linear-gradient(#fffbfc, #e8d6de);
+  background: linear-gradient(oklch(99.1% calc(0.004 * var(--tint)) var(--hue)), oklch(89.3% calc(0.022 * var(--tint)) var(--hue)));
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
   color: #222;
   cursor: default;
 }
 
 .aqua:active:not(:disabled) {
-  background: linear-gradient(#ddc7d1, #f3e7ec);
+  background: linear-gradient(oklch(85.1% calc(0.028 * var(--tint)) var(--hue)), oklch(93.9% calc(0.015 * var(--tint)) var(--hue)));
 }
 
 .aqua:disabled {
@@ -59,6 +63,6 @@ button {
 }
 
 .aqua.default {
-  border-color: #b23d6f;
-  background: linear-gradient(#fbcfe1, #f394bc 50%, #ea74a5 51%, #f8bdd5);
+  border-color: oklch(53.9% calc(0.159 * var(--tint)) var(--hue));
+  background: linear-gradient(oklch(89.7% calc(0.054 * var(--tint)) var(--hue)), oklch(77.6% calc(0.123 * var(--tint)) var(--hue)) 50%, oklch(70.9% calc(0.154 * var(--tint)) var(--hue)) 51%, oklch(85.8% calc(0.074 * var(--tint)) var(--hue)));
 }

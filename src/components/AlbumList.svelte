@@ -189,7 +189,7 @@
     text-align: left;
   }
   th.sorted {
-    background: linear-gradient(#f7d3e2, #e8a6c2);
+    background: linear-gradient(oklch(90.1% calc(0.045 * var(--tint)) var(--hue)), oklch(79.6% calc(0.085 * var(--tint)) var(--hue)));
   }
   th button {
     display: flex;

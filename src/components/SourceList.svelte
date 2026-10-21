@@ -4,6 +4,7 @@
   // The bottom holds the library actions (Add, Save, Export, Import), clear of
   // the window's rounded corner.
   import type { Source } from "../lib/browse.ts";
+  import type { Theme } from "../lib/themes.ts";
 
   let {
     source = $bindable(),
@@ -15,6 +16,8 @@
     onsave,
     ondownload,
     onimport,
+    theme,
+    ontheme,
   }: {
     source: Source;
     playlists: string[];
@@ -26,6 +29,9 @@
     onsave: () => void;
     ondownload: () => void;
     onimport: () => void;
+    theme: Theme;
+    /** Opens the theme menu, above the given button. */
+    ontheme: (button: HTMLElement) => void;
   } = $props();
 
   const isSelected = (s: Source) =>
@@ -88,6 +94,13 @@
       {/if}
       <button class="aqua" onclick={ondownload} title="Download library.json">Export</button>
       <button class="aqua" onclick={onimport} title="Replace the library with a library.json file">Import</button>
+      <button
+        class="aqua swatch"
+        title="Theme: {theme.name}"
+        aria-label="Theme"
+        aria-haspopup="menu"
+        onclick={(e) => ontheme(e.currentTarget)}
+      ><span style:--swatch-hue={theme.hue} style:--swatch-tint={theme.tint}></span></button>
     </div>
 </div>
 </div>
@@ -98,7 +111,7 @@
     flex-direction: column;
     min-height: 0;
     background: var(--source-bg);
-    border-right: 1px solid #c6a9b6;
+    border-right: 1px solid oklch(76.4% calc(0.038 * var(--tint)) var(--hue));
   }
   nav {
     flex: 1;
@@ -123,6 +136,20 @@
   .file button {
     flex: 1;
     min-width: 0;
+  }
+  .file .swatch {
+    flex: none;
+    width: 22px;
+    display: grid;
+    place-items: center;
+  }
+  /* The theme's selection color. */
+  .swatch span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    background: oklch(61.5% calc(0.19 * var(--swatch-tint)) var(--swatch-hue));
   }
   h3 {
     margin: 10px 0 2px 10px;
@@ -156,13 +183,13 @@
   }
   .icon {
     flex: none;
-    fill: #8a6577;
+    fill: oklch(55.0% calc(0.054 * var(--tint)) var(--hue));
   }
   .icon.recent {
     fill: #8d6fc4;
   }
   .icon.triage {
-    fill: #c0607f;
+    fill: oklch(61.2% calc(0.127 * var(--tint)) var(--hue));
   }
   /* iTunes 10's count badge, as on Podcasts. */
   .count {
@@ -170,7 +197,7 @@
     flex: none;
     padding: 0 6px;
     border-radius: 8px;
-    background: #9d8592;
+    background: oklch(64.3% calc(0.034 * var(--tint)) var(--hue));
     color: #fff;
     font-size: 10px;
     font-weight: bold;

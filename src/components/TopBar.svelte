@@ -270,11 +270,11 @@
     width: 30px;
     height: 30px;
     padding: 0;
-    border: 1px solid #8f7783;
+    border: 1px solid oklch(59.6% calc(0.034 * var(--tint)) var(--hue));
     border-radius: 50%;
-    background: linear-gradient(#fffbfc, #e3cfd8);
+    background: linear-gradient(oklch(99.1% calc(0.004 * var(--tint)) var(--hue)), oklch(87.3% calc(0.025 * var(--tint)) var(--hue)));
     box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6);
-    color: #3d3036;
+    color: oklch(32.6% calc(0.021 * var(--tint)) var(--hue));
     cursor: default;
   }
   .round.big {
@@ -287,11 +287,11 @@
     margin-left: 4px;
   }
   .round:active {
-    background: linear-gradient(#ddc7d1, #f3e7ec);
+    background: linear-gradient(oklch(85.1% calc(0.028 * var(--tint)) var(--hue)), oklch(93.9% calc(0.015 * var(--tint)) var(--hue)));
   }
   .lcd {
     height: 40px;
-    border: 1px solid #9b8590;
+    border: 1px solid oklch(64.0% calc(0.031 * var(--tint)) var(--hue));
     border-radius: 5px;
     background: var(--lcd);
     box-shadow:
@@ -326,7 +326,7 @@
     place-items: center;
     border: none;
     background: none;
-    color: #7d6670;
+    color: oklch(53.6% calc(0.033 * var(--tint)) var(--hue));
     cursor: default;
   }
   .show-playing:hover:not(:disabled) {
@@ -358,15 +358,15 @@
   .bar {
     flex: 1;
     height: 5px;
-    border: 1px solid #7d6670;
+    border: 1px solid oklch(53.6% calc(0.033 * var(--tint)) var(--hue));
     border-radius: 3px;
-    background: #fffafb;
+    background: oklch(98.9% calc(0.005 * var(--tint)) var(--hue));
     overflow: hidden;
   }
   .fill {
     display: block;
     height: 100%;
-    background: #7d6670;
+    background: oklch(53.6% calc(0.033 * var(--tint)) var(--hue));
   }
   .right {
     display: flex;
@@ -376,7 +376,7 @@
   }
   .segmented {
     display: flex;
-    border: 1px solid #8f7783;
+    border: 1px solid oklch(59.6% calc(0.034 * var(--tint)) var(--hue));
     border-radius: 4px;
     overflow: hidden;
   }
@@ -385,16 +385,16 @@
     border: none;
     height: 20px;
     padding: 0 9px;
-    background: linear-gradient(#fffbfc, #e3cfd8);
+    background: linear-gradient(oklch(99.1% calc(0.004 * var(--tint)) var(--hue)), oklch(87.3% calc(0.025 * var(--tint)) var(--hue)));
     color: #444;
     display: grid;
     place-items: center;
   }
   .segmented button + button {
-    border-left: 1px solid #8f7783;
+    border-left: 1px solid oklch(59.6% calc(0.034 * var(--tint)) var(--hue));
   }
   .segmented button.on {
-    background: linear-gradient(#a37a8c, #c7a3b3);
+    background: linear-gradient(oklch(62.5% calc(0.057 * var(--tint)) var(--hue)), oklch(75.3% calc(0.047 * var(--tint)) var(--hue)));
     color: #fff;
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
   }
@@ -403,7 +403,7 @@
     align-items: center;
     gap: 4px;
     background: #fff;
-    border: 1px solid #9b8590;
+    border: 1px solid oklch(64.0% calc(0.031 * var(--tint)) var(--hue));
     border-radius: 11px;
     box-sizing: border-box;
     height: 22px;
@@ -432,15 +432,15 @@
     padding: 0;
     border: none;
     border-radius: 50%;
-    background: #a8a0a4;
+    background: oklch(71.4% calc(0.011 * var(--tint)) var(--hue));
     color: #fff;
     cursor: default;
   }
   .clear:hover {
-    background: #8a8286;
+    background: oklch(61.5% calc(0.011 * var(--tint)) var(--hue));
   }
   .clear:active {
-    background: #6f686b;
+    background: oklch(52.5% calc(0.010 * var(--tint)) var(--hue));
   }
   @media (max-width: 700px) {
     .toolbar {

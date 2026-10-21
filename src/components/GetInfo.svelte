@@ -45,8 +45,8 @@
     position: relative;
     text-align: center;
     padding: 3px 60px;
-    background: linear-gradient(#f3e6ec, #d6bdc8);
-    border-bottom: 1px solid #9b8590;
+    background: linear-gradient(oklch(93.7% calc(0.016 * var(--tint)) var(--hue)), oklch(82.3% calc(0.032 * var(--tint)) var(--hue)));
+    border-bottom: 1px solid oklch(64.0% calc(0.031 * var(--tint)) var(--hue));
     font-size: 13px;
     white-space: nowrap;
     overflow: hidden;
