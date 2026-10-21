@@ -49,7 +49,8 @@ window, and Get Info editing.
   column browser and the toolbar display can't be text-selected.
 - Album List view (like iTunes 10's): a third button between List and Grid
   shows the list with taller rows and each album's cover on the left
-  (`AlbumList.svelte` with `covers`).
+  (`AlbumList.svelte` with `covers`). It is the default view; List stays for
+  dense curating.
 - Performance (PR #11): lists, grid and column browser only render the rows in
   view (`src/lib/virtual.ts`), and `browse()` sorts the library once and
   filters afterwards. With 3000 albums every interaction takes under 25 ms.

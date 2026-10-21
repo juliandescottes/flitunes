@@ -47,7 +47,7 @@
   let albumTitle = $state<string | null>(null);
   let sortKey = $state<SortKey>(prefs.sortKey ?? "artist");
   let sortDir = $state<SortDir>(prefs.sortDir ?? "asc");
-  let view = $state<ViewMode>(prefs.view ?? "list");
+  let view = $state<ViewMode>(prefs.view ?? "albums");
   let linkedOnly = $state(prefs.linkedOnly === true);
   let browserHeight = $state(typeof prefs.browserHeight === "number" ? prefs.browserHeight : 160);
 
