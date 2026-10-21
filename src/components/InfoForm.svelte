@@ -4,6 +4,7 @@
   import { untrack } from "svelte";
   import type { Library } from "../lib/library.svelte.ts";
   import type { Album } from "../lib/model.ts";
+  import { coverSrc } from "../lib/persistence.ts";
   import { fetchSpotifyInfo, parseSpotifyLink, spotifyWebUrl } from "../lib/spotify.ts";
   import ChipInput from "./ChipInput.svelte";
   import { genreChips, joinArtists, parseYear, playlistChips, splitArtists } from "./fields.ts";
@@ -102,7 +103,7 @@
 
 <form onsubmit={submit}>
   <div class="summary">
-    {#if cover.trim()}<img src={cover} alt="" />{:else}<div class="blank">♫</div>{/if}
+    {#if cover.trim()}<img src={coverSrc(cover.trim())} alt="" />{:else}<div class="blank">♫</div>{/if}
     <div>
       <div class="big">{title || "Untitled"}</div>
       <div>{artists}</div>
@@ -148,10 +149,11 @@
     {:else}
       <div class="artwork">
         <div class="preview">
-          {#if cover.trim()}<img src={cover} alt="Cover" />{:else}<div class="blank">♫</div>{/if}
+          {#if cover.trim()}<img src={coverSrc(cover.trim())} alt="Cover" />{:else}<div class="blank">♫</div>{/if}
         </div>
         <label for="info-cover">Cover URL</label>
-        <input id="info-cover" type="url" bind:value={cover} />
+        <!-- Text, not url: a cover stored with the library is a covers/ path. -->
+        <input id="info-cover" type="text" spellcheck="false" bind:value={cover} />
         <div class="row">
           <button type="button" class="aqua" disabled={!spotify || fetchingCover} onclick={useSpotifyCover}>
             {fetchingCover ? "Fetching…" : "Use Spotify Cover"}

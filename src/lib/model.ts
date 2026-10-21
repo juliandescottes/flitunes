@@ -9,6 +9,27 @@ export const VARIOUS_ARTISTS = "Various Artists";
  */
 export const TRIAGE_TAG = "triage";
 
+/**
+ * A cover stored with the library, in the covers/ folder next to
+ * library.json, e.g. "covers/01M54N5ZE5HDRAHCX17FCR57DR.jpg".
+ */
+const LOCAL_COVER = /^covers\/[A-Za-z0-9_-]+\.(jpg|png|webp)$/;
+
+/** A cover is a file in the library's covers/ folder, or an https: URL. */
+export function isValidCover(cover: string): boolean {
+  return LOCAL_COVER.test(cover) || /^https:\/\/[^\s]+$/.test(cover);
+}
+
+/** Whether a cover is a file stored with the library (not a URL). */
+export function isLocalCover(cover: string): boolean {
+  return LOCAL_COVER.test(cover);
+}
+
+/** The Spotify link of an album: an album or playlist URI. */
+export function isValidSpotifyUri(uri: string): boolean {
+  return /^spotify:(album|playlist):[A-Za-z0-9]+$/.test(uri);
+}
+
 export interface Genre {
   /** Slug, e.g. "jazz". */
   id: string;
@@ -31,6 +52,7 @@ export interface Album {
   notes: string;
   /** Spotify album or playlist URI, e.g. "spotify:album:1weenld61qoidwYuZ1GESA". */
   spotify: string | null;
+  /** A file in the library's covers/ folder, or an https: URL. */
   cover: string | null;
   addedAt: string;
 }

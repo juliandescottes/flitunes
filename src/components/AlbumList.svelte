@@ -7,6 +7,7 @@
   import { genreName, type SortDir, type SortKey } from "../lib/browse.ts";
   import type { Album } from "../lib/model.ts";
   import { revealRow, viewportHeight, visibleRows } from "../lib/virtual.ts";
+  import { coverSrc } from "../lib/persistence.ts";
   import StarRating from "./StarRating.svelte";
 
   let {
@@ -123,7 +124,7 @@
           <td class="name">
             {#if covers}
               {#if album.cover}
-                <img class="thumb" src={album.cover} alt="" loading="lazy" />
+                <img class="thumb" src={coverSrc(album.cover)} alt="" loading="lazy" />
               {:else}
                 <span class="thumb blank" aria-hidden="true">♫</span>
               {/if}

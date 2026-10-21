@@ -3,6 +3,7 @@
   // Only the rows in view are rendered; padding stands in for the others.
   import { untrack } from "svelte";
   import type { Album } from "../lib/model.ts";
+  import { coverSrc } from "../lib/persistence.ts";
   import { revealRow, viewportHeight, visibleRows } from "../lib/virtual.ts";
 
   let {
@@ -101,7 +102,7 @@
       >
         <div class="cover">
           {#if album.cover}
-            <img src={album.cover} alt="" loading="lazy" />
+            <img src={coverSrc(album.cover)} alt="" loading="lazy" />
           {:else}
             <div class="blank" aria-hidden="true">♫</div>
           {/if}
