@@ -107,6 +107,22 @@ describe("browse", () => {
     expect(playlists(albums)).toEqual(["summer", "vinyl"]);
   });
 
+  it("shows albums in triage only in the Triage source", () => {
+    const pending = album("Taste", ["Islands"], {
+      genres: ["rock"],
+      tags: ["triage", "summer"],
+      addedAt: "2026-10-16T00:00:00Z",
+    });
+    const all = [...albums, pending];
+    const shown = (source: BrowseState["source"]) => titles(browse(all, genres, state({ source }), NOW).albums);
+    expect(shown({ kind: "triage" })).toEqual(["Taste"]);
+    expect(shown({ kind: "music" })).not.toContain("Taste");
+    expect(shown({ kind: "recent" })).toEqual(["Discovery (2001)"]);
+    expect(shown({ kind: "playlist", tag: "summer" })).toEqual(["Abbey Road (1969)"]);
+    expect(titles(browse(all, genres, state({ search: "islands" }), NOW).albums)).toEqual([]);
+    expect(playlists(all)).toEqual(["summer", "vinyl"]);
+  });
+
   it("hides albums without a Spotify link", () => {
     const linked = album("Linked", ["Someone"], { genres: ["rock"], spotify: "spotify:album:4LH4d3cOWNNsVw41Gqt2kv" });
     const result = browse([...albums, linked], genres, state({ linkedOnly: true }), NOW);

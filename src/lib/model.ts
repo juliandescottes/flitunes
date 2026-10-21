@@ -3,6 +3,12 @@ export const SCHEMA_VERSION = 1;
 /** Artist name used for compilations. */
 export const VARIOUS_ARTISTS = "Various Artists";
 
+/**
+ * Tag of albums imported in bulk and not reviewed yet. They only show in the
+ * Triage source, hidden from the rest of the library until accepted.
+ */
+export const TRIAGE_TAG = "triage";
+
 export interface Genre {
   /** Slug, e.g. "jazz". */
   id: string;

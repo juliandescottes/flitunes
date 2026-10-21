@@ -39,6 +39,11 @@ window, and Get Info editing.
   Shown" narrow long lists. Albums matching one already in the library
   (`albumMatchKey`: artist + title, ignoring case, accents and punctuation)
   are marked and never ticked in bulk.
+- Triage: albums tagged `triage` (`TRIAGE_TAG`, for bulk imports to review)
+  show only in a "Triage" source with a count badge, and are hidden from
+  Music, Recently Added, playlists and search. Accept (button, ⌘↩ or the
+  context menu) removes the tag; Delete rejects. The source shows while
+  albums wait in it.
 - Browse logic is pure and tested in `src/lib/browse.ts`; the store gained
   `updateAlbums` (bulk) and `mergeGenre`.
 - Since then (PRs #3–#11): the column browser is resizable; playlist links

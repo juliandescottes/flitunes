@@ -1,5 +1,6 @@
 <script lang="ts">
   // iTunes 10 source list: LIBRARY and PLAYLISTS sections. Playlists are tags.
+  // Triage (albums imported in bulk, waiting for review) shows while it has any.
   // The bottom holds the library actions (Add, Save, Export, Import), clear of
   // the window's rounded corner.
   import type { Source } from "../lib/browse.ts";
@@ -7,6 +8,7 @@
   let {
     source = $bindable(),
     playlists,
+    triageCount,
     onadd,
     unsavedChanges,
     canSaveToRepo,
@@ -16,6 +18,7 @@
   }: {
     source: Source;
     playlists: string[];
+    triageCount: number;
     onadd: () => void;
     unsavedChanges: number;
     /** Save writes library.json (dev server); otherwise Export downloads it. */
@@ -29,7 +32,7 @@
     s.kind === source.kind && (s.kind !== "playlist" || (source.kind === "playlist" && s.tag === source.tag));
 </script>
 
-{#snippet item(s: Source, label: string, icon: "music" | "recent" | "playlist")}
+{#snippet item(s: Source, label: string, icon: "music" | "recent" | "triage" | "playlist", count?: number)}
   <li>
     <button class:selected={isSelected(s)} aria-current={isSelected(s)} onclick={() => (source = s)}>
       <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" class="icon {icon}">
@@ -37,11 +40,14 @@
           <path d="M6 3l7-1.5v9a2 2 0 1 1-1.5-1.9V4.4L7.5 5.3v7.2A2 2 0 1 1 6 10.6z" />
         {:else if icon === "recent"}
           <path d="M8 1.5l1.9 4 4.4.5-3.3 3 .9 4.4L8 11.2l-3.9 2.2.9-4.4-3.3-3 4.4-.5z" />
+        {:else if icon === "triage"}
+          <path d="M3 2h10l2 7v5H1V9zm.9 1.5L2.6 8.5H5.5l1 2h3l1-2h2.9l-1.3-5z" />
         {:else}
           <path d="M2 3h9v1.6H2zm0 3.5h9v1.6H2zm0 3.5h6v1.6H2zm9 0l4 2-4 2z" />
         {/if}
       </svg>
       <span>{label}</span>
+      {#if count}<span class="count">{count}</span>{/if}
     </button>
   </li>
 {/snippet}
@@ -52,6 +58,9 @@
     <ul>
       {@render item({ kind: "music" }, "Music", "music")}
       {@render item({ kind: "recent" }, "Recently Added", "recent")}
+      {#if triageCount > 0 || source.kind === "triage"}
+        {@render item({ kind: "triage" }, "Triage", "triage", triageCount)}
+      {/if}
     </ul>
 
     <h3>Playlists</h3>
@@ -151,6 +160,26 @@
   }
   .icon.recent {
     fill: #8d6fc4;
+  }
+  .icon.triage {
+    fill: #c0607f;
+  }
+  /* iTunes 10's count badge, as on Podcasts. */
+  .count {
+    margin-left: auto;
+    flex: none;
+    padding: 0 6px;
+    border-radius: 8px;
+    background: #9d8592;
+    color: #fff;
+    font-size: 10px;
+    font-weight: bold;
+    line-height: 14px;
+    text-shadow: none;
+  }
+  nav button.selected .count {
+    background: #fff;
+    color: var(--select);
   }
   nav button.selected {
     background: var(--select-source-inactive);

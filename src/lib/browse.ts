@@ -2,9 +2,9 @@
 // Genres | Artists | Albums column browser and the sorted main view.
 // Pure functions so they can be tested without the UI.
 
-import { sortableName, type Album, type Genre } from "./model.ts";
+import { sortableName, TRIAGE_TAG, type Album, type Genre } from "./model.ts";
 
-export type Source = { kind: "music" } | { kind: "recent" } | { kind: "playlist"; tag: string };
+export type Source = { kind: "music" } | { kind: "recent" } | { kind: "triage" } | { kind: "playlist"; tag: string };
 
 /** "Recently Added" covers albums added in the last 30 days. */
 export const RECENT_DAYS = 30;
@@ -133,6 +133,9 @@ function nameRanks(albums: Album[]): NameRanks {
 }
 
 export function inSource(album: Album, source: Source, now = Date.now()): boolean {
+  // Albums waiting in triage show nowhere else.
+  if (source.kind === "triage") return isInTriage(album);
+  if (isInTriage(album)) return false;
   switch (source.kind) {
     case "music":
       return true;
@@ -143,9 +146,13 @@ export function inSource(album: Album, source: Source, now = Date.now()): boolea
   }
 }
 
-/** Playlist names: every tag in use, sorted. */
+export function isInTriage(album: Album): boolean {
+  return album.tags.includes(TRIAGE_TAG);
+}
+
+/** Playlist names: every tag in use outside triage, sorted. */
 export function playlists(albums: Album[]): string[] {
-  return [...new Set(albums.flatMap((a) => a.tags))].sort(compareText);
+  return [...new Set(albums.filter((a) => !isInTriage(a)).flatMap((a) => a.tags))].sort(compareText);
 }
 
 function searchWords(query: string): string[] {
