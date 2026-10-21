@@ -8,7 +8,7 @@ import { libraryFile } from "./vite-plugins/library-file.ts";
 // The library lives in its own repo, cloned next to this one by default.
 const libraryPath = process.env.LIBRARY_PATH
   ? resolve(process.env.LIBRARY_PATH)
-  : fileURLToPath(new URL("../spotify-viewer-album-library/library.json", import.meta.url));
+  : fileURLToPath(new URL("../flitunes-library/library.json", import.meta.url));
 
 export default defineConfig({
   base: "./",

@@ -112,7 +112,7 @@ window, and Get Info editing.
 
 Friends can run their own copy: `README.md` has the guide for forks, and
 the Pages build reads the `LIBRARY_URL` repository variable, else the fork
-owner's `spotify-viewer-album-library`. MIT license. The Pages site has
+owner's `flitunes-library`. MIT license. The Pages site has
 `SPOTIFY_CLIENT_ID` set (checked 2026-10-21).
 
 Next, in order (see `PLAN.md`):
@@ -144,9 +144,10 @@ and scripts in the git-ignored `import/` folder: see `import/README.md`.
 | 2026-10-17 | Scope: an old-school iTunes 10 experience, plus a few import paths, and not much more. Tags show as playlists. Embedded player and track lists dropped (track lists came back on 2026-10-21 with the Spotify sign-in). |
 | 2026-10-17 | Last.fm import deferred (scraping is blocked; would need an API key). |
 | 2026-10-18 | Code changes go through PRs; the user pushes, opens PRs and files issues. |
-| 2026-10-18 | Content apart from code: `library.json` moved to its own repo, `spotify-viewer-album-library` (history kept). The site fetches it from there; dev reads/writes a clone next to the app. |
+| 2026-10-18 | Content apart from code: `library.json` moved to its own repo, `spotify-viewer-album-library` (history kept; renamed `flitunes-library` on 2026-10-21). The site fetches it from there; dev reads/writes a clone next to the app. |
 | 2026-10-21 | Optional Spotify sign-in (OAuth PKCE, no backend) for playback control only. Spotify data shown while signed in is fetched live, never saved; the library stays hand curated. |
 | 2026-10-21 | Themes change the tint only (hue and chroma); no full palettes per theme. |
+| 2026-10-21 | Repos renamed: the app is `flitunes`, the library `flitunes-library`. The site moves to `/flitunes/`; IndexedDB and storage keys keep the `album-library` names so local data survives. |
 | 2026-10-21 | Friends run their own fork (README guide), not one shared site with `?library=<url>`: each needs their own Spotify app anyway. MIT license. |
 | 2026-10-21 | Long-term direction: own the music (DRM-free purchases) and play it from my own Subsonic server (e.g. Navidrome), FliTunes as the front end, Spotify as the fallback (`docs/spec.md` §11). |
 

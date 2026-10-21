@@ -8,11 +8,11 @@ It runs in three steps, with your library repo cloned next to this one:
 
 ```sh
 # 1-3. Count listens, find each album on Spotify, write a CSV (run from the app repo)
-node scripts/spotify-history/history.ts <export-dir> ../spotify-viewer-album-library/library.json <work-dir>
+node scripts/spotify-history/history.ts <export-dir> ../flitunes-library/library.json <work-dir>
 
 # 4. Add the CSV's albums to the library, tagged "triage" (dry run, then --write)
-node scripts/spotify-history/add-triage.ts ../spotify-viewer-album-library/library.json <work-dir>/history-albums.csv
-node scripts/spotify-history/add-triage.ts ../spotify-viewer-album-library/library.json <work-dir>/history-albums.csv --write
+node scripts/spotify-history/add-triage.ts ../flitunes-library/library.json <work-dir>/history-albums.csv
+node scripts/spotify-history/add-triage.ts ../flitunes-library/library.json <work-dir>/history-albums.csv --write
 
 # 5. In the app (npm run dev): Triage, sorted by Date Added, newest first
 ```

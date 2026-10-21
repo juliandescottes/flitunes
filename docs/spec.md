@@ -94,7 +94,7 @@ IndexedDB (working copy)  ──export──▶  library.json (in its own data r
 
 - **IndexedDB** via Dexie. Every edit is saved immediately.
 - **`library.json`** is the durable copy, in its own repo
-  (`spotify-viewer-album-library`) so content and code keep separate
+  (`flitunes-library`) so content and code keep separate
   histories. Git gives history and diffs.
 - **First run / empty DB**: the app loads `library.json`: from the local clone
   of the data repo in dev, from the data repo's raw URL (`VITE_LIBRARY_URL`)

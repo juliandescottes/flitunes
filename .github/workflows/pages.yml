@@ -31,8 +31,8 @@ jobs:
       - run: npm run build
         env:
           # The repository variable LIBRARY_URL, else library.json in the owner's
-          # spotify-viewer-album-library repo, so a fork shows its own library.
-          VITE_LIBRARY_URL: ${{ vars.LIBRARY_URL || format('https://raw.githubusercontent.com/{0}/spotify-viewer-album-library/main/library.json', github.repository_owner) }}
+          # flitunes-library repo, so a fork shows its own library.
+          VITE_LIBRARY_URL: ${{ vars.LIBRARY_URL || format('https://raw.githubusercontent.com/{0}/flitunes-library/main/library.json', github.repository_owner) }}
           # Optional Spotify sign-in (a repository variable, not a secret: PKCE has no client secret).
           VITE_SPOTIFY_CLIENT_ID: ${{ vars.SPOTIFY_CLIENT_ID }}
       - uses: actions/configure-pages@v5
