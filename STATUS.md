@@ -44,21 +44,20 @@ window, and Get Info editing.
 - Since then (PRs #3–#11): the column browser is resizable; playlist links
   are accepted; a toolbar toggle hides albums without a Spotify link; "+ Add Album(s)"
   and Save / Export / Import sit at the bottom of the sidebar; double-click or Enter in the
-  Albums column opens the album; the app is called **FliTunes**, tinted pink,
-  with a pink note favicon.
+  Albums column opens the album; the app is called **FliTunes**, tinted pink.
+- Since then (PRs #17–#19): the favicon is a white note on a pink tile; the
+  column browser and the toolbar display can't be text-selected.
 - Performance (PR #11): lists, grid and column browser only render the rows in
   view (`src/lib/virtual.ts`), and `browse()` sorts the library once and
   filters afterwards. With 3000 albums every interaction takes under 25 ms.
   `src/lib/mock.ts` / `scripts/mock-library.ts` make mock libraries;
   `browse.perf.test.ts` keeps budgets.
-- Optional Spotify sign-in (branch `spotify-login`): a Spotify toggle next to
+- Optional Spotify sign-in: a Spotify toggle next to
   the link filter in the toolbar, when a client ID is configured; OAuth PKCE in `src/lib/spotify-auth.ts`,
   reactive state and Web API calls in `src/lib/spotify-session.svelte.ts`.
-- Playback (branch `spotify-playback`, on top of `spotify-login`):
-  previous/play-pause/next in the toolbar; the display shows the playing track
+- Playback: previous/play-pause/next in the toolbar; the display shows the playing track
   and its progress (`src/lib/spotify-player.svelte.ts`).
-- Album details (branch `spotify-tracks`, on top of `spotify-playback`):
-  signed in, double-click or Enter shows the album's tracks
+- Album details: signed in, double-click or Enter shows the album's tracks
   (`AlbumTracks.svelte`, `src/lib/spotify-tracks.ts`); double-click a track to
   play the album from there. Play is explicit: ▶ on list rows, a translucent
   ▶ over grid covers on hover, "Play" in the context menu.
@@ -71,13 +70,18 @@ window, and Get Info editing.
 
 ## Next step
 
-Set the `SPOTIFY_CLIENT_ID` repository variable for the Pages build, then
-merge the three Spotify branches (login → playback → tracks).
+The Spotify work (sign-in, playback, album tracks) is merged. For it to show
+on the Pages site, the repository variable `SPOTIFY_CLIENT_ID` must be set and
+the Pages URL listed as a redirect URI in the Spotify app.
 
-To try the sign-in for real: create (or reuse) an app in the Spotify developer
-dashboard, add `http://127.0.0.1:5173/` and the Pages URL as redirect URIs,
-put its client ID in `.env.local` and in the repository variable
-`SPOTIFY_CLIENT_ID`.
+Next feature: friends' libraries, in three PRs:
+1. Strict validation when loading `library.json` (`spotify` must be a
+   `spotify:album:` or `spotify:playlist:` URI, `cover` an `https:` URL).
+2. `?library=<url>` in the page address, overriding `VITE_LIBRARY_URL`.
+3. One IndexedDB working copy per library URL (the default keeps
+   `album-library`).
+
+Still open from Phase 2: smart playlists, Cover Flow, "Refresh cover".
 
 The library import (Last.fm, Spotify links, early years by artist) is notes
 and scripts in the git-ignored `import/` folder: see `import/README.md`.
@@ -87,7 +91,7 @@ and scripts in the git-ignored `import/` folder: see `import/README.md`.
 | Date | Decision |
 |---|---|
 | 2026-10-17 | Library curated by hand. Spotify is only a link. No Spotify login in the MVP. |
-| 2026-10-17 | IndexedDB working copy + `data/library.json` committed to the repo. |
+| 2026-10-17 | IndexedDB working copy + `data/library.json` committed to the repo (moved to its own repo on 2026-10-18). |
 | 2026-10-17 | UI: Svelte 5 (plain Vite, no SvelteKit). |
 | 2026-10-17 | Genres: flat, curated list. |
 | 2026-10-17 | One entry per edition. Compilations → artist "Various Artists". |
