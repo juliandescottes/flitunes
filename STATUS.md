@@ -115,13 +115,20 @@ the Pages build reads the `LIBRARY_URL` repository variable, else the fork
 owner's `flitunes-library`. MIT license. The Pages site has
 `SPOTIFY_CLIENT_ID` set (checked 2026-10-21).
 
+Covers are kept with the library (2026-10-21): the 2,494 covers were copied
+from Spotify into `flitunes-library/covers/` (`scripts/covers/`, 304 MB), and
+`library.json` points at them (`"covers/<album id>.jpg"`). `flitunes-library`
+is served by GitHub Pages; the app's `LIBRARY_URL` variable is
+`https://juliandescottes.github.io/flitunes-library/library.json`, and
+covers resolve next to it. `library.json` is validated strictly, on load and
+on edit. Waiting for review: branch `keep-covers-on-add` (the dev server
+copies a new album's cover into `covers/` right away).
+
 Next, in order (see `PLAN.md`):
-1. Strict validation when loading `library.json`: `spotify` must be a
-   `spotify:album:` or `spotify:playlist:` URI, `cover` an `https:` URL
-   (`spotify` ends up in an `href`).
-2. Ownership, the first step towards owning the music (`docs/spec.md` §11):
+1. Ownership, the first step towards owning the music (`docs/spec.md` §11):
    how I own an album and a store link, with a "not owned yet" view.
-3. Smart playlists, "Refresh cover", Cover Flow.
+2. Smart playlists, "Refresh cover" (less urgent now that covers are kept),
+   Cover Flow.
 
 Open: the first Spotify command after a while idle sometimes does nothing,
 with no error. The `[Spotify]` console log should show whether a request
@@ -148,6 +155,7 @@ and scripts in the git-ignored `import/` folder: see `import/README.md`.
 | 2026-10-21 | Optional Spotify sign-in (OAuth PKCE, no backend) for playback control only. Spotify data shown while signed in is fetched live, never saved; the library stays hand curated. |
 | 2026-10-21 | Themes change the tint only (hue and chroma); no full palettes per theme. |
 | 2026-10-21 | Repos renamed: the app is `flitunes`, the library `flitunes-library`. The site moves to `/flitunes/`; IndexedDB and storage keys keep the `album-library` names so local data survives. |
+| 2026-10-21 | Covers kept with the library: original 640px files in `flitunes-library/covers/`, referenced by relative path; the library repo is served by GitHub Pages (Cloudflare Pages is the fallback for speed or a custom domain). |
 | 2026-10-21 | Friends run their own fork (README guide), not one shared site with `?library=<url>`: each needs their own Spotify app anyway. MIT license. |
 | 2026-10-21 | Long-term direction: own the music (DRM-free purchases) and play it from my own Subsonic server (e.g. Navidrome), FliTunes as the front end, Spotify as the fallback (`docs/spec.md` §11). |
 
