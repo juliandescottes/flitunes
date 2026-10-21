@@ -1,22 +1,30 @@
 <script lang="ts">
   // Album details: the cover, the album's info and its tracks, fetched from
   // Spotify (never saved). Double-click or Enter on a track plays the album
-  // from that track; the playing track is marked.
+  // from that track; the playing track is marked. Like iTunes 10's song list,
+  // each row repeats the album, genre and year, from the curated album
+  // (Spotify's year when it has none).
   import { formatTime } from "../lib/spotify-player.svelte.ts";
   import type { Album } from "../lib/model.ts";
-  import type { Track } from "../lib/spotify-tracks.ts";
+  import { trackArtists, type Track } from "../lib/spotify-tracks.ts";
 
   let {
     album,
+    genre,
     load,
+    loadYear,
     playingUri,
     isPlaying,
     onplay,
     onback,
   }: {
     album: Album;
+    /** The album's primary genre name. */
+    genre: string | null;
     /** Fetches the tracks (cached by the caller). */
     load: () => Promise<Track[]>;
+    /** Spotify's release year, used when the album has no year. */
+    loadYear: () => Promise<number | null>;
     /** The track playing (or paused) in Spotify. */
     playingUri: string | null;
     isPlaying: boolean;
@@ -45,9 +53,19 @@
     );
   });
 
+  let spotifyYear = $state<number | null>(null);
+  $effect(() => {
+    const albumId = album.id;
+    spotifyYear = null;
+    if (album.year !== null) return;
+    loadYear().then((y) => {
+      if (album.id === albumId) spotifyYear = y;
+    });
+  });
+  const year = $derived(album.year ?? spotifyYear);
+
   const discs = $derived(new Set(tracks?.map((t) => t.disc)).size > 1);
   const totalMs = $derived(tracks?.reduce((sum, t) => sum + t.durationMs, 0) ?? 0);
-  const albumArtists = $derived(new Set(album.artists));
 
   function onkeydown(event: KeyboardEvent) {
     if (!tracks?.length) return;
@@ -79,7 +97,7 @@
       <h2>{album.title}</h2>
       <div class="artist">{album.artists.join(", ")}</div>
       <div class="meta">
-        {[album.year, tracks && `${tracks.length} ${tracks.length === 1 ? "song" : "songs"}`, tracks && formatTime(totalMs)]
+        {[year, tracks && `${tracks.length} ${tracks.length === 1 ? "song" : "songs"}`, tracks && formatTime(totalMs)]
           .filter(Boolean)
           .join(" · ")}
       </div>
@@ -107,14 +125,29 @@
           <col class="state" />
           <col class="num" />
           <col />
-          <col class="artist" />
           <col class="time" />
+          <col class="artist" />
+          <col class="album" />
+          <col class="genre" />
+          <col class="year" />
         </colgroup>
+        <thead>
+          <tr>
+            <th class="state"></th>
+            <th class="num">#</th>
+            <th>Name</th>
+            <th class="time">Time</th>
+            <th>Artist</th>
+            <th>Album</th>
+            <th>Genre</th>
+            <th class="year">Year</th>
+          </tr>
+        </thead>
         <tbody>
           {#each tracks as track, i (track.uri + i)}
             {@const playing = track.uri === playingUri}
             {#if discs && (i === 0 || tracks[i - 1].disc !== track.disc)}
-              <tr class="disc"><td colspan="5">Disc {track.disc}</td></tr>
+              <tr class="disc"><td colspan="8">Disc {track.disc}</td></tr>
             {/if}
             <tr
               class:selected={i === selected}
@@ -136,10 +169,11 @@
               </td>
               <td class="num">{track.number}</td>
               <td class="name">{track.name}</td>
-              <td class="artist">
-                {track.artists.some((a) => !albumArtists.has(a)) ? track.artists.join(", ") : ""}
-              </td>
               <td class="time">{formatTime(track.durationMs)}</td>
+              <td>{trackArtists(track, album.artists).join(", ")}</td>
+              <td>{album.title}</td>
+              <td>{genre ?? ""}</td>
+              <td class="year">{year ?? ""}</td>
             </tr>
           {/each}
         </tbody>
@@ -256,19 +290,43 @@
   col.num {
     width: 30px;
   }
-  col.artist {
-    width: 30%;
-  }
   col.time {
-    width: 56px;
+    width: 52px;
   }
+  col.artist {
+    width: 20%;
+  }
+  col.album {
+    width: 20%;
+  }
+  col.genre {
+    width: 12%;
+  }
+  col.year {
+    width: 48px;
+  }
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    height: 18px;
+    padding: 0 6px;
+    background: var(--header);
+    box-shadow: inset 0 -1px 0 var(--header-border);
+    border-right: 1px solid #c8c8c8;
+    font-weight: normal;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  th.num,
+  th.time,
   td.num,
   td.time {
     text-align: right;
-    color: var(--text-dim);
   }
-  td.artist {
-    font-size: inherit;
+  td.num {
     color: var(--text-dim);
   }
   tr.playing .name {
