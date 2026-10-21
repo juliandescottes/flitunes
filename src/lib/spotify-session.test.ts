@@ -62,6 +62,16 @@ describe("SpotifySession", () => {
     expect(await session.api("/me/player/pause", { method: "PUT" })).toBeNull();
   });
 
+  it("returns null for responses that aren't JSON", async () => {
+    const { session } = await signedIn({ "/me/player/next": () => new Response("ok-not-json", { status: 200 }) });
+    expect(await session.api("/me/player/next", { method: "POST" })).toBeNull();
+  });
+
+  it("reports the HTTP status when an error isn't JSON", async () => {
+    const { session } = await signedIn({ "/me/player/next": () => new Response("<html>Bad gateway</html>", { status: 502 }) });
+    await expect(session.api("/me/player/next", { method: "POST" })).rejects.toThrow("Spotify: HTTP 502");
+  });
+
   it("signs out when Spotify rejects the token", async () => {
     const { session } = await signedIn({ "/me/player": () => new Response("{}", { status: 401 }) });
     await expect(session.api("/me/player")).rejects.toThrow("connect again");

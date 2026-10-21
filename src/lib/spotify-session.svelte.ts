@@ -111,8 +111,7 @@ export class SpotifySession {
       throw new Error("Spotify signed you out. Please connect again.");
     }
     if (res.status === 204 || res.headers.get("content-length") === "0") return null;
-    const text = await res.text();
-    const data = text ? (JSON.parse(text) as { error?: { message?: string } }) : null;
+    const data = parseBody(await res.text());
     if (!res.ok) throw new SpotifyError(res.status, `Spotify: ${data?.error?.message ?? `HTTP ${res.status}`}`);
     return data;
   }
@@ -120,6 +119,18 @@ export class SpotifySession {
   #signedOut() {
     this.status = "signed-out";
     this.user = null;
+  }
+}
+
+/**
+ * Reads a response body as JSON. Some player commands answer 200 with a body
+ * that isn't JSON: that counts as an empty response.
+ */
+function parseBody(text: string): { error?: { message?: string } } | null {
+  try {
+    return text ? JSON.parse(text) : null;
+  } catch {
+    return null;
   }
 }
 
