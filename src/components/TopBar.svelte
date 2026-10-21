@@ -155,6 +155,12 @@
           <path d="M0 1h14M0 5h14M0 9h14" stroke="currentColor" stroke-width="1.6" />
         </svg>
       </button>
+      <button class:on={view === "albums"} aria-pressed={view === "albums"} title="Album List" onclick={() => (view = "albums")}>
+        <svg viewBox="0 0 14 10" width="14" height="10" aria-hidden="true">
+          <path d="M0 0h4v4H0zM0 6h4v4H0z" fill="currentColor" />
+          <path d="M6 1h8M6 3h8M6 7h8M6 9h8" stroke="currentColor" stroke-width="1.2" />
+        </svg>
+      </button>
       <button class:on={view === "grid"} aria-pressed={view === "grid"} title="Grid" onclick={() => (view = "grid")}>
         <svg viewBox="0 0 14 10" width="14" height="10" aria-hidden="true">
           <path d="M0 0h4v4H0zM5 0h4v4H5zM10 0h4v4h-4zM0 6h4v4H0zM5 6h4v4H5zM10 6h4v4h-4z" fill="currentColor" />

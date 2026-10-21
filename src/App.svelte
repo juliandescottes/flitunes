@@ -546,9 +546,10 @@
           />
         {:else if result.albums.length === 0}
           <p class="empty">No albums match.</p>
-        {:else if view === "list"}
+        {:else if view !== "grid"}
           <AlbumList
             albums={result.albums}
+            covers={view === "albums"}
             {genreNames}
             selected={selectedSet}
             {cursor}

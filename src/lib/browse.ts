@@ -9,7 +9,8 @@ export type Source = { kind: "music" } | { kind: "recent" } | { kind: "playlist"
 /** "Recently Added" covers albums added in the last 30 days. */
 export const RECENT_DAYS = 30;
 
-export type ViewMode = "list" | "grid";
+/** "albums" is iTunes 10's Album List: the list with each album's cover on the left. */
+export type ViewMode = "list" | "albums" | "grid";
 
 export type SortKey = "title" | "artist" | "year" | "genre" | "rating" | "addedAt";
 export type SortDir = "asc" | "desc";
