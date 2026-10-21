@@ -24,9 +24,9 @@ Spotify sign-in (optional) needs the client ID of a Spotify app: put
 Pages build reads it from the repository variable `SPOTIFY_CLIENT_ID`.
 
 The library is content, not code: `library.json` lives in its own repo,
-[spotify-viewer-album-library](https://github.com/juliandescottes/spotify-viewer-album-library).
+[flitunes-library](https://github.com/juliandescottes/flitunes-library).
 `npm run dev` reads and writes a clone of it next to this repo
-(`../spotify-viewer-album-library/library.json`, or the path in `LIBRARY_PATH`).
+(`../flitunes-library/library.json`, or the path in `LIBRARY_PATH`).
 Curate locally, Save, then commit and push in the data repo.
 
 `scripts/spotify-history/` builds albums from a Spotify listening history

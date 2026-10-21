@@ -54,7 +54,7 @@ const csvPath = join(workDir, "history-albums.csv");
 // Be gentle with Spotify: one request at a time, well apart, saying who we are.
 const PAUSE_MS = 1600;
 const MAX_WAIT_S = 120; // a longer Retry-After stops the run
-const USER_AGENT = "FliTunes-import/1.0 (+https://github.com/juliandescottes/spotify-album-viewer)";
+const USER_AGENT = "FliTunes-import/1.0 (+https://github.com/juliandescottes/flitunes)";
 
 // --- 1. Aggregate ---
 
