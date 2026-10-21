@@ -72,7 +72,7 @@ Move the library off Spotify: DRM-free purchases served from my own music
 server, FliTunes as the front end. See `docs/spec.md` §11.
 
 - [ ] Ownership: an owned field and a store link (e.g. Bandcamp), with a "not owned yet" view
-- [x] Covers kept: all covers copied into `flitunes-library/covers/`; new ones copied on add in dev (branch `keep-covers-on-add`)
+- [x] Covers kept: all covers copied into `flitunes-library/covers/`; new ones copied on add in dev
 - [ ] Own playback: a Subsonic client (e.g. Navidrome), Spotify as the fallback
 - [ ] Spotify optional
 

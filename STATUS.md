@@ -121,8 +121,9 @@ from Spotify into `flitunes-library/covers/` (`scripts/covers/`, 304 MB), and
 is served by GitHub Pages; the app's `LIBRARY_URL` variable is
 `https://juliandescottes.github.io/flitunes-library/library.json`, and
 covers resolve next to it. `library.json` is validated strictly, on load and
-on edit. Waiting for review: branch `keep-covers-on-add` (the dev server
-copies a new album's cover into `covers/` right away).
+on edit. In dev, a new album's cover is copied into `covers/` right away
+(`POST /__library/covers`); covers added on the site stay URLs until
+`scripts/covers/` runs.
 
 Next, in order (see `PLAN.md`):
 1. Ownership, the first step towards owning the music (`docs/spec.md` §11):
