@@ -21,5 +21,6 @@ Then commit `covers/` and `library.json` in the library repo. The app finds
 `covers/` files next to `library.json`: from the clone in dev (served by the
 dev server), and next to `VITE_LIBRARY_URL` on the site.
 
-Covers added later (Add Album, Get Info) are URLs again: run the script now
-and then to bring them in.
+In dev, covers added later (Add Album, Add Several, Get Info) are copied
+into `covers/` right away by the dev server. Covers added on the site stay
+URLs: run the script now and then to bring them in.

@@ -7,6 +7,7 @@ import type { LibrarySource } from "./persistence.ts";
 
 class MemorySource implements LibrarySource {
   file: LibraryFile | null = null;
+  keepCover?: (albumId: string, url: string) => Promise<string>;
   async fetchFile() {
     return this.file;
   }
@@ -76,6 +77,44 @@ describe("Library", () => {
       rating: 5,
       tags: ["modal"],
     });
+  });
+
+  it("copies new covers into covers/, in the background, when the source can", async () => {
+    const kept: string[] = [];
+    source.keepCover = async (id: string, url: string) => {
+      kept.push(url);
+      if (url.includes("broken")) throw new Error("HTTP 404");
+      return `covers/${id}.jpg`;
+    };
+    const library = await openLibrary();
+    const a = await library.addAlbum({ title: "A", artists: ["X"], cover: "https://i.scdn.co/image/a" });
+    const [b, c] = await library.addAlbums([
+      { title: "B", artists: ["X"], cover: "https://i.scdn.co/image/broken" },
+      { title: "C", artists: ["X"], cover: null },
+    ]);
+    await library.coversKept;
+    expect(library.getAlbum(a.id)?.cover).toBe(`covers/${a.id}.jpg`);
+    // A cover that can't be copied keeps its URL.
+    expect(library.getAlbum(b.id)?.cover).toBe("https://i.scdn.co/image/broken");
+    expect(library.getAlbum(c.id)?.cover).toBeNull();
+
+    // A new cover URL in Get Info is copied too; files and other edits aren't.
+    await library.updateAlbum(c.id, { cover: "https://i.scdn.co/image/c" });
+    await library.updateAlbum(a.id, { rating: 5 });
+    await library.coversKept;
+    expect(library.getAlbum(c.id)?.cover).toBe(`covers/${c.id}.jpg`);
+    expect(kept).toEqual(["https://i.scdn.co/image/a", "https://i.scdn.co/image/broken", "https://i.scdn.co/image/c"]);
+  });
+
+  it("doesn't overwrite a cover edited while it was being copied", async () => {
+    let release = () => {};
+    source.keepCover = (id: string) => new Promise((resolve) => (release = () => resolve(`covers/${id}.jpg`)));
+    const library = await openLibrary();
+    const a = await library.addAlbum({ title: "A", artists: ["X"], cover: "https://i.scdn.co/image/a" });
+    await library.updateAlbum(a.id, { cover: null });
+    release();
+    await library.coversKept;
+    expect(library.getAlbum(a.id)?.cover).toBeNull();
   });
 
   it("validates input", async () => {
