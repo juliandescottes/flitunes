@@ -52,6 +52,7 @@ export function parseHash(hash: string): Route {
 
 function parseSource(path: string): Source {
   if (path === "/recent") return { kind: "recent" };
+  if (path === "/triage") return { kind: "triage" };
   const playlist = /^\/playlist\/(.+)$/.exec(path);
   if (playlist) {
     try {

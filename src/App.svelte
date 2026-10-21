@@ -13,11 +13,11 @@
   import GetInfo from "./components/GetInfo.svelte";
   import SourceList from "./components/SourceList.svelte";
   import TopBar from "./components/TopBar.svelte";
-  import { browse, genreName, playlists, typeAhead, type SortDir, type SortKey, type Source, type ViewMode } from "./lib/browse.ts";
+  import { browse, genreName, isInTriage, playlists, typeAhead, type SortDir, type SortKey, type Source, type ViewMode } from "./lib/browse.ts";
   import { LibraryDB } from "./lib/db.ts";
   import { parseHash, replacesEntry, routeToHash, type Route } from "./lib/route.ts";
   import { Library } from "./lib/library.svelte.ts";
-  import { findGenreByName, type Album } from "./lib/model.ts";
+  import { findGenreByName, TRIAGE_TAG, type Album } from "./lib/model.ts";
   import { downloadLibraryFile, repoSource } from "./lib/persistence.ts";
   import { SpotifyPlayer } from "./lib/spotify-player.svelte.ts";
   import { albumTracks, albumYear, hasTrackList } from "./lib/spotify-tracks.ts";
@@ -85,6 +85,7 @@
   const result = $derived(
     browse(library.albums, library.genres, { source, search, linkedOnly, genre, artist, album: albumTitle, sortKey, sortDir }),
   );
+  const triageCount = $derived(library.albums.filter(isInTriage).length);
   const selectedSet = $derived(new Set(selection));
   // Only albums still shown count as selected.
   const selectedAlbums = $derived(result.albums.filter((a) => selectedSet.has(a.id)));
@@ -295,17 +296,39 @@
         ? `Remove “${albums[0].title}” from your library?`
         : `Remove these ${albums.length} albums from your library?`;
     if (!confirm(question)) return;
-    // Then select the album after the last removed one, like iTunes.
-    const list = result.albums;
-    const removed = new Set(albums.map((a) => a.id));
-    const last = Math.max(...albums.map((a) => list.indexOf(a)));
-    const next = list.slice(last + 1).find((a) => !removed.has(a.id)) ?? [...list].reverse().find((a) => !removed.has(a.id));
+    const next = albumAfter(albums);
     run(async () => {
       for (const album of albums) await library.deleteAlbum(album.id);
-      select(next ? [next.id] : [], next?.id ?? null);
-      anchor = next?.id ?? null;
+      selectAfter(next);
       infoIds = [];
     });
+  }
+
+  /** Accept albums from triage: they join the library. */
+  function accept(albums: Album[]) {
+    if (albums.length === 0) return;
+    const next = albumAfter(albums);
+    run(async () => {
+      await library.updateAlbums(
+        albums.map((a) => a.id),
+        (a) => ({ tags: a.tags.filter((t) => t !== TRIAGE_TAG) }),
+      );
+      selectAfter(next);
+    });
+  }
+
+  /** The album shown after the last of these (else before them), to select once they leave the view. */
+  function albumAfter(albums: Album[]): Album | null {
+    const list = result.albums;
+    const leaving = new Set(albums.map((a) => a.id));
+    const last = Math.max(...albums.map((a) => list.indexOf(a)));
+    return list.slice(last + 1).find((a) => !leaving.has(a.id)) ?? [...list].reverse().find((a) => !leaving.has(a.id)) ?? null;
+  }
+
+  // Like iTunes after a delete: the next album is selected.
+  function selectAfter(next: Album | null) {
+    select(next ? [next.id] : [], next?.id ?? null);
+    anchor = next?.id ?? null;
   }
 
   function rate(album: Album, rating: number | null) {
@@ -411,6 +434,9 @@
         : []),
       { label: "Open in Spotify", action: () => openInSpotifyApp(album), disabled: many || !album.spotify },
       "separator",
+      ...(source.kind === "triage"
+        ? [{ label: many ? `Accept ${selectedSet.size} Albums` : "Accept into Library", action: () => accept(selectedAlbums) }]
+        : []),
       { label: many ? `Delete ${selectedSet.size} Albums` : "Delete from Library", action: () => remove(selectedAlbums) },
     ]);
   }
@@ -469,7 +495,9 @@
     else if (event.key === "ArrowUp") step = view === "grid" ? -gridColumns() : -1;
     else if (event.key === "ArrowRight" && view === "grid") step = 1;
     else if (event.key === "ArrowLeft" && view === "grid") step = -1;
-    else if (event.key === "Enter" && selectedAlbums.length === 1) openAlbum(selectedAlbums[0]);
+    else if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) {
+      if (source.kind === "triage") accept(selectedAlbums);
+    } else if (event.key === "Enter" && selectedAlbums.length === 1) openAlbum(selectedAlbums[0]);
     else if (event.key === "Delete" || event.key === "Backspace") remove(selectedAlbums);
     else return;
     event.preventDefault();
@@ -572,6 +600,7 @@
     <SourceList
       bind:source={() => source, selectSource}
       playlists={playlists(library.albums)}
+      {triageCount}
       onadd={() => (addOpen = true)}
       unsavedChanges={library.unsavedChanges}
       canSaveToRepo={library.canSaveToRepo}
@@ -581,6 +610,19 @@
     />
 
     <div class="content">
+      {#if source.kind === "triage" && !tracksAlbum}
+        <div class="triage-bar">
+          <span>
+            Imported albums waiting for review. Accept keeps them in your library, Delete removes them.
+          </span>
+          <button class="aqua" disabled={selectedAlbums.length === 0} onclick={() => accept(selectedAlbums)} title="⌘↩"
+            >Accept</button
+          >
+          <button class="aqua" disabled={selectedAlbums.length === 0} onclick={() => remove(selectedAlbums)} title="Delete"
+            >Delete</button
+          >
+        </div>
+      {/if}
       <ColumnBrowser
         genres={result.genres}
         artists={result.artists}
@@ -616,7 +658,7 @@
             onback={closeTracks}
           />
         {:else if result.albums.length === 0}
-          <p class="empty">No albums match.</p>
+          <p class="empty">{source.kind === "triage" && result.total === 0 ? "Nothing left to review." : "No albums match."}</p>
         {:else if view !== "grid"}
           <AlbumList
             albums={result.albums}
@@ -752,6 +794,19 @@
     text-align: center;
     color: var(--text-dim);
     font-size: 13px;
+  }
+  .triage-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: #f3dde6;
+    border-bottom: 1px solid #c6a9b6;
+    color: #4a3440;
+  }
+  .triage-bar span {
+    flex: 1;
+    min-width: 0;
   }
   .banner {
     display: flex;

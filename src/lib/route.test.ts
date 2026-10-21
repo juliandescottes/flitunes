@@ -10,6 +10,7 @@ describe("routeToHash", () => {
 
   it("names the source and the filters", () => {
     expect(routeToHash(at({ source: { kind: "recent" } }))).toBe("#/recent");
+    expect(routeToHash(at({ source: { kind: "triage" } }))).toBe("#/triage");
     expect(routeToHash(at({ genre: "jazz", artist: "Miles Davis" }))).toBe("#/music?genre=jazz&artist=Miles+Davis");
     expect(routeToHash(at({ search: "kind of", tracks: "01JA" }))).toBe("#/music?q=kind+of&tracks=01JA");
   });
@@ -26,6 +27,7 @@ describe("parseHash", () => {
     const routes: Route[] = [
       HOME,
       at({ source: { kind: "recent" }, search: "a&b=c" }),
+      at({ source: { kind: "triage" }, artist: "Islands" }),
       at({ source: { kind: "playlist", tag: "rainy day/night?" }, genre: "jazz", artist: "Café Tacvba", album: "Re" }),
       at({ tracks: "01JA", search: "#1" }),
     ];
