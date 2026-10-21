@@ -229,7 +229,7 @@
   .table {
     max-height: 50vh;
     overflow: auto;
-    border: 1px solid #bfa2af;
+    border: 1px solid oklch(74.2% calc(0.038 * var(--tint)) var(--hue));
     background: #fff;
   }
   table {

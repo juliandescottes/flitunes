@@ -232,7 +232,7 @@
   .table {
     max-height: 45vh;
     overflow: auto;
-    border: 1px solid #bfa2af;
+    border: 1px solid oklch(74.2% calc(0.038 * var(--tint)) var(--hue));
     background: #fff;
   }
   table {
@@ -328,7 +328,7 @@
   .link {
     border: none;
     background: none;
-    color: #c2407a;
+    color: oklch(57.2% calc(0.174 * var(--tint)) var(--hue));
     cursor: pointer;
     padding: 0;
   }

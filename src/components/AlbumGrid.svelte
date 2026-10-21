@@ -218,6 +218,6 @@
     background: #dadada;
   }
   .scroller:focus-within .item.selected {
-    background: #f7d3e2;
+    background: oklch(90.1% calc(0.045 * var(--tint)) var(--hue));
   }
 </style>

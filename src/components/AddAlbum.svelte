@@ -270,7 +270,7 @@
   .link {
     border: none;
     background: none;
-    color: #c2407a;
+    color: oklch(57.2% calc(0.174 * var(--tint)) var(--hue));
     cursor: pointer;
     padding: 0;
   }

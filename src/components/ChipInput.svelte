@@ -81,7 +81,7 @@
     gap: 4px;
     padding: 2px 3px;
     background: #fff;
-    border: 1px solid #bfa2af;
+    border: 1px solid oklch(74.2% calc(0.038 * var(--tint)) var(--hue));
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.15);
     min-height: 20px;
   }
@@ -99,12 +99,12 @@
     gap: 2px;
     border-radius: 9px;
     padding: 0 4px 0 7px;
-    background: linear-gradient(#faeef3, #ecd4de);
-    border: 1px solid #c9a2b3;
+    background: linear-gradient(oklch(96.0% calc(0.014 * var(--tint)) var(--hue)), oklch(89.3% calc(0.030 * var(--tint)) var(--hue)));
+    border: 1px solid oklch(75.3% calc(0.051 * var(--tint)) var(--hue));
   }
   .chip.primary {
-    background: linear-gradient(#f8cade, #eba2c2);
-    border-color: #c0527f;
+    background: linear-gradient(oklch(88.5% calc(0.058 * var(--tint)) var(--hue)), oklch(79.2% calc(0.095 * var(--tint)) var(--hue)));
+    border-color: oklch(59.2% calc(0.148 * var(--tint)) var(--hue));
     font-weight: bold;
   }
   .chip button {
@@ -116,7 +116,7 @@
     cursor: default;
   }
   .remove {
-    color: #74495c;
+    color: oklch(46.1% calc(0.064 * var(--tint)) var(--hue));
     font-size: 12px;
     line-height: 1;
     padding: 0 2px;

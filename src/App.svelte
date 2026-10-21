@@ -20,6 +20,7 @@
   import { findGenreByName, TRIAGE_TAG, type Album } from "./lib/model.ts";
   import { downloadLibraryFile, repoSource } from "./lib/persistence.ts";
   import { SpotifyPlayer } from "./lib/spotify-player.svelte.ts";
+  import { applyFavicon, applyTheme, THEMES, themeById } from "./lib/themes.ts";
   import { albumTracks, albumYear, hasTrackList } from "./lib/spotify-tracks.ts";
   import { browserSession } from "./lib/spotify-session.svelte.ts";
 
@@ -53,6 +54,11 @@
   let sortDir = $state<SortDir>(prefs.sortDir ?? "asc");
   let view = $state<ViewMode>(prefs.view ?? "albums");
   let linkedOnly = $state(prefs.linkedOnly === true);
+  let theme = $state(themeById(prefs.theme));
+  $effect(() => {
+    applyTheme(theme);
+    applyFavicon(theme);
+  });
   let browserHeight = $state(typeof prefs.browserHeight === "number" ? prefs.browserHeight : 160);
 
   // Selection: ids of the selected albums, the cursor (last clicked or moved
@@ -155,7 +161,7 @@
   });
 
   $effect(() => {
-    savePrefs({ view, sortKey, sortDir, browserHeight, linkedOnly });
+    savePrefs({ view, sortKey, sortDir, browserHeight, linkedOnly, theme: theme.id });
   });
 
   $effect(() => {
@@ -407,6 +413,16 @@
     menu = { x: event.clientX, y: event.clientY, items };
   }
 
+  function themeMenu(button: HTMLElement) {
+    const rect = button.getBoundingClientRect();
+    // Above the button: the menu keeps itself inside the window.
+    menu = {
+      x: rect.left,
+      y: rect.top,
+      items: THEMES.map((t) => ({ label: t.name, checked: t.id === theme.id, action: () => (theme = t) })),
+    };
+  }
+
   async function devicesMenu(button: HTMLElement) {
     const devices = await player.loadDevices();
     if (!devices) return;
@@ -535,6 +551,7 @@
     sortDir: SortDir;
     browserHeight: number;
     linkedOnly: boolean;
+    theme: string;
   }> {
     try {
       return JSON.parse(localStorage.getItem(PREFS_KEY) ?? "{}");
@@ -607,6 +624,8 @@
       onsave={save}
       ondownload={download}
       onimport={() => fileInput.click()}
+      {theme}
+      ontheme={themeMenu}
     />
 
     <div class="content">
@@ -800,9 +819,9 @@
     align-items: center;
     gap: 6px;
     padding: 4px 10px;
-    background: #f3dde6;
-    border-bottom: 1px solid #c6a9b6;
-    color: #4a3440;
+    background: oklch(91.8% calc(0.027 * var(--tint)) var(--hue));
+    border-bottom: 1px solid oklch(76.4% calc(0.038 * var(--tint)) var(--hue));
+    color: oklch(35.5% calc(0.037 * var(--tint)) var(--hue));
   }
   .triage-bar span {
     flex: 1;
@@ -838,15 +857,15 @@
     width: 24px;
     height: 20px;
     padding: 0;
-    border: 1px solid #8f7783;
+    border: 1px solid oklch(59.6% calc(0.034 * var(--tint)) var(--hue));
     border-radius: 3px;
-    background: linear-gradient(#fffbfc, #e3cfd8);
+    background: linear-gradient(oklch(99.1% calc(0.004 * var(--tint)) var(--hue)), oklch(87.3% calc(0.025 * var(--tint)) var(--hue)));
     font-size: 15px;
     line-height: 1;
     color: #333;
   }
   .square:active {
-    background: linear-gradient(#bdbdbd, #f1e2e8);
+    background: linear-gradient(#bdbdbd, oklch(92.6% calc(0.018 * var(--tint)) var(--hue)));
   }
   .narrow {
     display: none;
@@ -863,10 +882,10 @@
     width: min(620px, calc(100% - 32px));
     max-height: 90vh;
     padding: 0;
-    border: 1px solid #9b8590;
+    border: 1px solid oklch(64.0% calc(0.031 * var(--tint)) var(--hue));
     border-top: none;
     border-radius: 0 0 6px 6px;
-    background: #f6ebef;
+    background: oklch(95.0% calc(0.013 * var(--tint)) var(--hue));
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
   }
   .sheet.wide {
@@ -891,7 +910,7 @@
     padding: 0;
     border: 1px solid #6e6e6e;
     border-radius: 5px;
-    background: #f6ebef;
+    background: oklch(95.0% calc(0.013 * var(--tint)) var(--hue));
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
     overflow: auto;
   }

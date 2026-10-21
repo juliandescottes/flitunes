@@ -216,7 +216,7 @@
     position: relative;
     flex-shrink: 1;
     min-height: 60px;
-    border-bottom: 1px solid #bfa2af;
+    border-bottom: 1px solid oklch(74.2% calc(0.038 * var(--tint)) var(--hue));
     background: #fff;
     user-select: none;
   }
@@ -242,7 +242,7 @@
     min-height: 0;
   }
   .column + .column {
-    border-left: 1px solid #d6bdc8;
+    border-left: 1px solid oklch(82.3% calc(0.032 * var(--tint)) var(--hue));
   }
   .head {
     background: var(--header);

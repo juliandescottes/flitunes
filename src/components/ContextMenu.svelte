@@ -94,7 +94,7 @@
   }
   button:hover:not(:disabled),
   button:focus:not(:disabled) {
-    background: linear-gradient(#f28db6, #d3487f);
+    background: linear-gradient(oklch(76.2% calc(0.131 * var(--tint)) var(--hue)), oklch(60.9% calc(0.180 * var(--tint)) var(--hue)));
     color: #fff;
   }
   /* A check mark in the left margin, like a Mac menu. */
@@ -109,6 +109,6 @@
   .separator {
     height: 1px;
     margin: 5px 0;
-    background: #f0dfe6;
+    background: oklch(91.9% calc(0.021 * var(--tint)) var(--hue));
   }
 </style>

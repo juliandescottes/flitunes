@@ -123,9 +123,9 @@
     grid-template-columns: auto max-content 1fr;
     gap: 6px 8px;
     align-items: center;
-    border: 1px solid #c7a3b3;
+    border: 1px solid oklch(75.3% calc(0.047 * var(--tint)) var(--hue));
     border-radius: 4px;
-    background: #f1e2e8;
+    background: oklch(92.6% calc(0.018 * var(--tint)) var(--hue));
     padding: 12px 14px;
   }
   label,
@@ -134,7 +134,7 @@
   }
   input:not([type="checkbox"]) {
     font: inherit;
-    border: 1px solid #bfa2af;
+    border: 1px solid oklch(74.2% calc(0.038 * var(--tint)) var(--hue));
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.15);
     padding: 2px 3px;
     min-width: 0;

@@ -214,8 +214,8 @@
     position: relative;
   }
   .tabs button {
-    border: 1px solid #9b8590;
-    background: linear-gradient(#fffbfc, #e8d6de);
+    border: 1px solid oklch(64.0% calc(0.031 * var(--tint)) var(--hue));
+    background: linear-gradient(oklch(99.1% calc(0.004 * var(--tint)) var(--hue)), oklch(89.3% calc(0.022 * var(--tint)) var(--hue)));
     padding: 3px 16px;
     font: inherit;
     cursor: default;
@@ -228,14 +228,14 @@
     border-left: none;
   }
   .tabs button.on {
-    background: linear-gradient(#fbcfe1, #ea74a5);
-    border-color: #b23d6f;
+    background: linear-gradient(oklch(89.7% calc(0.054 * var(--tint)) var(--hue)), oklch(70.9% calc(0.154 * var(--tint)) var(--hue)));
+    border-color: oklch(53.9% calc(0.159 * var(--tint)) var(--hue));
     color: #000;
   }
   .panel {
-    border: 1px solid #c7a3b3;
+    border: 1px solid oklch(75.3% calc(0.047 * var(--tint)) var(--hue));
     border-radius: 4px;
-    background: #f1e2e8;
+    background: oklch(92.6% calc(0.018 * var(--tint)) var(--hue));
     padding: 20px 14px 12px;
     min-height: 300px;
   }
@@ -255,7 +255,7 @@
   input,
   textarea {
     font: inherit;
-    border: 1px solid #bfa2af;
+    border: 1px solid oklch(74.2% calc(0.038 * var(--tint)) var(--hue));
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.15);
     padding: 2px 3px;
     min-width: 0;
