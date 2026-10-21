@@ -58,9 +58,29 @@ export function findGenreByName(genres: Genre[], name: string): Genre | undefine
   return id ? genres.find((g) => g.id === id || slugify(g.name) === id) : undefined;
 }
 
-/** Key for spotting the same album entered twice: artist and title, ignoring case, accents and punctuation. */
+/**
+ * Key for spotting the same album entered twice: artist and title, ignoring
+ * case, accents and punctuation. Letters of every script count (unlike
+ * `slugify`, which keeps a-z and 0-9 for ids); a title with no letters or
+ * digits, like Sigur Rós's "( )", is compared as is.
+ */
 export function albumMatchKey(artist: string, title: string): string {
-  return `${slugify(sortableName(artist))}/${slugify(title)}`;
+  return `${matchText(sortableName(artist))}/${matchText(title) || title.trim()}`;
+}
+
+function matchText(text: string): string {
+  return (
+    text
+      // NFKD splits accents off and reads full-width letters as plain ones;
+      // NFC puts back the marks that aren't accents (Japanese voiced kana).
+      .normalize("NFKD")
+      .replace(/[̀-ͯ]/g, "")
+      .normalize("NFC")
+      .toLowerCase()
+      .replace(/&/g, " and ")
+      .replace(/[^\p{L}\p{N}]+/gu, "-")
+      .replace(/^-+|-+$/g, "")
+  );
 }
 
 /** Name for sorting, ignoring a leading "The " like iTunes: "The Beatles" → "Beatles". */
