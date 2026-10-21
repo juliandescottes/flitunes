@@ -64,6 +64,13 @@
   });
   const track = $derived(playback?.track ?? null);
   const progress = $derived(playback && track ? currentProgress(playback, now) : 0);
+
+  let searchInput: HTMLInputElement;
+
+  function clearSearch() {
+    search = "";
+    searchInput.focus();
+  }
 </script>
 
 <header class="toolbar">
@@ -215,7 +222,21 @@
         <circle cx="5" cy="5" r="3.8" fill="none" stroke="#666" stroke-width="1.5" />
         <path d="M8 8l3.2 3.2" stroke="#666" stroke-width="1.8" stroke-linecap="round" />
       </svg>
-      <input type="search" placeholder="Search Library" bind:value={search} />
+      <input
+        type="search"
+        placeholder="Search Library"
+        bind:this={searchInput}
+        bind:value={search}
+        onkeydown={(e) => e.key === "Escape" && search !== "" && clearSearch()}
+      />
+      {#if search !== ""}
+        <!-- Like the Mac's search fields: a round grey clear button. -->
+        <button class="clear" title="Clear the search (Esc)" aria-label="Clear the search" onclick={clearSearch}>
+          <svg viewBox="0 0 8 8" width="6" height="6" aria-hidden="true">
+            <path d="M1 1l6 6M7 1L1 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+        </button>
+      {/if}
     </label>
   </div>
 </header>
@@ -396,6 +417,30 @@
     font: inherit;
     width: 100%;
     background: transparent;
+  }
+  /* The browser's own clear button, replaced by .clear. */
+  .search input::-webkit-search-cancel-button {
+    appearance: none;
+  }
+  .clear {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 13px;
+    height: 13px;
+    margin-right: -4px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: #a8a0a4;
+    color: #fff;
+    cursor: default;
+  }
+  .clear:hover {
+    background: #8a8286;
+  }
+  .clear:active {
+    background: #6f686b;
   }
   @media (max-width: 700px) {
     .toolbar {
