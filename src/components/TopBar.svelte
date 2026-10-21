@@ -78,7 +78,7 @@
     {#if spotifyStatus === "signed-in"}
       <div class="transport" role="group" aria-label="Playback">
         <button class="round" title="Previous" aria-label="Previous" onclick={onprevious}>
-          <svg viewBox="0 0 16 12" width="16" height="12" aria-hidden="true"><path d="M8 0v12L2 6zM14 0v12L8 6z" fill="currentColor" /></svg>
+          <svg viewBox="0 0 16 12" width="16" height="12" aria-hidden="true"><path d="M7 0v12L1 6zM13 0v12L7 6z" fill="currentColor" /></svg>
         </button>
         <button
           class="round big"
@@ -89,11 +89,11 @@
           {#if playback?.isPlaying}
             <svg viewBox="0 0 12 14" width="12" height="14" aria-hidden="true"><path d="M1 0h4v14H1zM7 0h4v14H7z" fill="currentColor" /></svg>
           {:else}
-            <svg viewBox="0 0 12 14" width="12" height="14" aria-hidden="true"><path d="M1 0l11 7-11 7z" fill="currentColor" /></svg>
+            <svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true"><path d="M3 0l11 7-11 7z" fill="currentColor" /></svg>
           {/if}
         </button>
         <button class="round" title="Next" aria-label="Next" onclick={onnext}>
-          <svg viewBox="0 0 16 12" width="16" height="12" aria-hidden="true"><path d="M2 0v12l6-6zM8 0v12l6-6z" fill="currentColor" /></svg>
+          <svg viewBox="0 0 16 12" width="16" height="12" aria-hidden="true"><path d="M3 0v12l6-6zM9 0v12l6-6z" fill="currentColor" /></svg>
         </button>
         <!-- Like iTunes' AirPlay menu: where to play. -->
         <button
@@ -266,7 +266,8 @@
   /* Round, glossy transport buttons, like iTunes. Each icon's width and
      height have the same parity as its button's inner size (30px buttons:
      even icons; the 24px screen button: even too), so it centers on whole
-     pixels. */
+     pixels. Triangles sit 1px off center towards their points: their weight
+     is on their flat side, so a centered box looks off center. */
   .round {
     display: grid;
     place-items: center;
