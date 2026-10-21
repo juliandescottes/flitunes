@@ -70,6 +70,9 @@ Static Svelte 5 + Vite + TypeScript app, no backend.
 - `src/lib/library.svelte.ts`: reactive `Library` store. All mutations go
   through it: it writes IndexedDB, bumps the unsaved-changes counter, and
   handles loading or conflicts against `library.json`.
+- `src/lib/route.ts`: where the main view is (source, column picks, search,
+  tracks) as the URL hash, so Back and Forward work. Preferences (view, sort)
+  and the selection stay out of it.
 - `src/lib/persistence.ts`: `LibrarySource` (fetch/save `library.json`) and JSON download.
 - `src/lib/spotify-auth.ts`, `spotify-session.svelte.ts`, `spotify-player.svelte.ts`,
   `spotify-tracks.ts`: optional Spotify sign-in (PKCE), Web API calls, playback
