@@ -43,7 +43,8 @@ with unit tests.
 - Use another port and a mock library, so the real library and the user's dev
   server (port 5173) are never touched: `node scripts/mock-library.ts
   <scratch>/mock.json`, then `LIBRARY_PATH=<scratch>/mock.json npx vite --port
-  5182 --strictPort`. Stop it when done.
+  5182 --strictPort`. Start it once and leave it running for the session
+  (Vite reloads code changes); reuse it if port 5182 is already in use.
 - Never play on the user's Spotify account from a test: use a fake
   `VITE_SPOTIFY_CLIENT_ID` and stub `fetch`.
 
