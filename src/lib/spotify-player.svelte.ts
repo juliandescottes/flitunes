@@ -21,6 +21,8 @@ export interface Playback {
     albumUri: string;
     durationMs: number;
   } | null;
+  /** What was played (an album or a playlist URI), e.g. the album passed to play(). */
+  contextUri: string | null;
   /** Position when the state was fetched. */
   progressMs: number;
   /** When the state was fetched (ms since the epoch). */
@@ -32,6 +34,7 @@ interface PlayerResponse {
   is_playing?: boolean;
   progress_ms?: number | null;
   device?: { name?: string } | null;
+  context?: { uri?: string } | null;
   item?: {
     type?: string;
     uri?: string;
@@ -61,6 +64,7 @@ export function parsePlayback(data: unknown, now: number): Playback | null {
   return {
     isPlaying: d.is_playing === true,
     track,
+    contextUri: d.context?.uri ?? null,
     progressMs: d.progress_ms ?? 0,
     fetchedAt: now,
     deviceName: d.device?.name ?? null,

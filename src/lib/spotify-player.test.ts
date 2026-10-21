@@ -6,6 +6,7 @@ const playing = {
   is_playing: true,
   progress_ms: 61_000,
   device: { name: "MacBook" },
+  context: { uri: "spotify:album:a1" },
   item: {
     type: "track",
     uri: "spotify:track:t1",
@@ -28,6 +29,7 @@ describe("parsePlayback", () => {
         albumUri: "spotify:album:a1",
         durationMs: 200_000,
       },
+      contextUri: "spotify:album:a1",
       progressMs: 61_000,
       fetchedAt: 1000,
       deviceName: "MacBook",
