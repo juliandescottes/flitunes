@@ -12,6 +12,7 @@ import {
   type AuthConfig,
   type KeyValueStore,
 } from "./spotify-auth.ts";
+import { spotifyLog } from "./spotify-log.ts";
 
 const API = "https://api.spotify.com/v1";
 
@@ -101,10 +102,20 @@ export class SpotifySession {
       this.#signedOut();
       throw new Error("Not signed in to Spotify");
     }
-    const res = await config.fetch(`${API}${path}`, {
-      ...init,
-      headers: { ...init.headers, Authorization: `Bearer ${token}` },
-    });
+    const call = `${init.method ?? "GET"} ${path}`;
+    const started = Date.now();
+    spotifyLog(`→ ${call}`, init.body ?? undefined);
+    let res: Response;
+    try {
+      res = await config.fetch(`${API}${path}`, {
+        ...init,
+        headers: { ...init.headers, Authorization: `Bearer ${token}` },
+      });
+    } catch (e) {
+      spotifyLog(`✕ ${call} failed after ${Date.now() - started} ms: ${(e as Error).message}`);
+      throw e;
+    }
+    spotifyLog(`← ${res.status} ${call} (${Date.now() - started} ms)`);
     if (res.status === 401) {
       signOut(config);
       this.#signedOut();
@@ -112,6 +123,7 @@ export class SpotifySession {
     }
     if (res.status === 204 || res.headers.get("content-length") === "0") return null;
     const data = parseBody(await res.text());
+    if (!res.ok) spotifyLog(`error body for ${call}`, data);
     if (!res.ok) throw new SpotifyError(res.status, `Spotify: ${data?.error?.message ?? `HTTP ${res.status}`}`);
     return data;
   }

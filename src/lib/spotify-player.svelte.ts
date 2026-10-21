@@ -3,6 +3,7 @@
 // doesn't push changes, so the state is polled while the page is visible,
 // and refreshed right after each action.
 
+import { spotifyLog } from "./spotify-log.ts";
 import { SpotifyError, type SpotifySession } from "./spotify-session.svelte.ts";
 
 /** Polling interval while the page is visible. */
@@ -108,6 +109,8 @@ export class SpotifyPlayer {
   #now: () => number;
   /** The device picked in FliTunes, for commands sent while none is active. */
   #deviceId: string | null = null;
+  #lastState: string | null = null;
+  #lastPoll = 0;
 
   constructor(session: SpotifySession, now = Date.now) {
     this.#session = session;
@@ -124,8 +127,14 @@ export class SpotifyPlayer {
       return;
     }
     try {
-      this.playback = parsePlayback(await this.#session.api("/me/player"), this.#now());
+      const playback = parsePlayback(await this.#session.api("/me/player"), this.#now());
+      // Log what changed only, not every poll.
+      const state = playback ? `${playback.isPlaying ? "playing" : "paused"} on ${playback.deviceName ?? "?"}: ${playback.track?.name ?? "no track"}` : "nothing playing";
+      if (state !== this.#lastState) spotifyLog(`player: ${state}`);
+      this.#lastState = state;
+      this.playback = playback;
     } catch (e) {
+      spotifyLog(`player: refresh failed: ${(e as Error).message}`);
       this.error = (e as Error).message;
     }
   }
@@ -162,7 +171,9 @@ export class SpotifyPlayer {
   async loadDevices(): Promise<Device[] | null> {
     this.error = null;
     try {
-      return parseDevices(await this.#session.api("/me/player/devices"));
+      const devices = parseDevices(await this.#session.api("/me/player/devices"));
+      spotifyLog("devices", devices);
+      return devices;
     } catch (e) {
       this.error = (e as Error).message;
       return null;
@@ -179,7 +190,12 @@ export class SpotifyPlayer {
   /** Polls while the page is visible. Returns a function that stops it. */
   start(): () => void {
     const poll = () => {
-      if (document.visibilityState === "visible") this.refresh();
+      if (document.visibilityState !== "visible") return;
+      const now = Date.now();
+      // A long gap means the page was hidden or the computer slept: Spotify devices may have gone idle meanwhile.
+      if (this.#lastPoll && now - this.#lastPoll > 2 * POLL_MS) spotifyLog(`polling again after ${Math.round((now - this.#lastPoll) / 1000)} s`);
+      this.#lastPoll = now;
+      this.refresh();
     };
     poll();
     const timer = setInterval(poll, POLL_MS);
@@ -195,6 +211,7 @@ export class SpotifyPlayer {
     try {
       await action();
     } catch (e) {
+      spotifyLog(`action failed: ${(e as Error).message}`);
       // Undo any optimistic change, keeping the action's error.
       await this.refresh();
       this.error = (e as Error).message;
@@ -215,6 +232,7 @@ export class SpotifyPlayer {
     } catch (e) {
       if (!(e instanceof SpotifyError && e.status === 404)) throw e;
       const device = await this.#targetDevice();
+      spotifyLog(`404 on ${init.method} ${path}: ${device ? `sending it again to device ${device}` : "no device to send it to"}`);
       if (!device) throw new Error("Open Spotify on one of your devices first, then try again.");
       return this.#session.api(`${path}?device_id=${encodeURIComponent(device)}`, init);
     }
@@ -222,7 +240,9 @@ export class SpotifyPlayer {
 
   /** The chosen device if Spotify still lists it, else the active one, else the first usable one. */
   async #targetDevice(): Promise<string | null> {
-    const devices = parseDevices(await this.#session.api("/me/player/devices")).filter((d) => d.usable);
+    const all = parseDevices(await this.#session.api("/me/player/devices"));
+    spotifyLog("devices", all);
+    const devices = all.filter((d) => d.usable);
     const device = devices.find((d) => d.id === this.#deviceId) ?? devices.find((d) => d.isActive) ?? devices[0];
     return device?.id ?? null;
   }

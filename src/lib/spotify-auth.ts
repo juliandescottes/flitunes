@@ -3,6 +3,8 @@
 // is only used for playback (see docs/spec.md); nothing from Spotify is
 // saved to the library.
 
+import { spotifyLog } from "./spotify-log.ts";
+
 const AUTHORIZE_URL = "https://accounts.spotify.com/authorize";
 const TOKEN_URL = "https://accounts.spotify.com/api/token";
 
@@ -108,10 +110,14 @@ export async function accessToken(config: AuthConfig): Promise<string | null> {
   if (!tokens) return null;
   const now = (config.now ?? Date.now)();
   if (tokens.expiresAt - EXPIRY_MARGIN > now) return tokens.accessToken;
+  const started = Date.now();
+  spotifyLog(`refreshing the access token (it expires in ${Math.round((tokens.expiresAt - now) / 1000)} s)`);
   try {
     const refreshed = await requestTokens(config, { grant_type: "refresh_token", refresh_token: tokens.refreshToken });
+    spotifyLog(`access token refreshed (${Date.now() - started} ms)`);
     return refreshed.accessToken;
   } catch (e) {
+    spotifyLog(`refreshing the access token failed (${Date.now() - started} ms): ${(e as Error).message}`);
     // A revoked or expired refresh token means signing in again.
     if (e instanceof SpotifyAuthError) signOut(config);
     throw e;
