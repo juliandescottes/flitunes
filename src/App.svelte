@@ -384,6 +384,16 @@
     menu = { x: event.clientX, y: event.clientY, items };
   }
 
+  async function devicesMenu(button: HTMLElement) {
+    const devices = await player.loadDevices();
+    if (!devices) return;
+    const rect = button.getBoundingClientRect();
+    const items: MenuItem[] = devices.length
+      ? devices.map((d) => ({ label: d.name, checked: d.isActive, disabled: !d.usable, action: () => player.selectDevice(d.id) }))
+      : [{ label: "No devices: open Spotify on one first", disabled: true, action: () => {} }];
+    menu = { x: rect.left, y: rect.bottom + 2, items };
+  }
+
   function albumMenu(event: MouseEvent, album: Album) {
     // Right-clicking outside the selection selects that album first.
     if (!selectedSet.has(album.id)) {
@@ -530,6 +540,7 @@
     ontoggleplay={() => player.togglePlay()}
     onnext={() => player.next()}
     onprevious={() => player.previous()}
+    ondevices={devicesMenu}
     {playingAlbum}
     playingShown={playingAlbum !== null && playingAlbum.id === tracksAlbum?.id}
     onshowplaying={() => playingAlbum && showTracks(playingAlbum)}

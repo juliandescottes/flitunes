@@ -74,6 +74,7 @@ describe("SpotifySession", () => {
       "/me/player/play": () => Response.json({ error: { status: 404, message: "No active device found" } }, { status: 404 }),
     });
     await expect(session.api("/me/player/play", { method: "PUT" })).rejects.toThrow("No active device found");
+    await expect(session.api("/me/player/play", { method: "PUT" })).rejects.toMatchObject({ status: 404 });
     expect(session.status).toBe("signed-in");
   });
 });

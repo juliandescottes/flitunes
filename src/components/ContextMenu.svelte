@@ -1,5 +1,5 @@
 <script lang="ts" module>
-  export type MenuItem = { label: string; action: () => void; disabled?: boolean } | "separator";
+  export type MenuItem = { label: string; action: () => void; disabled?: boolean; checked?: boolean } | "separator";
 </script>
 
 <script lang="ts">
@@ -50,7 +50,9 @@
     {:else}
       <li role="none">
         <button
-          role="menuitem"
+          role={item.checked === undefined ? "menuitem" : "menuitemradio"}
+          aria-checked={item.checked}
+          class:checked={item.checked}
           disabled={item.disabled}
           onclick={() => {
             onclose();
@@ -94,6 +96,12 @@
   button:focus:not(:disabled) {
     background: linear-gradient(#f28db6, #d3487f);
     color: #fff;
+  }
+  /* A check mark in the left margin, like a Mac menu. */
+  button.checked::before {
+    content: "✓";
+    position: absolute;
+    margin-left: -14px;
   }
   button:disabled {
     color: #aaa;

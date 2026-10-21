@@ -15,6 +15,16 @@ import {
 
 const API = "https://api.spotify.com/v1";
 
+/** A Web API error, with its HTTP status. */
+export class SpotifyError extends Error {
+  status: number;
+
+  constructor(status: number, message: string) {
+    super(message);
+    this.status = status;
+  }
+}
+
 export type SpotifyStatus = "disabled" | "signed-out" | "signing-in" | "signed-in";
 
 export class SpotifySession {
@@ -103,7 +113,7 @@ export class SpotifySession {
     if (res.status === 204 || res.headers.get("content-length") === "0") return null;
     const text = await res.text();
     const data = text ? (JSON.parse(text) as { error?: { message?: string } }) : null;
-    if (!res.ok) throw new Error(`Spotify: ${data?.error?.message ?? `HTTP ${res.status}`}`);
+    if (!res.ok) throw new SpotifyError(res.status, `Spotify: ${data?.error?.message ?? `HTTP ${res.status}`}`);
     return data;
   }
 
