@@ -58,8 +58,8 @@ window, and Get Info editing.
   "Show Tracks" in the context menu shows the album's tracks
   (`AlbumTracks.svelte`, `src/lib/spotify-tracks.ts`); double-click a track to
   play the album from there.
-- The three Spotify branches are only tested against a fake Spotify API so
-  far (no Spotify app configured yet).
+- Sign-in and playback confirmed with a real Spotify app on 2026-10-21
+  (dev, `http://127.0.0.1:5173/`).
 - 84 unit tests pass, `svelte-check` is clean.
 - GitHub Pages: `.github/workflows/pages.yml` tests, builds and deploys on
   every push to `main` (needs Settings → Pages → Source: GitHub Actions).
@@ -67,9 +67,9 @@ window, and Get Info editing.
 
 ## Next step
 
-Try sign-in, playback and track lists with a real Spotify app (below). Open
-question: which gesture opens an album's tracks (now only the context menu;
-double-click plays).
+Open question: which gesture opens an album's tracks (now only the context
+menu; double-click plays). Set the `SPOTIFY_CLIENT_ID` repository variable
+for the Pages build.
 
 To try the sign-in for real: create (or reuse) an app in the Spotify developer
 dashboard, add `http://127.0.0.1:5173/` and the Pages URL as redirect URIs,
