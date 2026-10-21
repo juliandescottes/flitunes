@@ -70,6 +70,10 @@
   <header>
     <div class="cover">
       {#if album.cover}<img src={album.cover} alt="" />{:else}<div class="blank" aria-hidden="true">♫</div>{/if}
+      <!-- Shown over the cover while hovering it, like the grid. -->
+      <button class="play" title="Play" aria-label="Play {album.title}" onclick={() => onplay()}>
+        <svg viewBox="0 0 12 14" width="16" height="18" aria-hidden="true"><path d="M2 0l10 7-10 7z" fill="currentColor" /></svg>
+      </button>
     </div>
     <div class="info">
       <h2>{album.title}</h2>
@@ -78,10 +82,6 @@
         {[album.year, tracks && `${tracks.length} ${tracks.length === 1 ? "song" : "songs"}`, tracks && formatTime(totalMs)]
           .filter(Boolean)
           .join(" · ")}
-      </div>
-      <div class="buttons">
-        <button class="aqua default" onclick={() => onplay()} disabled={!tracks?.length}>▶ Play</button>
-        <button class="aqua" onclick={onback} title="Back to the library (Esc)">Back</button>
       </div>
     </div>
   </header>
@@ -163,6 +163,7 @@
     border-bottom: 1px solid var(--rule);
   }
   .cover {
+    position: relative;
     flex: none;
     width: 140px;
     height: 140px;
@@ -199,10 +200,34 @@
   .meta {
     color: var(--text-dim);
   }
-  .buttons {
-    margin-top: auto;
-    display: flex;
-    gap: 6px;
+  .play {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 44px;
+    height: 44px;
+    margin: -22px 0 0 -22px;
+    padding: 0 0 0 3px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.45);
+    color: #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transition: opacity 0.15s;
+    cursor: default;
+  }
+  .cover:hover .play,
+  .play:focus-visible {
+    opacity: 1;
+  }
+  .play:hover {
+    background: rgba(0, 0, 0, 0.6);
+  }
+  .play:active {
+    background: rgba(0, 0, 0, 0.75);
   }
   .tracks {
     flex: 1;
