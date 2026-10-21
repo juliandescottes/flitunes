@@ -59,7 +59,7 @@
     {#if spotifyStatus === "signed-in"}
       <div class="transport" role="group" aria-label="Playback">
         <button class="round" title="Previous" aria-label="Previous" onclick={onprevious}>
-          <svg viewBox="0 0 16 12" width="14" height="11" aria-hidden="true"><path d="M2 0h2v12H2zM15 0v12L9 6zM9 0v12L3 6z" fill="currentColor" /></svg>
+          <svg viewBox="0 0 16 12" width="15" height="11" aria-hidden="true"><path d="M8 0v12L2 6zM14 0v12L8 6z" fill="currentColor" /></svg>
         </button>
         <button
           class="round big"
@@ -68,13 +68,13 @@
           onclick={ontoggleplay}
         >
           {#if playback?.isPlaying}
-            <svg viewBox="0 0 12 14" width="11" height="13" aria-hidden="true"><path d="M1 0h4v14H1zM7 0h4v14H7z" fill="currentColor" /></svg>
+            <svg viewBox="0 0 12 14" width="12" height="14" aria-hidden="true"><path d="M1 0h4v14H1zM7 0h4v14H7z" fill="currentColor" /></svg>
           {:else}
-            <svg viewBox="0 0 12 14" width="11" height="13" aria-hidden="true"><path d="M1 0l11 7-11 7z" fill="currentColor" /></svg>
+            <svg viewBox="0 0 12 14" width="12" height="14" aria-hidden="true"><path d="M1 0l11 7-11 7z" fill="currentColor" /></svg>
           {/if}
         </button>
         <button class="round" title="Next" aria-label="Next" onclick={onnext}>
-          <svg viewBox="0 0 16 12" width="14" height="11" aria-hidden="true"><path d="M12 0h2v12h-2zM1 0v12l6-6zM7 0v12l6-6z" fill="currentColor" /></svg>
+          <svg viewBox="0 0 16 12" width="15" height="11" aria-hidden="true"><path d="M2 0v12l6-6zM8 0v12l6-6z" fill="currentColor" /></svg>
         </button>
       </div>
     {/if}
@@ -196,15 +196,15 @@
   .transport {
     display: flex;
     align-items: center;
-    gap: 2px;
+    gap: 6px;
     margin-right: 8px;
   }
   /* Round, glossy transport buttons, like iTunes. */
   .round {
     display: grid;
     place-items: center;
-    width: 26px;
-    height: 26px;
+    width: 30px;
+    height: 30px;
     padding: 0;
     border: 1px solid #8f7783;
     border-radius: 50%;
@@ -214,8 +214,8 @@
     cursor: default;
   }
   .round.big {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
   }
   .round:active {
     background: linear-gradient(#ddc7d1, #f3e7ec);
