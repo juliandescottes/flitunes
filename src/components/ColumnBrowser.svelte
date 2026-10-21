@@ -218,6 +218,7 @@
     min-height: 60px;
     border-bottom: 1px solid #bfa2af;
     background: #fff;
+    user-select: none;
   }
   /* A grab area straddling the bottom border, like iTunes. */
   .splitter {

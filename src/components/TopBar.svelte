@@ -229,6 +229,7 @@
     text-align: center;
     overflow: hidden;
     padding: 0 12px;
+    user-select: none;
   }
   .lcd > div {
     max-width: 100%;
