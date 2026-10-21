@@ -50,7 +50,7 @@ The target is the iTunes 10 window, with albums instead of songs.
    - Top bar: the "LCD" display in the center (shows the selected album),
      view switcher (List / Album grid), search field on the right.
    - **Source list** on the left: Library › Music, Recently Added, then
-     Playlists (one per tag) and Smart Playlists.
+     Playlists (one per tag).
    - **Column browser** above the main view: Genres | Artists | Albums,
      each column with an "All (N)" row at the top.
    - **Main view**: a sortable list (Name, Artist, Year, Genre, Rating,
@@ -72,7 +72,8 @@ The target is the iTunes 10 window, with albums instead of songs.
 7. **Persistence**: IndexedDB working copy plus `library.json` (§6).
 
 ### Phase 2
-- Smart playlists with a rule editor (iTunes-style "Match all of the following rules").
+- Smart playlists with a rule editor (iTunes-style "Match all of the following rules"),
+  listed in the source list after the playlists.
 - Keyboard navigation (arrows, type-ahead, Enter = open in Spotify).
 - Cover Flow view.
 - More import paths, e.g. pasting several Spotify links at once, or a CSV.
