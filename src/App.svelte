@@ -7,6 +7,7 @@
   import ImportCsv from "./components/ImportCsv.svelte";
   import AlbumGrid from "./components/AlbumGrid.svelte";
   import AlbumList from "./components/AlbumList.svelte";
+  import AlbumTracks from "./components/AlbumTracks.svelte";
   import ColumnBrowser from "./components/ColumnBrowser.svelte";
   import ContextMenu, { type MenuItem } from "./components/ContextMenu.svelte";
   import GetInfo from "./components/GetInfo.svelte";
@@ -17,9 +18,23 @@
   import { Library } from "./lib/library.svelte.ts";
   import { findGenreByName, type Album } from "./lib/model.ts";
   import { downloadLibraryFile, repoSource } from "./lib/persistence.ts";
+  import { SpotifyPlayer } from "./lib/spotify-player.svelte.ts";
+  import { albumTracks, hasTrackList } from "./lib/spotify-tracks.ts";
+  import { browserSession } from "./lib/spotify-session.svelte.ts";
 
   const library = new Library(new LibraryDB(), repoSource);
   library.load();
+
+  // Optional Spotify sign-in, for playback control.
+  const spotify = browserSession();
+  spotify.init(new URLSearchParams(location.search)).then((handled) => {
+    if (handled.length === 0) return;
+    // Drop Spotify's redirect parameters from the address.
+    const url = new URL(location.href);
+    for (const name of handled) url.searchParams.delete(name);
+    history.replaceState(history.state, "", url);
+  });
+  const player = new SpotifyPlayer(spotify);
 
   // View preferences survive reloads (per browser only).
   const PREFS_KEY = "album-library:view";
@@ -41,6 +56,10 @@
   let selection = $state.raw<string[]>([]);
   let cursor = $state<string | null>(null);
   let anchor: string | null = null;
+
+  // The album whose tracks the main area shows, instead of the list or grid.
+  let tracksFor = $state<string | null>(null);
+  const tracksAlbum = $derived(tracksFor ? (library.getAlbum(tracksFor) ?? null) : null);
 
   let addOpen = $state(false);
   // Which form the Add sheet shows.
@@ -66,6 +85,26 @@
   const infoIndex = $derived(infoIds.length === 1 ? result.albums.findIndex((a) => a.id === infoIds[0]) : -1);
 
   $effect(() => {
+    if (spotify.error) error = spotify.error;
+  });
+
+  $effect(() => {
+    if (player.error) error = player.error;
+  });
+
+  // Searching goes back from an album's tracks to the results.
+  $effect(() => {
+    void search;
+    tracksFor = null;
+  });
+
+  // Follow what's playing while signed in.
+  $effect(() => {
+    if (spotify.status === "signed-in") return player.start();
+    player.playback = null;
+  });
+
+  $effect(() => {
     savePrefs({ view, sortKey, sortDir, browserHeight, linkedOnly });
   });
 
@@ -80,11 +119,13 @@
   });
 
   function selectSource(s: Source) {
+    tracksFor = null;
     source = s;
     genre = artist = albumTitle = null;
   }
 
   function selectColumn(column: "genre" | "artist" | "album", key: string | null) {
+    tracksFor = null;
     // Like iTunes, picking a genre resets the artist and album, and so on.
     if (column === "genre") {
       genre = key;
@@ -141,15 +182,30 @@
 
   // --- Actions ---
 
-  function openInSpotify(album: Album) {
+  function openInSpotifyApp(album: Album) {
     if (album.spotify) window.location.href = album.spotify;
+  }
+
+  // The explicit Play action. Signed in to Spotify, it plays the album on
+  // the active device; otherwise the link opens it in the Spotify app.
+  function playAlbum(album: Album) {
+    if (!album.spotify) return;
+    if (spotify.status === "signed-in") player.play(album.spotify);
+    else openInSpotifyApp(album);
+  }
+
+  // Double-click or Enter: the album's tracks when signed in (albums only),
+  // otherwise Play.
+  function openAlbum(album: Album) {
+    if (spotify.status === "signed-in" && hasTrackList(album.spotify)) showTracks(album);
+    else playAlbum(album);
   }
 
   // From the column browser's Albums column: editions share a title, so
   // open the first shown one that has a link.
-  function openTitleInSpotify(title: string) {
+  function openTitle(title: string) {
     const album = result.albums.find((a) => a.title === title && a.spotify);
-    if (album) openInSpotify(album);
+    if (album) openAlbum(album);
   }
 
   async function run(action: () => Promise<unknown>) {
@@ -288,7 +344,13 @@
     const many = selectedSet.size > 1;
     openMenu(event, [
       { label: many ? "Get Info (Multiple Items)" : "Get Info", action: getInfo },
-      { label: "Open in Spotify", action: () => openInSpotify(album), disabled: many || !album.spotify },
+      ...(spotify.status === "signed-in"
+        ? [
+            { label: "Play", action: () => playAlbum(album), disabled: many || !album.spotify },
+            { label: "Show Tracks", action: () => showTracks(album), disabled: many || !hasTrackList(album.spotify) },
+          ]
+        : []),
+      { label: "Open in Spotify", action: () => openInSpotifyApp(album), disabled: many || !album.spotify },
       "separator",
       { label: many ? `Delete ${selectedSet.size} Albums` : "Delete from Library", action: () => remove(selectedAlbums) },
     ]);
@@ -317,7 +379,19 @@
     return true;
   }
 
+  function showTracks(album: Album) {
+    tracksFor = album.id;
+    tick().then(() => main.querySelector<HTMLElement>(".tracks")?.focus());
+  }
+
+  function closeTracks() {
+    tracksFor = null;
+    focusAlbums();
+  }
+
   function onMainKeydown(event: KeyboardEvent) {
+    // The track list handles its own keys.
+    if (tracksAlbum) return;
     const list = result.albums;
     if (list.length === 0) return;
     if (typeAheadKey(event)) {
@@ -330,7 +404,7 @@
     else if (event.key === "ArrowUp") step = view === "grid" ? -gridColumns() : -1;
     else if (event.key === "ArrowRight" && view === "grid") step = 1;
     else if (event.key === "ArrowLeft" && view === "grid") step = -1;
-    else if (event.key === "Enter" && selectedAlbums.length === 1) openInSpotify(selectedAlbums[0]);
+    else if (event.key === "Enter" && selectedAlbums.length === 1) openAlbum(selectedAlbums[0]);
     else if (event.key === "Delete" || event.key === "Backspace") remove(selectedAlbums);
     else return;
     event.preventDefault();
@@ -395,13 +469,16 @@
     album={selectedAlbums.length === 1 ? selectedAlbums[0] : null}
     selectedCount={selectedAlbums.length}
     unsavedChanges={library.unsavedChanges}
-    canSaveToRepo={library.canSaveToRepo}
+    spotifyStatus={spotify.status}
+    spotifyUser={spotify.user}
+    playback={player.playback}
+    ontoggleplay={() => player.togglePlay()}
+    onnext={() => player.next()}
+    onprevious={() => player.previous()}
+    onspotify={() => (spotify.status === "signed-in" ? spotify.signOut() : spotify.signIn())}
     bind:view
     bind:linkedOnly
     bind:search
-    onsave={save}
-    ondownload={download}
-    onimport={() => fileInput.click()}
   />
   <input type="file" accept="application/json,.json" hidden bind:this={fileInput} onchange={importFile} />
 
@@ -427,6 +504,11 @@
       bind:source={() => source, selectSource}
       playlists={playlists(library.albums)}
       onadd={() => (addOpen = true)}
+      unsavedChanges={library.unsavedChanges}
+      canSaveToRepo={library.canSaveToRepo}
+      onsave={save}
+      ondownload={download}
+      onimport={() => fileInput.click()}
     />
 
     <div class="content">
@@ -438,7 +520,7 @@
         artist={result.artist}
         album={result.album}
         onselect={selectColumn}
-        onopenalbum={openTitleInSpotify}
+        onopenalbum={openTitle}
         {renamingGenre}
         ongenremenu={genreMenu}
         onrenamestart={(id) => (renamingGenre = id)}
@@ -452,6 +534,16 @@
           <p class="empty">Loading…</p>
         {:else if library.albums.length === 0}
           <p class="empty">Your library is empty. Click <strong>+</strong> to add an album.</p>
+        {:else if tracksAlbum?.spotify}
+          {@const uri = tracksAlbum.spotify}
+          <AlbumTracks
+            album={tracksAlbum}
+            load={() => albumTracks(spotify, uri)}
+            playingUri={player.playback?.track?.uri ?? null}
+            isPlaying={player.playback?.isPlaying ?? false}
+            onplay={(trackUri) => player.play(uri, trackUri)}
+            onback={closeTracks}
+          />
         {:else if result.albums.length === 0}
           <p class="empty">No albums match.</p>
         {:else if view === "list"}
@@ -464,7 +556,9 @@
             {sortDir}
             onsort={sortBy}
             onpick={pick}
-            onopen={openInSpotify}
+            onopen={openAlbum}
+            onplay={playAlbum}
+            signedIn={spotify.status === "signed-in"}
             onrate={rate}
             onmenu={albumMenu}
           />
@@ -474,7 +568,9 @@
             selected={selectedSet}
             {cursor}
             onpick={pick}
-            onopen={openInSpotify}
+            onopen={openAlbum}
+            onplay={playAlbum}
+            signedIn={spotify.status === "signed-in"}
             onmenu={albumMenu}
           />
         {/if}
@@ -484,8 +580,8 @@
 
   <footer class="status">
     <div class="buttons">
-      <!-- Narrow windows hide the source list and its Add button. -->
-      <button class="square narrow-add" title="Add to Library…" aria-label="Add to Library" onclick={() => (addOpen = true)}
+      <!-- Narrow windows hide the source list and its buttons: they show here instead. -->
+      <button class="square narrow" title="Add Album(s)…" aria-label="Add Album(s)" onclick={() => (addOpen = true)}
         >+</button
       >
     </div>
@@ -495,7 +591,13 @@
       {#if selectedAlbums.length > 1}· {selectedAlbums.length} selected{/if}
       {#if linkedOnly}· albums without a Spotify link hidden{/if}
     </div>
-    <div class="buttons"></div>
+    <div class="buttons end">
+      {#if library.canSaveToRepo}
+        <button class="aqua narrow" disabled={library.unsavedChanges === 0} onclick={save}>Save</button>
+      {/if}
+      <button class="aqua narrow" onclick={download}>Export</button>
+      <button class="aqua narrow" onclick={() => fileInput.click()}>Import</button>
+    </div>
   </footer>
 </div>
 
@@ -619,8 +721,13 @@
   .square:active {
     background: linear-gradient(#bdbdbd, #f1e2e8);
   }
-  .narrow-add {
+  .narrow {
     display: none;
+  }
+  .buttons.end {
+    display: flex;
+    justify-content: flex-end;
+    gap: 4px;
   }
   /* Sheets slide down from the toolbar. */
   .sheet {
@@ -668,7 +775,7 @@
     .body :global(.sources) {
       display: none;
     }
-    .narrow-add {
+    .narrow {
       display: block;
     }
   }

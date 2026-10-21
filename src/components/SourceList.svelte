@@ -1,13 +1,29 @@
 <script lang="ts">
   // iTunes 10 source list: LIBRARY and PLAYLISTS sections. Playlists are tags.
-  // The Add button sits at the bottom, clear of the window's rounded corner.
+  // The bottom holds the library actions (Add, Save, Export, Import), clear of
+  // the window's rounded corner.
   import type { Source } from "../lib/browse.ts";
 
   let {
     source = $bindable(),
     playlists,
     onadd,
-  }: { source: Source; playlists: string[]; onadd: () => void } = $props();
+    unsavedChanges,
+    canSaveToRepo,
+    onsave,
+    ondownload,
+    onimport,
+  }: {
+    source: Source;
+    playlists: string[];
+    onadd: () => void;
+    unsavedChanges: number;
+    /** Save writes library.json (dev server); otherwise Export downloads it. */
+    canSaveToRepo: boolean;
+    onsave: () => void;
+    ondownload: () => void;
+    onimport: () => void;
+  } = $props();
 
   const isSelected = (s: Source) =>
     s.kind === source.kind && (s.kind !== "playlist" || (source.kind === "playlist" && s.tag === source.tag));
@@ -50,7 +66,20 @@
     {/if}
   </nav>
   <div class="add">
-    <button class="aqua" title="Add to Library…" onclick={onadd}>+ Add to Library</button>
+    <button class="aqua" title="Add albums to the library…" onclick={onadd}>+ Add Album(s)</button>
+    <div class="file">
+      {#if canSaveToRepo}
+        <button
+          class="aqua"
+          class:default={unsavedChanges > 0}
+          onclick={onsave}
+          disabled={unsavedChanges === 0}
+          title="Write library.json (⌘S)">Save</button
+        >
+      {/if}
+      <button class="aqua" onclick={ondownload} title="Download library.json">Export</button>
+      <button class="aqua" onclick={onimport} title="Replace the library with a library.json file">Import</button>
+    </div>
 </div>
 </div>
 
@@ -68,13 +97,23 @@
     padding: 6px 0;
   }
   .add {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
     padding: 8px 10px;
   }
   .add button {
-    width: 100%;
     padding-left: 0;
     padding-right: 0;
     text-align: center;
+  }
+  .file {
+    display: flex;
+    gap: 4px;
+  }
+  .file button {
+    flex: 1;
+    min-width: 0;
   }
   h3 {
     margin: 10px 0 2px 10px;

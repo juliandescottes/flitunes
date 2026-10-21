@@ -19,6 +19,10 @@ npm run build    # static build in dist/
 
 Run `npm test` and `npm run check` before committing.
 
+Spotify sign-in (optional) needs the client ID of a Spotify app: put
+`VITE_SPOTIFY_CLIENT_ID=<id>` in `.env.local` (git-ignored) for dev. The
+Pages build reads it from the repository variable `SPOTIFY_CLIENT_ID`.
+
 The library is content, not code: `library.json` lives in its own repo,
 [spotify-viewer-album-library](https://github.com/juliandescottes/spotify-viewer-album-library).
 `npm run dev` reads and writes a clone of it next to this repo
@@ -54,6 +58,10 @@ Static Svelte 5 + Vite + TypeScript app, no backend.
   through it: it writes IndexedDB, bumps the unsaved-changes counter, and
   handles loading or conflicts against `library.json`.
 - `src/lib/persistence.ts`: `LibrarySource` (fetch/save `library.json`) and JSON download.
+- `src/lib/spotify-auth.ts`, `spotify-session.svelte.ts`, `spotify-player.svelte.ts`,
+  `spotify-tracks.ts`: optional Spotify sign-in (PKCE), Web API calls, playback
+  (now playing is polled every 5 s while the page is visible), and album track
+  lists for `AlbumTracks.svelte` (cached for the session, never saved).
 - `vite-plugins/library-file.ts`: dev-only `GET/POST /__library` endpoint that
   reads and writes the library file in the data repo clone. The POST is
   validated and accepted only from the same origin as JSON.
@@ -69,8 +77,11 @@ Static Svelte 5 + Vite + TypeScript app, no backend.
 - One album entry per edition. Compilations use the artist `"Various Artists"` (`VARIOUS_ARTISTS`).
 - Covers are stored as URLs only. No image files in the repo.
 - Everything is hand curated. The only external lookup is Spotify oEmbed (title +
-  cover from a pasted link). No metadata services (iTunes, MusicBrainz, …), no
-  Spotify login or Web API.
+  cover from a pasted link). No metadata services (iTunes, MusicBrainz, …).
+- Signing in to Spotify is optional and only for playback (Web API, OAuth PKCE in
+  the browser, `src/lib/spotify-auth.ts`). Spotify data shown while signed in (now
+  playing, track lists) is fetched live and never saved to the library. Without a
+  client ID (`VITE_SPOTIFY_CLIENT_ID`), the feature is hidden and albums are plain links.
 - Keep the store testable: inject `LibraryDB` and `LibrarySource`, and test with
   `fake-indexeddb` and an in-memory source (see `src/lib/library.test.ts`).
 

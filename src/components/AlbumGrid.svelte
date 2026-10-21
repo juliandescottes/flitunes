@@ -11,6 +11,8 @@
     cursor,
     onpick,
     onopen,
+    onplay,
+    signedIn,
     onmenu,
   }: {
     albums: Album[];
@@ -18,7 +20,12 @@
     /** The item last clicked or reached with the keyboard; kept in view. */
     cursor: string | null;
     onpick: (id: string, event: MouseEvent) => void;
+    /** Double-click: the album's tracks, or Play. */
     onopen: (album: Album) => void;
+    /** Plays the album, or opens it in the Spotify app when signed out. */
+    onplay: (album: Album) => void;
+    /** Signed in to Spotify: the cover button plays instead of opening the app. */
+    signedIn: boolean;
     onmenu: (event: MouseEvent, album: Album) => void;
   } = $props();
 
@@ -98,6 +105,19 @@
           {:else}
             <div class="blank" aria-hidden="true">♫</div>
           {/if}
+          {#if album.spotify}
+            <!-- Shown over the cover while hovering the album. -->
+            <button
+              class="play"
+              title={signedIn ? "Play" : "Open in Spotify"}
+              aria-label={signedIn ? `Play ${album.title}` : `Open ${album.title} in Spotify`}
+              onmousedown={(e) => e.stopPropagation()}
+              ondblclick={(e) => e.stopPropagation()}
+              onclick={() => onplay(album)}
+            >
+              <svg viewBox="0 0 12 14" width="16" height="18" aria-hidden="true"><path d="M2 0l10 7-10 7z" fill="currentColor" /></svg>
+            </button>
+          {/if}
         </div>
         <div class="title">{album.title}</div>
         <div class="artist">{album.artists.join(", ")}</div>
@@ -135,6 +155,38 @@
     margin-bottom: 6px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
     background: #eee;
+  }
+  .cover {
+    position: relative;
+  }
+  .play {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 44px;
+    height: 44px;
+    margin: -22px 0 0 -22px;
+    padding: 0 0 0 3px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.45);
+    color: #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transition: opacity 0.15s;
+    cursor: default;
+  }
+  .item:hover .play,
+  .play:focus-visible {
+    opacity: 1;
+  }
+  .play:hover {
+    background: rgba(0, 0, 0, 0.6);
+  }
+  .play:active {
+    background: rgba(0, 0, 0, 0.75);
   }
   .cover img {
     width: 100%;

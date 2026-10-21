@@ -1,18 +1,22 @@
 # Status
 
-_Last updated: 2026-10-18_
+_Last updated: 2026-10-21_
 
 ## Where we are
 
 The MVP is done (milestones 1–4): storage, adding albums, the iTunes 10
 window, and Get Info editing.
 
-- Window (`src/App.svelte` + `src/components/`): toolbar (Save/Export/Import,
-  LCD, List/Grid, search), source list (Music, Recently Added = last 30 days,
-  Playlists = tags), Genres | Artists | Albums column browser, striped list
-  or cover grid, status bar with "+". Look and colors live in `src/app.css`.
+- Window (`src/App.svelte` + `src/components/`): toolbar (playback buttons
+  when signed in to Spotify, LCD, Spotify and link toggles, List/Grid,
+  search), source list (Music, Recently Added = last 30 days, Playlists =
+  tags) ending with "+ Add Album(s)" and Save / Export / Import, Genres |
+  Artists | Albums column browser, striped list or cover grid, status bar
+  with the album count (and the sidebar's buttons on narrow screens). Look
+  and colors live in `src/app.css`.
 - Selection: click, ⌘/Ctrl-click to toggle, Shift-click or Shift-arrows for a
-  range, ⌘A selects all. Enter or double-click opens in Spotify, Delete removes.
+  range, ⌘A selects all. Enter or double-click opens the album (its tracks
+  when signed in to Spotify, else the Spotify app), Delete removes.
 - Type-ahead: typing letters in the list or grid jumps to the first album whose
   sorted column starts with them (name when sorted by rating or date added).
 - Get Info (⌘I or right-click): one album → Info and Artwork tabs with
@@ -37,19 +41,46 @@ window, and Get Info editing.
   are marked and never ticked in bulk.
 - Browse logic is pure and tested in `src/lib/browse.ts`; the store gained
   `updateAlbums` (bulk) and `mergeGenre`.
-- 52 unit tests pass, `svelte-check` is clean. Clicked through in Firefox
-  (except ⌘S, to avoid writing `library.json` from a test session).
+- Since then (PRs #3–#11): the column browser is resizable; playlist links
+  are accepted; a toolbar toggle hides albums without a Spotify link; "+ Add Album(s)"
+  and Save / Export / Import sit at the bottom of the sidebar; double-click or Enter in the
+  Albums column opens the album; the app is called **FliTunes**, tinted pink,
+  with a pink note favicon.
+- Performance (PR #11): lists, grid and column browser only render the rows in
+  view (`src/lib/virtual.ts`), and `browse()` sorts the library once and
+  filters afterwards. With 3000 albums every interaction takes under 25 ms.
+  `src/lib/mock.ts` / `scripts/mock-library.ts` make mock libraries;
+  `browse.perf.test.ts` keeps budgets.
+- Optional Spotify sign-in (branch `spotify-login`): a Spotify toggle next to
+  the link filter in the toolbar, when a client ID is configured; OAuth PKCE in `src/lib/spotify-auth.ts`,
+  reactive state and Web API calls in `src/lib/spotify-session.svelte.ts`.
+- Playback (branch `spotify-playback`, on top of `spotify-login`):
+  previous/play-pause/next in the toolbar; the display shows the playing track
+  and its progress (`src/lib/spotify-player.svelte.ts`).
+- Album details (branch `spotify-tracks`, on top of `spotify-playback`):
+  signed in, double-click or Enter shows the album's tracks
+  (`AlbumTracks.svelte`, `src/lib/spotify-tracks.ts`); double-click a track to
+  play the album from there. Play is explicit: ▶ on list rows, a translucent
+  ▶ over grid covers on hover, "Play" in the context menu.
+- Sign-in and playback confirmed with a real Spotify app on 2026-10-21
+  (dev, `http://127.0.0.1:5173/`).
+- 96 unit tests pass, `svelte-check` is clean.
 - GitHub Pages: `.github/workflows/pages.yml` tests, builds and deploys on
   every push to `main` (needs Settings → Pages → Source: GitHub Actions).
   Pages is the everywhere-viewer; curation happens locally, then push.
 
 ## Next step
 
-In progress: one-off bulk import of Spotify links for the 666 albums imported
-from Last.fm. Notes, scripts and data live in the git-ignored `import/`
-folder: start with `import/README.md`.
+Set the `SPOTIFY_CLIENT_ID` repository variable for the Pages build, then
+merge the three Spotify branches (login → playback → tracks).
 
-Then: Phase 2 in `PLAN.md`: smart playlists, Cover Flow. Or start curating the real library and fix what gets in the way.
+To try the sign-in for real: create (or reuse) an app in the Spotify developer
+dashboard, add `http://127.0.0.1:5173/` and the Pages URL as redirect URIs,
+put its client ID in `.env.local` and in the repository variable
+`SPOTIFY_CLIENT_ID`.
+
+The library import (Last.fm, Spotify links, early years by artist) is notes
+and scripts in the git-ignored `import/` folder: see `import/README.md`.
 
 ## Decisions
 
@@ -66,10 +97,15 @@ Then: Phase 2 in `PLAN.md`: smart playlists, Cover Flow. Or start curating the r
 | 2026-10-17 | Last.fm import deferred (scraping is blocked; would need an API key). |
 | 2026-10-18 | Code changes go through PRs; the user pushes, opens PRs and files issues. |
 | 2026-10-18 | Content apart from code: `library.json` moved to its own repo, `spotify-viewer-album-library` (history kept). The site fetches it from there; dev reads/writes a clone next to the app. |
+| 2026-10-21 | Optional Spotify sign-in (OAuth PKCE, no backend) for playback control only. Spotify data shown while signed in is fetched live, never saved; the library stays hand curated. |
 
 ## Known issues / notes
 
 - TypeScript pinned to 6.x until `svelte-check` supports 7.
 - Multiple artists are entered separated by ";" (names can contain commas).
+- Spotify Development Mode (2026): up to 5 allow-listed accounts per app, owner
+  needs Premium, and some Web API endpoints were removed. The ones used here
+  (`/me`, `/me/player*`, `/albums/{id}/tracks`) aren't in the removed list, but
+  check Spotify's changelog if a call starts failing.
 - Spotify oEmbed is public but undocumented.
   Always allow manual entry as a fallback.
