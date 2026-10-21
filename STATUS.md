@@ -44,6 +44,11 @@ window, and Get Info editing.
   Music, Recently Added, playlists and search. Accept (button, ⌘↩ or the
   context menu) removes the tag; Delete rejects. The source shows while
   albums wait in it.
+- Spotify listening history: `scripts/spotify-history/` (TypeScript, see its
+  README) counts album listens in an "Extended streaming history" export,
+  finds the albums from Spotify's public pages (paced, resumable), and adds
+  them tagged `triage`, ordered by plays. Ported from the one-off Python
+  scripts used for the 2026-10-21 import (1,951 albums), same output.
 - Browse logic is pure and tested in `src/lib/browse.ts`; the store gained
   `updateAlbums` (bulk) and `mergeGenre`.
 - Since then (PRs #3–#11): the column browser is resizable; playlist links

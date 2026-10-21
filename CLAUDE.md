@@ -29,6 +29,9 @@ The library is content, not code: `library.json` lives in its own repo,
 (`../spotify-viewer-album-library/library.json`, or the path in `LIBRARY_PATH`).
 Curate locally, Save, then commit and push in the data repo.
 
+`scripts/spotify-history/` builds albums from a Spotify listening history
+export and adds them for review in the Triage source (see its README).
+
 Every push to `main` deploys the app to GitHub Pages
 (`.github/workflows/pages.yml`). The site fetches the library from the data
 repo (`VITE_LIBRARY_URL`) when it opens, so library pushes need no redeploy
