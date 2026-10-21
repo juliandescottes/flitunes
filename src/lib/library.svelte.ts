@@ -4,7 +4,7 @@
 
 import { ulid } from "ulid";
 import type { LibraryDB } from "./db.ts";
-import { isValidCover, isValidSpotifyUri, slugify, type Album, type Genre, type LibraryFile } from "./model.ts";
+import { isLocalCover, isValidCover, isValidSpotifyUri, slugify, type Album, type Genre, type LibraryFile } from "./model.ts";
 import type { LibrarySource } from "./persistence.ts";
 import { parseLibraryFile, toLibraryFile } from "./serialize.ts";
 
@@ -34,6 +34,8 @@ export class Library {
 
   #db: LibraryDB;
   #source: LibrarySource;
+  /** Covers being copied into covers/, one at a time. */
+  #keepingCovers: Promise<void> = Promise.resolve();
 
   constructor(db: LibraryDB, source: LibrarySource) {
     this.#db = db;
@@ -104,6 +106,7 @@ export class Library {
     const album = this.#newAlbum(input);
     await this.#mutate(() => this.#db.albums.add(album));
     this.albums = [...this.albums, album];
+    this.#keepCovers([album]);
     return album;
   }
 
@@ -112,6 +115,7 @@ export class Library {
     const albums = inputs.map((input) => this.#newAlbum(input));
     await this.#mutate(() => this.#db.albums.bulkAdd(albums));
     this.albums = [...this.albums, ...albums];
+    this.#keepCovers(albums);
     return albums;
   }
 
@@ -137,7 +141,36 @@ export class Library {
     const album = this.#normalizeAlbum({ ...current, ...patch });
     await this.#mutate(() => this.#db.albums.put(album));
     this.#replaceAlbums([album]);
+    if (album.cover !== current.cover) this.#keepCovers([album]);
     return album;
+  }
+
+  /** Resolves once the covers being copied into covers/ are done. */
+  get coversKept(): Promise<void> {
+    return this.#keepingCovers;
+  }
+
+  /**
+   * In dev, copies the covers that are URLs into the library's covers/ folder
+   * (in the background, one at a time) and points the albums at their files,
+   * so new albums don't depend on Spotify's image servers. A cover that can't
+   * be copied keeps its URL; scripts/covers/ can bring it in later.
+   */
+  #keepCovers(albums: Album[]): void {
+    const keep = this.#source.keepCover;
+    if (!keep) return;
+    for (const { id, cover } of albums) {
+      if (!cover || isLocalCover(cover)) continue;
+      this.#keepingCovers = this.#keepingCovers.then(async () => {
+        try {
+          const file = await keep(id, cover);
+          // Only if the album still has that cover (not deleted or edited meanwhile).
+          if (this.getAlbum(id)?.cover === cover) await this.updateAlbum(id, { cover: file });
+        } catch (e) {
+          console.warn(`Keeping the cover of album ${id} failed, it stays a URL:`, e);
+        }
+      });
+    }
   }
 
   /** Updates several albums in one write, e.g. from Multiple Item Information. */

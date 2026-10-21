@@ -87,8 +87,10 @@ Static Svelte 5 + Vite + TypeScript app, no backend.
   (now playing is polled every 5 s while the page is visible), and album track
   lists for `AlbumTracks.svelte` (cached for the session, never saved).
 - `vite-plugins/library-file.ts`: dev-only `GET/POST /__library` endpoint that
-  reads and writes the library file in the data repo clone. The POST is
-  validated and accepted only from the same origin as JSON.
+  reads and writes the library file in the data repo clone, `GET
+  /__library/covers/<file>` for stored covers, and `POST /__library/covers`
+  to copy a cover URL into `covers/`. POSTs are accepted only from the same
+  origin as JSON.
 
 ## Conventions
 
@@ -101,8 +103,9 @@ Static Svelte 5 + Vite + TypeScript app, no backend.
 - One album entry per edition. Compilations use the artist `"Various Artists"` (`VARIOUS_ARTISTS`).
 - A cover is a file in the library repo's `covers/` folder (`"covers/<album id>.jpg"`,
   resolved next to `library.json` by `coverSrc` in `persistence.ts`) or an `https:` URL.
-  New covers come in as URLs; `scripts/covers/` copies them into `covers/`. No image
-  files in the app repo.
+  New covers come in as URLs: in dev, the store copies them into `covers/` right away
+  (`POST /__library/covers`); covers added on the site stay URLs until `scripts/covers/`
+  brings them in. No image files in the app repo.
 - `library.json` is validated strictly, on load and on every edit (`isValidCover`,
   `isValidSpotifyUri` in `model.ts`), so a saved file always loads again.
 - Everything is hand curated. The only external lookup is Spotify oEmbed (title +

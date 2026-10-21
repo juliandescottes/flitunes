@@ -10,6 +10,11 @@ export interface LibrarySource {
   fetchFile(): Promise<LibraryFile | null>;
   /** Writes the library file to disk. Only available in dev. */
   saveFile?(file: LibraryFile): Promise<void>;
+  /**
+   * Copies an album's cover from its URL into the library's covers/ folder
+   * and returns the file's path ("covers/<album id>.jpg"). Only available in dev.
+   */
+  keepCover?(albumId: string, url: string): Promise<string>;
 }
 
 const DEV_ENDPOINT = "/__library";
@@ -46,6 +51,17 @@ export const repoSource: LibrarySource = {
           body: serializeLibraryFile(file),
         });
         if (!res.ok) throw new Error(`Failed to save library.json: ${await res.text()}`);
+      }
+    : undefined,
+  keepCover: import.meta.env.DEV
+    ? async (albumId, url) => {
+        const res = await fetch(`${DEV_ENDPOINT}/covers`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ albumId, url }),
+        });
+        if (!res.ok) throw new Error(`Failed to keep the cover: ${await res.text()}`);
+        return ((await res.json()) as { cover: string }).cover;
       }
     : undefined,
 };
