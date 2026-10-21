@@ -1,6 +1,6 @@
 # FliTunes
 
-A music album library you curate by hand, in the look of iTunes 10 (2010):
+Hand curated music library focused on albums, in the look of old iTunes versions.
 browse by genre, artist and album, rate, tag albums into playlists, and open
 them in Spotify. Optionally, sign in to Spotify to control playback and see
 album tracks.
@@ -37,8 +37,8 @@ locally, [Node.js](https://nodejs.org/) 24 or later.
 Clone both repositories side by side:
 
 ```sh
-git clone https://github.com/<you>/spotify-album-viewer.git
-git clone https://github.com/<you>/spotify-viewer-album-library.git
+git clone https://github.com/<you>/spotify-album-viewer
+git clone https://github.com/<you>/spotify-viewer-album-library
 cd spotify-album-viewer
 npm install
 npm run dev
