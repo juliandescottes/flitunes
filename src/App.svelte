@@ -20,7 +20,7 @@
   import { findGenreByName, TRIAGE_TAG, type Album } from "./lib/model.ts";
   import { downloadLibraryFile, repoSource } from "./lib/persistence.ts";
   import { SpotifyPlayer } from "./lib/spotify-player.svelte.ts";
-  import { applyTheme, THEMES, themeById } from "./lib/themes.ts";
+  import { applyFavicon, applyTheme, THEMES, themeById } from "./lib/themes.ts";
   import { albumTracks, albumYear, hasTrackList } from "./lib/spotify-tracks.ts";
   import { browserSession } from "./lib/spotify-session.svelte.ts";
 
@@ -55,7 +55,10 @@
   let view = $state<ViewMode>(prefs.view ?? "albums");
   let linkedOnly = $state(prefs.linkedOnly === true);
   let theme = $state(themeById(prefs.theme));
-  $effect(() => applyTheme(theme));
+  $effect(() => {
+    applyTheme(theme);
+    applyFavicon(theme);
+  });
   let browserHeight = $state(typeof prefs.browserHeight === "number" ? prefs.browserHeight : 160);
 
   // Selection: ids of the selected albums, the cursor (last clicked or moved

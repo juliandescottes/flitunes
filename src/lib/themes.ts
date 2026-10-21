@@ -29,3 +29,36 @@ export function applyTheme(theme: Theme, root: HTMLElement = document.documentEl
   root.style.setProperty("--hue", String(theme.hue));
   root.style.setProperty("--tint", String(theme.tint));
 }
+
+/** The favicon's tile color (public/favicon.svg), the pink theme's. */
+const FAVICON_TILE = 'fill="#ec5c9c"';
+
+/** The favicon in a theme's tint: same lightness, the theme's hue and chroma. */
+export function themedFavicon(svg: string, theme: Theme): string {
+  return svg.replace(FAVICON_TILE, `fill="oklch(67.8% ${(0.188 * theme.tint).toFixed(3)} ${theme.hue})"`);
+}
+
+let faviconHref: string | null = null;
+let faviconSource: Promise<string> | null = null;
+let faviconRequest = 0;
+
+/** Tints the page's favicon: the original file for pink, else a data: URL of the tinted SVG. */
+export async function applyFavicon(theme: Theme): Promise<void> {
+  const link = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
+  if (!link) return;
+  faviconHref ??= link.href;
+  const request = ++faviconRequest;
+  if (theme.id === THEMES[0].id) {
+    link.href = faviconHref;
+    return;
+  }
+  try {
+    faviconSource ??= fetch(faviconHref).then((r) => (r.ok ? r.text() : Promise.reject(new Error(`HTTP ${r.status}`))));
+    const svg = await faviconSource;
+    // A later theme change wins.
+    if (request === faviconRequest) link.href = `data:image/svg+xml,${encodeURIComponent(themedFavicon(svg, theme))}`;
+  } catch {
+    // Keep the current icon; try fetching again next time.
+    faviconSource = null;
+  }
+}
