@@ -13,9 +13,7 @@ export interface Theme {
 
 export const THEMES: Theme[] = [
   { id: "pink", name: "Pink", hue: 352, tint: 1 },
-  { id: "gold", name: "Light Gold", hue: 85, tint: 0.75 },
   { id: "silver", name: "Silver", hue: 250, tint: 0.15 },
-  { id: "carbon", name: "Carbon", hue: 0, tint: 0 },
   { id: "mint", name: "Mint Green", hue: 170, tint: 0.6 },
   { id: "blue", name: "Fresh Blue", hue: 245, tint: 0.9 },
   { id: "lavender", name: "Lavender", hue: 300, tint: 0.6 },
