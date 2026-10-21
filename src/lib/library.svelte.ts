@@ -4,7 +4,7 @@
 
 import { ulid } from "ulid";
 import type { LibraryDB } from "./db.ts";
-import { slugify, type Album, type Genre, type LibraryFile } from "./model.ts";
+import { isValidCover, isValidSpotifyUri, slugify, type Album, type Genre, type LibraryFile } from "./model.ts";
 import type { LibrarySource } from "./persistence.ts";
 import { parseLibraryFile, toLibraryFile } from "./serialize.ts";
 
@@ -271,6 +271,11 @@ export class Library {
     if (album.rating !== null && !(Number.isInteger(album.rating) && album.rating >= 1 && album.rating <= 5)) {
       throw new Error("Rating must be 1-5 or null");
     }
+    // The same rules as when loading library.json, so a saved file always loads.
+    const spotify = album.spotify?.trim() || null;
+    if (spotify && !isValidSpotifyUri(spotify)) throw new Error("The Spotify link must be an album or playlist link");
+    const cover = album.cover?.trim() || null;
+    if (cover && !isValidCover(cover)) throw new Error("The cover must be an https: address");
     return {
       ...album,
       title,
@@ -279,6 +284,8 @@ export class Library {
       genres,
       tags: cleanList(album.tags),
       notes: album.notes.trim(),
+      spotify,
+      cover,
     };
   }
 }

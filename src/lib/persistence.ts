@@ -2,7 +2,7 @@
 // reads and writes a local clone of it; the static build fetches it from
 // VITE_LIBRARY_URL (or a library.json next to index.html).
 
-import type { LibraryFile } from "./model.ts";
+import { isLocalCover, type LibraryFile } from "./model.ts";
 import { parseLibraryFile, serializeLibraryFile } from "./serialize.ts";
 
 export interface LibrarySource {
@@ -14,6 +14,21 @@ export interface LibrarySource {
 
 const DEV_ENDPOINT = "/__library";
 const LIBRARY_URL: string = import.meta.env.VITE_LIBRARY_URL || `${import.meta.env.BASE_URL}library.json`;
+
+/**
+ * Where a cover shows from. A covers/ file is relative to library.json: the
+ * dev server serves the clone's folder, the site the folder next to
+ * VITE_LIBRARY_URL. URLs are used as they are.
+ */
+export function coverSrc(cover: string | null, base = libraryBase()): string | null {
+  if (!cover) return null;
+  return isLocalCover(cover) ? new URL(cover, base).href : cover;
+}
+
+function libraryBase(): string {
+  const file = import.meta.env.DEV ? `${DEV_ENDPOINT}/library.json` : LIBRARY_URL;
+  return new URL(".", new URL(file, location.href)).href;
+}
 
 export const repoSource: LibrarySource = {
   async fetchFile() {

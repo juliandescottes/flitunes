@@ -6,6 +6,7 @@
   // (Spotify's year when it has none).
   import { formatTime } from "../lib/spotify-player.svelte.ts";
   import type { Album } from "../lib/model.ts";
+  import { coverSrc } from "../lib/persistence.ts";
   import { trackArtists, type Track } from "../lib/spotify-tracks.ts";
 
   let {
@@ -87,7 +88,7 @@
 <div class="details">
   <header>
     <div class="cover">
-      {#if album.cover}<img src={album.cover} alt="" />{:else}<div class="blank" aria-hidden="true">♫</div>{/if}
+      {#if album.cover}<img src={coverSrc(album.cover)} alt="" />{:else}<div class="blank" aria-hidden="true">♫</div>{/if}
       <!-- Shown over the cover while hovering it, like the grid. -->
       <button class="play" title="Play" aria-label="Play {album.title}" onclick={() => onplay()}>
         <svg viewBox="0 0 12 14" width="16" height="18" aria-hidden="true"><path d="M2 0l10 7-10 7z" fill="currentColor" /></svg>

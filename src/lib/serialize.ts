@@ -2,7 +2,7 @@
 // The output is deterministic (fixed key order, sorted entries) so that
 // editing one album produces a small git diff.
 
-import { SCHEMA_VERSION, type Album, type Genre, type LibraryFile } from "./model.ts";
+import { isValidCover, isValidSpotifyUri, SCHEMA_VERSION, type Album, type Genre, type LibraryFile } from "./model.ts";
 
 export class LibraryFormatError extends Error {}
 
@@ -63,6 +63,15 @@ function parseAlbum(value: unknown, index: number): Album {
   if (rating !== null && !(Number.isInteger(rating) && rating >= 1 && rating <= 5)) {
     throw new LibraryFormatError(`${where}.rating: expected 1-5 or null`);
   }
+  // Strict: both end up in the page (a link, an image source).
+  const spotify = nullableStr(value.spotify, `${where}.spotify`);
+  if (spotify !== null && !isValidSpotifyUri(spotify)) {
+    throw new LibraryFormatError(`${where}.spotify: expected a spotify:album: or spotify:playlist: URI`);
+  }
+  const cover = nullableStr(value.cover, `${where}.cover`);
+  if (cover !== null && !isValidCover(cover)) {
+    throw new LibraryFormatError(`${where}.cover: expected an https: URL or a covers/ file`);
+  }
   return {
     id: str(value.id, `${where}.id`),
     title: str(value.title, `${where}.title`),
@@ -73,8 +82,8 @@ function parseAlbum(value: unknown, index: number): Album {
     tags: strArray(value.tags, `${where}.tags`),
     rating,
     notes: value.notes === undefined ? "" : str(value.notes, `${where}.notes`),
-    spotify: nullableStr(value.spotify, `${where}.spotify`),
-    cover: nullableStr(value.cover, `${where}.cover`),
+    spotify,
+    cover,
     addedAt: str(value.addedAt, `${where}.addedAt`),
   };
 }

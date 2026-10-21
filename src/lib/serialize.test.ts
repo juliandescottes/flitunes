@@ -51,8 +51,21 @@ describe("serialize", () => {
     ["bad rating", JSON.stringify({ schemaVersion: 1, exportedAt: "2026-01-01T00:00:00Z", genres, albums: [album("a", { rating: 7 })] })],
     ["unknown genre", JSON.stringify({ schemaVersion: 1, exportedAt: "2026-01-01T00:00:00Z", genres: [], albums: [album("a")] })],
     ["duplicate ids", JSON.stringify({ schemaVersion: 1, exportedAt: "2026-01-01T00:00:00Z", genres, albums: [album("a"), album("a")] })],
+    ["a javascript: Spotify link", JSON.stringify({ schemaVersion: 1, exportedAt: "2026-01-01T00:00:00Z", genres, albums: [album("a", { spotify: "javascript:alert(1)" })] })],
+    ["a Spotify track link", JSON.stringify({ schemaVersion: 1, exportedAt: "2026-01-01T00:00:00Z", genres, albums: [album("a", { spotify: "spotify:track:abc" })] })],
+    ["an http: cover", JSON.stringify({ schemaVersion: 1, exportedAt: "2026-01-01T00:00:00Z", genres, albums: [album("a", { cover: "http://example.com/a.jpg" })] })],
+    ["a cover outside covers/", JSON.stringify({ schemaVersion: 1, exportedAt: "2026-01-01T00:00:00Z", genres, albums: [album("a", { cover: "covers/../library.json" })] })],
     ["missing title", JSON.stringify({ schemaVersion: 1, exportedAt: "2026-01-01T00:00:00Z", genres, albums: [{ ...album("a"), title: 3 }] })],
   ])("rejects %s", (_, text) => {
     expect(() => parseLibraryFile(text)).toThrow(LibraryFormatError);
+  });
+
+  it("accepts Spotify album and playlist URIs, https: covers and covers/ files", () => {
+    const albums = [
+      album("a", { spotify: "spotify:album:1weenld61qoidwYuZ1GESA", cover: "https://i.scdn.co/image/ab67" }),
+      album("b", { spotify: "spotify:playlist:37i9dQZF1DX0XUsuxWHRQd", cover: "covers/b.jpg" }),
+    ];
+    const file = toLibraryFile(albums, genres, "2026-10-17T10:00:00.000Z");
+    expect(parseLibraryFile(serializeLibraryFile(file))).toEqual(file);
   });
 });

@@ -84,6 +84,9 @@ describe("Library", () => {
     await expect(library.addAlbum({ title: "T", artists: [] })).rejects.toThrow();
     await expect(library.addAlbum({ title: "T", artists: ["A"], genres: ["nope"] })).rejects.toThrow(/genre/);
     await expect(library.addAlbum({ title: "T", artists: ["A"], rating: 6 })).rejects.toThrow(/Rating/);
+    // The rules of library.json, so a saved file always loads again.
+    await expect(library.addAlbum({ title: "T", artists: ["A"], spotify: "javascript:alert(1)" })).rejects.toThrow(/Spotify/);
+    await expect(library.addAlbum({ title: "T", artists: ["A"], cover: "http://example.com/a.jpg" })).rejects.toThrow(/cover/);
     await library.addGenre("Hip-Hop");
     await expect(library.addGenre("hip hop")).rejects.toThrow(/exists/);
     expect(library.albums).toHaveLength(0);
