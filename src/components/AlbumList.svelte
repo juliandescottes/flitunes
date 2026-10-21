@@ -136,8 +136,10 @@
                 aria-label={signedIn ? "Play" : "Open in Spotify"}
                 onmousedown={(e) => e.stopPropagation()}
                 ondblclick={(e) => e.stopPropagation()}
-                onclick={() => onplay(album)}>{signedIn ? "▶" : "➜"}</button
+                onclick={() => onplay(album)}
               >
+                <svg viewBox="0 0 8 9" width="6" height="7" aria-hidden="true"><path d="M0 0l8 4.5L0 9z" fill="currentColor" /></svg>
+              </button>
             {/if}
           </td>
           <td class="artist">{album.artists.join(", ")}</td>
@@ -269,24 +271,30 @@
     text-align: center;
     color: #aaa;
   }
+  /* A round play button, like iTunes' arrow links. */
   .go {
     display: none;
-    margin-left: 4px;
-    padding: 0 3px;
-    border-radius: 7px;
+    place-items: center;
+    width: 14px;
+    height: 14px;
+    margin-left: 5px;
+    /* Nudges the triangle right so it looks centered. */
+    padding: 0 0 0 1px;
+    border-radius: 50%;
     background: #9a9a9a;
     color: #fff;
     border: none;
-    font: inherit;
-    font-size: 9px;
     cursor: default;
-    /* Without this, its smaller font makes the line, and so the row, taller. */
-    line-height: 1;
-    vertical-align: middle;
+    /* Centered in the row: "middle" follows the text and sits too low. */
+    vertical-align: top;
+    margin-top: calc((var(--row) - 14px) / 2);
+  }
+  .go:hover {
+    background: #7d7d7d;
   }
   tr:hover .go,
   tr.selected .go {
-    display: inline;
+    display: inline-grid;
   }
   .scroller:focus-within tr.selected .go {
     background: #fff;
