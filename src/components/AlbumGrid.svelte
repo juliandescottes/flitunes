@@ -4,6 +4,7 @@
   import { untrack } from "svelte";
   import type { Album } from "../lib/model.ts";
   import { coverSrc } from "../lib/persistence.ts";
+  import { GRID_PADDING as PADDING, GRID_ROW_GAP as ROW_GAP, gridColumns } from "../lib/grid.ts";
   import { revealRow, viewportHeight, visibleRows } from "../lib/virtual.ts";
 
   let {
@@ -30,18 +31,11 @@
     onmenu: (event: MouseEvent, album: Album) => void;
   } = $props();
 
-  // Must match the CSS below.
-  const PADDING = 16;
-  const MIN_COLUMN = 150;
-  const COLUMN_GAP = 12;
-  const ROW_GAP = 18;
-
   let scroller: HTMLDivElement;
   let width = $state(0);
   let viewport = $state(0);
   let scrollTop = $state(0);
-  // Same count as the CSS grid's auto-fill.
-  const columns = $derived(Math.max(1, Math.floor((width - 2 * PADDING + COLUMN_GAP) / (MIN_COLUMN + COLUMN_GAP))));
+  const columns = $derived(gridColumns(width));
   // Items are as tall as they are wide plus the two text lines: measured
   // from a rendered item, estimated until then.
   let measured = $state(0);
@@ -128,6 +122,7 @@
 </div>
 
 <style>
+  /* Sizes: see grid.ts. */
   .scroller {
     overflow-y: auto;
     height: 100%;

@@ -5,6 +5,7 @@
   // each row repeats the album, genre and year, from the curated album
   // (Spotify's year when it has none).
   import { formatTime } from "../lib/spotify-player.svelte.ts";
+  import { gridCoverSize } from "../lib/grid.ts";
   import type { Album } from "../lib/model.ts";
   import { coverSrc } from "../lib/persistence.ts";
   import { trackArtists, type Track } from "../lib/spotify-tracks.ts";
@@ -38,6 +39,7 @@
   let error = $state<string | null>(null);
   let selected = $state(-1);
   let list: HTMLDivElement;
+  let width = $state(0);
 
   $effect(() => {
     const albumId = album.id;
@@ -85,7 +87,7 @@
   }
 </script>
 
-<div class="details">
+<div class="details" bind:clientWidth={width} style:--cover="{gridCoverSize(width)}px">
   <header>
     <div class="cover">
       {#if album.cover}<img src={coverSrc(album.cover)} alt="" />{:else}<div class="blank" aria-hidden="true">♫</div>{/if}
@@ -191,17 +193,20 @@
     background: #fff;
     user-select: none;
   }
+  /* The cover sits where the grid's first cover does, at the same size (its
+     padding plus the item's, see grid.ts), so opening an album from the grid
+     doesn't move it. */
   header {
     display: flex;
     gap: 16px;
-    padding: 16px;
+    padding: 22px;
     border-bottom: 1px solid var(--rule);
   }
   .cover {
     position: relative;
     flex: none;
-    width: 140px;
-    height: 140px;
+    width: var(--cover);
+    height: var(--cover);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
     background: #eee;
   }
@@ -369,7 +374,7 @@
   /* Short: a smaller header leaves more room for the tracks. */
   @media (max-height: 640px) {
     header {
-      padding: 10px 16px;
+      padding: 10px 22px;
     }
     .cover {
       width: 80px;
