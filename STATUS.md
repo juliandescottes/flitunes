@@ -1,6 +1,6 @@
 # Status
 
-_Last updated: 2026-10-21_
+_Last updated: 2026-10-22_
 
 ## Where we are
 
@@ -101,9 +101,13 @@ window, and Get Info editing.
   Genre / Year (not sortable). Album, genre and year come from the curated
   album (Spotify's release year if it has none); the artist is the curated
   one unless Spotify lists others on the track.
+  On branch `tracks-cover-spot` (PR to open): the tracks view's cover sits
+  where the grid's first cover is, at the same size, so opening an album
+  from the grid doesn't move it. The grid's geometry is shared in
+  `src/lib/grid.ts`.
 - Sign-in and playback confirmed with a real Spotify app on 2026-10-21
   (dev, `http://127.0.0.1:5173/`).
-- 130 unit tests pass, `svelte-check` is clean.
+- 144 unit tests pass (146 with `tracks-cover-spot`), `svelte-check` is clean.
 - GitHub Pages: `.github/workflows/pages.yml` tests, builds and deploys on
   every push to `main` (needs Settings → Pages → Source: GitHub Actions).
   Pages is the everywhere-viewer; curation happens locally, then push.
