@@ -43,13 +43,26 @@ that browser, and Save downloads the file.
 Check UI changes live in a browser (e.g. with firefox-devtools-mcp), not only
 with unit tests.
 
-- Use another port and a mock library, so the real library and the user's dev
-  server (port 5173) are never touched: `node scripts/mock-library.ts
-  <scratch>/mock.json`, then `LIBRARY_PATH=<scratch>/mock.json npx vite --port
-  5182 --strictPort`. Start it once and leave it running for the session
-  (Vite reloads code changes); reuse it if port 5182 is already in use.
-- Never play on the user's Spotify account from a test: use a fake
-  `VITE_SPOTIFY_CLIENT_ID` and stub `fetch`.
+- Use another port, a mock library and a fake Spotify client ID, so the real
+  library, the user's dev server (port 5173) and their Spotify account are
+  never touched: `node scripts/mock-library.ts <scratch>/mock.json`, then
+  `LIBRARY_PATH=<scratch>/mock.json VITE_SPOTIFY_CLIENT_ID=fake-client npx vite
+  --port 5182 --strictPort`. The variable on the command line wins over
+  `.env.local`, which holds the real ID. Start it once and leave it running for
+  the session (Vite reloads code changes); reuse it if port 5182 is already in
+  use, but only if `ps` shows it was started with the fake ID.
+- Never play on the user's Spotify account from a test.
+- Views that need a Spotify sign-in (e.g. `AlbumTracks.svelte`) can't be
+  reached by faking the session: with fake tokens in `localStorage`, the first
+  poll runs before a `fetch` stub can be installed, gets a 401 and signs out.
+  Mount the component directly from the browser tool instead, with props
+  standing in for Spotify (take the `svelte.js` URL from `/src/main.ts`):
+
+  ```js
+  const { mount } = await import("/node_modules/.vite/deps/svelte.js?v=…");
+  const { default: AlbumTracks } = await import("/src/components/AlbumTracks.svelte");
+  mount(AlbumTracks, { target, props: { album, load: () => new Promise(() => {}), … } });
+  ```
 
 ## Workflow
 
