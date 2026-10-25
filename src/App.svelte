@@ -509,8 +509,9 @@
     let step = 0;
     if (event.key === "ArrowDown") step = view === "grid" ? gridColumns() : 1;
     else if (event.key === "ArrowUp") step = view === "grid" ? -gridColumns() : -1;
-    else if (event.key === "ArrowRight" && view === "grid") step = 1;
-    else if (event.key === "ArrowLeft" && view === "grid") step = -1;
+    // ⌘← / ⌘→ are left to the player (see playerKey).
+    else if (event.key === "ArrowRight" && view === "grid" && !event.metaKey && !event.ctrlKey) step = 1;
+    else if (event.key === "ArrowLeft" && view === "grid" && !event.metaKey && !event.ctrlKey) step = -1;
     else if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) {
       if (source.kind === "triage") accept(selectedAlbums);
     } else if (event.key === "Enter" && selectedAlbums.length === 1) openAlbum(selectedAlbums[0]);
@@ -524,7 +525,26 @@
     }
   }
 
+  /** Space plays or pauses, ⌘← / ⌘→ go to the previous or next track, like iTunes. */
+  function playerKey(event: KeyboardEvent): boolean {
+    if (!player.active || event.defaultPrevented || event.altKey || event.shiftKey) return false;
+    if (addOpen || infoIds.length > 0) return false;
+    // Leave the keys to text fields, and Space to the open menu.
+    const target = event.target as HTMLElement;
+    if (target.closest?.("input, textarea, select, [contenteditable], [role=menu]")) return false;
+    const command = event.metaKey || event.ctrlKey;
+    if (event.key === " " && !command) player.togglePlay();
+    else if (event.key === "ArrowLeft" && command) player.previous();
+    else if (event.key === "ArrowRight" && command) player.next();
+    else return false;
+    return true;
+  }
+
   function onWindowKeydown(event: KeyboardEvent) {
+    if (playerKey(event)) {
+      event.preventDefault();
+      return;
+    }
     if (!(event.metaKey || event.ctrlKey) || event.altKey) return;
     const key = event.key.toLowerCase();
     const modal = addOpen || infoIds.length > 0;

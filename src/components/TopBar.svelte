@@ -77,12 +77,12 @@
   <div class="actions">
     {#if spotifyStatus === "signed-in"}
       <div class="transport" role="group" aria-label="Playback">
-        <button class="round" title="Previous" aria-label="Previous" onclick={onprevious}>
+        <button class="round" title="Previous (⌘←)" aria-label="Previous" onclick={onprevious}>
           <svg viewBox="0 0 16 12" width="16" height="12" aria-hidden="true"><path d="M7 0v12L1 6zM13 0v12L7 6z" fill="currentColor" /></svg>
         </button>
         <button
           class="round big"
-          title={playback?.isPlaying ? "Pause" : "Play"}
+          title={playback?.isPlaying ? "Pause (Space)" : "Play (Space)"}
           aria-label={playback?.isPlaying ? "Pause" : "Play"}
           onclick={ontoggleplay}
         >
@@ -92,7 +92,7 @@
             <svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true"><path d="M3 0l11 7-11 7z" fill="currentColor" /></svg>
           {/if}
         </button>
-        <button class="round" title="Next" aria-label="Next" onclick={onnext}>
+        <button class="round" title="Next (⌘→)" aria-label="Next" onclick={onnext}>
           <svg viewBox="0 0 16 12" width="16" height="12" aria-hidden="true"><path d="M3 0v12l6-6zM9 0v12l6-6z" fill="currentColor" /></svg>
         </button>
         <!-- Like iTunes' AirPlay menu: where to play. -->
