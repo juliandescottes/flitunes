@@ -170,6 +170,58 @@ describe("SpotifyPlayer", () => {
     expect(player.error).toContain("couldn't reach Other Mac");
   });
 
+  it("tries the active device first, and skips a remembered one Spotify no longer lists", async () => {
+    const store = memoryStore();
+    store.setItem("album-library:spotify-device", "gone");
+    const { session: s, calls } = session({
+      "PUT /me/player/play": () => {
+        throw new SpotifyError(404, "Spotify: Not found.");
+      },
+      "GET /me/player/devices": () => ({ devices: [{ id: "phone" }, { id: "mac", is_active: true }] }),
+      "PUT /me/player/play?device_id=mac": () => null,
+      "GET /me/player": () => playing,
+    });
+    await new SpotifyPlayer(s, Date.now, store).play("spotify:album:a1");
+    expect(calls.map((c) => c.path).filter((p) => p.includes("device_id"))).toEqual(["/me/player/play?device_id=mac"]);
+    expect(store.getItem("album-library:spotify-device")).toBe("mac");
+  });
+
+  it("goes on to the next device after a server or network error, but not after other errors", async () => {
+    const devices = { devices: [{ id: "a" }, { id: "b" }, { id: "c" }] };
+    const noActive = () => {
+      throw new SpotifyError(404, "Spotify: No active device found");
+    };
+    const { session: s, calls } = session({
+      "PUT /me/player/play": noActive,
+      "GET /me/player/devices": () => devices,
+      "PUT /me/player/play?device_id=a": () => {
+        throw new SpotifyError(502, "Spotify: Bad gateway");
+      },
+      "PUT /me/player/play?device_id=b": () => {
+        throw new TypeError("NetworkError when attempting to fetch resource.");
+      },
+      "PUT /me/player/play?device_id=c": () => null,
+      "GET /me/player": () => playing,
+    });
+    const player = new SpotifyPlayer(s);
+    await player.play("spotify:album:a1");
+    expect(calls.map((c) => c.path)).toContain("/me/player/play?device_id=c");
+    expect(player.error).toBeNull();
+
+    const { session: s2, calls: calls2 } = session({
+      "PUT /me/player/play": noActive,
+      "GET /me/player/devices": () => devices,
+      "PUT /me/player/play?device_id=a": () => {
+        throw new SpotifyError(429, "Spotify: API rate limit exceeded");
+      },
+      "GET /me/player": () => null,
+    });
+    const limited = new SpotifyPlayer(s2);
+    await limited.play("spotify:album:a1");
+    expect(calls2.map((c) => c.path)).not.toContain("/me/player/play?device_id=b");
+    expect(limited.error).toContain("rate limit");
+  });
+
   it("explains what to do when there is no device at all", async () => {
     const { session: s } = session({
       "PUT /me/player/play": () => {
@@ -197,6 +249,34 @@ describe("SpotifyPlayer", () => {
     expect(calls[0].path).toBe("/me/player/pause");
     await player.togglePlay();
     expect(calls.at(-2)!.path).toBe("/me/player/play");
+  });
+
+  it("takes a 404 on pause as nothing to pause, without waking a device", async () => {
+    const { session: s, calls } = session({
+      "PUT /me/player/pause": () => {
+        throw new SpotifyError(404, "Spotify: Player command failed: No active device found");
+      },
+      "GET /me/player": () => null,
+    });
+    const player = new SpotifyPlayer(s);
+    player.playback = parsePlayback(playing, 0);
+    await player.togglePlay();
+    expect(calls.map((c) => c.path)).not.toContain("/me/player/devices");
+    expect(player.error).toBeNull();
+  });
+
+  it("doesn't remember a device that only took a next", async () => {
+    const store = memoryStore();
+    const { session: s } = session({
+      "POST /me/player/next": () => {
+        throw new SpotifyError(404, "Spotify: Not found.");
+      },
+      "GET /me/player/devices": () => ({ devices: [{ id: "mac" }] }),
+      "POST /me/player/next?device_id=mac": () => null,
+      "GET /me/player": () => playing,
+    });
+    await new SpotifyPlayer(s, Date.now, store).next();
+    expect(store.getItem("album-library:spotify-device")).toBeNull();
   });
 
   it("sends a command again to the active device when it has gone idle", async () => {
@@ -239,12 +319,28 @@ describe("SpotifyPlayer", () => {
       "PUT /me/player/play?device_id=mac": () => null,
       "GET /me/player": () => playing,
     });
-    const player = new SpotifyPlayer(s);
+    const store = memoryStore();
+    const player = new SpotifyPlayer(s, Date.now, store);
     player.playback = parsePlayback(playing, 0);
     await player.selectDevice("mac");
+    expect(store.getItem("album-library:spotify-device")).toBe("mac");
     expect(JSON.parse(calls[0].init!.body as string)).toEqual({ device_ids: ["mac"], play: true });
     active = false;
     await player.play("spotify:album:a1");
     expect(calls.map((c) => c.path)).toContain("/me/player/play?device_id=mac");
+  });
+
+  it("doesn't remember a device it couldn't move playback to", async () => {
+    const store = memoryStore();
+    const { session: s } = session({
+      "PUT /me/player": () => {
+        throw new SpotifyError(404, "Spotify: Device not found");
+      },
+      "GET /me/player": () => null,
+    });
+    const player = new SpotifyPlayer(s, Date.now, store);
+    await player.selectDevice("asleep");
+    expect(store.getItem("album-library:spotify-device")).toBeNull();
+    expect(player.error).toContain("Device not found");
   });
 });
