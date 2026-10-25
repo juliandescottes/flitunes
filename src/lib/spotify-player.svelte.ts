@@ -104,6 +104,12 @@ export function formatTime(ms: number): string {
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 }
 
+/** Whether a command sent to a device failed because that device can't be reached: a 404, a 5xx, or a network error. */
+function unreachable(e: unknown): boolean {
+  if (e instanceof SpotifyError) return e.status === 404 || e.status >= 500;
+  return e instanceof TypeError;
+}
+
 export class SpotifyPlayer {
   playback = $state<Playback | null>(null);
   error = $state<string | null>(null);
@@ -166,7 +172,7 @@ export class SpotifyPlayer {
       const now = this.#now();
       this.playback = { ...playback, isPlaying: !playing, progressMs: currentProgress(playback, now), fetchedAt: now };
     }
-    await this.#act(() => this.#command(playing ? "/me/player/pause" : "/me/player/play", { method: "PUT" }));
+    await this.#act(() => (playing ? this.#pause() : this.#command("/me/player/play", { method: "PUT" })));
   }
 
   async next(): Promise<void> {
@@ -192,9 +198,9 @@ export class SpotifyPlayer {
 
   /** Moves playback to a device, which then also gets the commands sent without an active device. */
   async selectDevice(id: string): Promise<void> {
-    this.#rememberDevice(id);
     const body = JSON.stringify({ device_ids: [id], play: this.playback?.isPlaying ?? false });
-    await this.#act(() => this.#session.api("/me/player", { method: "PUT", body }));
+    // Remembered once Spotify takes it, so a device asleep isn't tried first from then on.
+    if (await this.#act(() => this.#session.api("/me/player", { method: "PUT", body }))) this.#rememberDevice(id);
   }
 
   /** Polls while the page is visible. Returns a function that stops it. */
@@ -216,7 +222,8 @@ export class SpotifyPlayer {
     };
   }
 
-  async #act(action: () => Promise<unknown>): Promise<void> {
+  /** Runs an action, then refreshes. Returns whether it succeeded (on failure, the error is set). */
+  async #act(action: () => Promise<unknown>): Promise<boolean> {
     this.error = null;
     try {
       await action();
@@ -225,10 +232,22 @@ export class SpotifyPlayer {
       // Undo any optimistic change, keeping the action's error.
       await this.refresh();
       this.error = (e as Error).message;
-      return;
+      return false;
     }
     await new Promise((r) => setTimeout(r, SETTLE_MS));
     await this.refresh();
+    return true;
+  }
+
+  /** Spotify answers 404 to a pause when nothing is playing anywhere: there is nothing to pause, and no device to wake. */
+  async #pause(): Promise<unknown> {
+    try {
+      return await this.#session.api("/me/player/pause", { method: "PUT" });
+    } catch (e) {
+      if (!(e instanceof SpotifyError && e.status === 404)) throw e;
+      spotifyLog("404 on PUT /me/player/pause: nothing playing, nothing to pause");
+      return null;
+    }
   }
 
   /**
@@ -236,7 +255,8 @@ export class SpotifyPlayer {
    * also when the active one has gone idle ("Not found."): the command is then
    * sent again to a device by its id, which wakes it up. Spotify still lists
    * devices that can't be woken (a computer asleep, an app closed): those
-   * answer 404 too, and the next device is tried.
+   * answer 404 or 5xx, or don't answer, and the next device is tried. The
+   * device that takes a play is remembered for the next time.
    */
   async #command(path: string, init: RequestInit): Promise<unknown> {
     try {
@@ -252,10 +272,10 @@ export class SpotifyPlayer {
         spotifyLog(`404 on ${init.method} ${path}: sending it again to ${device.name} (${device.id})`);
         try {
           const result = await this.#session.api(`${path}?device_id=${encodeURIComponent(device.id)}`, init);
-          this.#rememberDevice(device.id);
+          if (path === "/me/player/play") this.#rememberDevice(device.id);
           return result;
         } catch (e) {
-          if (!(e instanceof SpotifyError && e.status === 404)) throw e;
+          if (!unreachable(e)) throw e;
         }
       }
       const names = devices.map((d) => d.name).join(", ");
