@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import type { KeyValueStore } from "./spotify-auth.ts";
 import { currentProgress, formatTime, parseDevices, parsePlayback, SpotifyPlayer } from "./spotify-player.svelte.ts";
 import { SpotifyError, type SpotifySession } from "./spotify-session.svelte.ts";
 
@@ -77,6 +78,15 @@ describe("formatTime", () => {
   });
 });
 
+function memoryStore(): KeyValueStore {
+  const map = new Map<string, string>();
+  return {
+    getItem: (k) => map.get(k) ?? null,
+    setItem: (k, v) => void map.set(k, v),
+    removeItem: (k) => void map.delete(k),
+  };
+}
+
 /** A signed-in session whose api() answers from `routes` and records the calls. */
 function session(routes: Record<string, (init?: RequestInit) => unknown>) {
   const calls: { path: string; init?: RequestInit }[] = [];
@@ -118,6 +128,46 @@ describe("SpotifyPlayer", () => {
     });
     await new SpotifyPlayer(s).play("spotify:album:a1");
     expect(calls.map((c) => c.path)).toContain("/me/player/play?device_id=phone%201");
+  });
+
+  it("tries the next device when the first one can't be woken, and remembers the one that played", async () => {
+    const store = memoryStore();
+    const { session: s, calls } = session({
+      "PUT /me/player/play": () => {
+        throw new SpotifyError(404, "Spotify: Player command failed: No active device found");
+      },
+      "GET /me/player/devices": () => ({ devices: [{ id: "asleep", name: "Other Mac" }, { id: "mac", name: "This Mac" }] }),
+      "PUT /me/player/play?device_id=asleep": () => {
+        throw new SpotifyError(404, "Spotify: Not found.");
+      },
+      "PUT /me/player/play?device_id=mac": () => null,
+      "GET /me/player": () => playing,
+    });
+    const player = new SpotifyPlayer(s, Date.now, store);
+    await player.play("spotify:album:a1");
+    expect(player.error).toBeNull();
+    expect(store.getItem("album-library:spotify-device")).toBe("mac");
+
+    // After a reload, the remembered device is tried first.
+    calls.length = 0;
+    await new SpotifyPlayer(s, Date.now, store).play("spotify:album:a1");
+    expect(calls.map((c) => c.path).filter((p) => p.includes("device_id"))).toEqual(["/me/player/play?device_id=mac"]);
+  });
+
+  it("names the devices when none of them can be reached", async () => {
+    const { session: s } = session({
+      "PUT /me/player/play": () => {
+        throw new SpotifyError(404, "Spotify: No active device found");
+      },
+      "GET /me/player/devices": () => ({ devices: [{ id: "asleep", name: "Other Mac" }] }),
+      "PUT /me/player/play?device_id=asleep": () => {
+        throw new SpotifyError(404, "Spotify: Not found.");
+      },
+      "GET /me/player": () => null,
+    });
+    const player = new SpotifyPlayer(s);
+    await player.play("spotify:album:a1");
+    expect(player.error).toContain("couldn't reach Other Mac");
   });
 
   it("explains what to do when there is no device at all", async () => {

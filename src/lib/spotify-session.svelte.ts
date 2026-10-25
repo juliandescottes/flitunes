@@ -147,7 +147,7 @@ function parseBody(text: string): { error?: { message?: string } } | null {
 }
 
 /** Storage that never throws (private windows, blocked site data). */
-function safeStorage(get: () => Storage): KeyValueStore {
+export function safeStorage(get: () => Storage): KeyValueStore {
   const attempt = <T>(f: (s: Storage) => T, fallback: T): T => {
     try {
       return f(get());
