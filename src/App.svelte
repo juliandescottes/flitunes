@@ -22,7 +22,7 @@
   import { SpotifyPlayer } from "./lib/spotify-player.svelte.ts";
   import { applyFavicon, applyTheme, THEMES, themeById } from "./lib/themes.ts";
   import { albumTracks, albumYear, hasTrackList } from "./lib/spotify-tracks.ts";
-  import { browserSession } from "./lib/spotify-session.svelte.ts";
+  import { browserSession, safeStorage } from "./lib/spotify-session.svelte.ts";
 
   const library = new Library(new LibraryDB(), repoSource);
   library.load();
@@ -36,7 +36,7 @@
     for (const name of handled) url.searchParams.delete(name);
     history.replaceState(history.state, "", url);
   });
-  const player = new SpotifyPlayer(spotify);
+  const player = new SpotifyPlayer(spotify, Date.now, safeStorage(() => localStorage));
 
   // View preferences survive reloads (per browser only).
   const PREFS_KEY = "album-library:view";
