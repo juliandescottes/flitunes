@@ -1,6 +1,6 @@
 # Status
 
-_Last updated: 2026-10-22_
+_Last updated: 2026-10-27_
 
 ## Where we are
 
@@ -79,6 +79,8 @@ window, and Get Info editing.
   display's right edge opens the playing album's tracks (matched by the
   playback context, then the track's album); it stays there during playback
   and is dimmed when the album isn't in the library or is already shown.
+- Player shortcuts (signed in): Space plays or pauses, ⌘← / ⌘→ skip tracks,
+  like iTunes. Ignored in text fields, open sheets and menus, and mid type-ahead.
 - Devices (PR #25): a screen button after the transport buttons lists the
   Spotify devices and moves playback to the one picked. A 404 on a player
   command (idle device) is retried on a device by id, which wakes it up.
