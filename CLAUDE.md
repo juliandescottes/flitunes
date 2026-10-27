@@ -36,7 +36,8 @@ Every push to `main` deploys the app to GitHub Pages
 (`.github/workflows/pages.yml`). The site fetches the library from the data
 repo (`VITE_LIBRARY_URL`) when it opens, so library pushes need no redeploy
 (GitHub caches the file for a few minutes). Edits made on the site stay in
-that browser, and Save downloads the file.
+that browser until Save commits `library.json` to the data repo through the
+GitHub API, with a token pasted once per browser (`src/lib/github.ts`).
 
 ## Testing in the browser
 
@@ -95,6 +96,11 @@ Static Svelte 5 + Vite + TypeScript app, no backend.
   tracks) as the URL hash, so Back and Forward work. Preferences (view, sort)
   and the selection stay out of it.
 - `src/lib/persistence.ts`: `LibrarySource` (fetch/save `library.json`) and JSON download.
+- `src/lib/github.ts`: the site's `LibrarySource` when the library URL is on
+  GitHub. With a token (fine-grained, `localStorage`), it reads `library.json`
+  through the API and Save commits it, naming the blob sha it read; a changed
+  file is a `SaveConflict`, which the store turns into the usual conflict when
+  the file is newer than the local copy's base.
 - `src/lib/spotify-auth.ts`, `spotify-session.svelte.ts`, `spotify-player.svelte.ts`,
   `spotify-tracks.ts`: optional Spotify sign-in (PKCE), Web API calls, playback
   (now playing is polled every 5 s while the page is visible), and album track

@@ -68,8 +68,16 @@ Pages** workflow from the Actions tab. The site is at
 
 The site fetches `library.json` when it opens, so a library push shows up
 without redeploying (after a few minutes of GitHub caching). Edits made on
-the site stay in that browser. **Export** downloads the file, which you can
-commit to the library repository.
+the site stay in that browser until you save them:
+
+- **Save** (⌘S) commits `library.json` to the library repository. The first
+  time, it asks for a [fine-grained personal access token](https://github.com/settings/personal-access-tokens/new)
+  with access to the library repository only and the permission
+  *Contents: Read and write*. The token is kept in that browser only;
+  right-click Save to change or forget it. If the file changed since the
+  page loaded it (saved from another machine), FliTunes asks which copy to
+  keep instead of overwriting it.
+- **Export** downloads the file, which you can commit by hand.
 
 ### 5. Spotify playback (optional)
 
