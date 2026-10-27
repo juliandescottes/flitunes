@@ -105,6 +105,12 @@ IndexedDB (working copy)  ──export──▶  library.json (in its own data r
      `POST /__library` and writes `library.json` straight into the data repo clone. One click,
      any browser, and nothing exists in production builds. **← recommended**
   3. File System Access API (`showSaveFilePicker`) is Chromium-only. Skip it.
+  4. *Commit from the site*. On the deployed site, Save commits `library.json`
+     to the data repo through the GitHub REST API, with a fine-grained
+     personal access token (that repo only, Contents: read and write) kept in
+     the browser. The commit names the blob sha that was read, so a file
+     changed elsewhere is never overwritten: it ends in the conflict prompt.
+     (Issue #43; a Google Drive copy was set aside, see the PR.)
 - **Conflict safety**: the export includes `exportedAt`. On startup, if the
   fetched `library.json` is newer than the last local edit, offer to load it.
   This handles editing on two machines via git pull.

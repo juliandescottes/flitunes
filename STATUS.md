@@ -27,7 +27,8 @@ window, and Get Info editing.
   it; renaming to an existing genre's name offers to merge. Delete is in the
   right-click menu. (Unused genres don't show in the column browser.)
 - Unsaved changes: Save turns blue, the tab title shows the count, ⌘S saves
-  (to the repo in dev, as a download otherwise).
+  (to the clone in dev, as a commit through the GitHub API on the site, with
+  a token asked once per browser; right-click Save to change or forget it).
 - Add sheet uses the same genre/playlist chips (`ChipInput.svelte`, `fields.ts`).
 - Add Several (`AddSeveral.svelte`): paste several Spotify links (or click
   "Add Several…"), look them up 4 at a time, then fill in artists and years

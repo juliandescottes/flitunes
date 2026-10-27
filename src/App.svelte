@@ -11,6 +11,7 @@
   import ColumnBrowser from "./components/ColumnBrowser.svelte";
   import ContextMenu, { type MenuItem } from "./components/ContextMenu.svelte";
   import GetInfo from "./components/GetInfo.svelte";
+  import GitHubToken from "./components/GitHubToken.svelte";
   import SourceList from "./components/SourceList.svelte";
   import TopBar from "./components/TopBar.svelte";
   import { browse, genreName, isInTriage, playlists, typeAhead, type SortDir, type SortKey, type Source, type ViewMode } from "./lib/browse.ts";
@@ -18,13 +19,20 @@
   import { parseHash, replacesEntry, routeToHash, type Route } from "./lib/route.ts";
   import { Library } from "./lib/library.svelte.ts";
   import { findGenreByName, TRIAGE_TAG, type Album } from "./lib/model.ts";
-  import { downloadLibraryFile, repoSource } from "./lib/persistence.ts";
+  import { GitHubSource, repoFileFromUrl, TokenNeeded } from "./lib/github.ts";
+  import { downloadLibraryFile, LIBRARY_URL, repoSource } from "./lib/persistence.ts";
   import { SpotifyPlayer } from "./lib/spotify-player.svelte.ts";
   import { applyFavicon, applyTheme, THEMES, themeById } from "./lib/themes.ts";
   import { albumTracks, albumYear, hasTrackList } from "./lib/spotify-tracks.ts";
   import { browserSession, safeStorage } from "./lib/spotify-session.svelte.ts";
 
-  const library = new Library(new LibraryDB(), repoSource);
+  // On the site, Save commits library.json to the data repo when the
+  // library comes from GitHub (dev writes the local clone instead).
+  const libraryRepo = import.meta.env.DEV || !import.meta.env.VITE_LIBRARY_URL ? null : repoFileFromUrl(LIBRARY_URL);
+  const github = libraryRepo
+    ? new GitHubSource(libraryRepo, repoSource, safeStorage(() => localStorage), (...args) => fetch(...args))
+    : null;
+  const library = new Library(new LibraryDB(), github ?? repoSource);
   library.load();
 
   // Optional Spotify sign-in, for playback control.
@@ -78,12 +86,16 @@
   // Which form the Add sheet shows.
   let addMode = $state<{ kind: "one" } | { kind: "several"; text: string } | { kind: "csv" }>({ kind: "one" });
   let infoIds = $state.raw<string[]>([]);
+  // The GitHub token sheet, with why it's shown again if it is.
+  let tokenSheetOpen = $state(false);
+  let tokenMessage = $state<string | null>(null);
   let menu = $state<{ x: number; y: number; items: MenuItem[] } | null>(null);
   let renamingGenre = $state<string | null>(null);
   let error = $state<string | null>(null);
 
   let fileInput: HTMLInputElement;
   let addSheet: HTMLDialogElement;
+  let tokenSheet = $state<HTMLDialogElement>();
   let infoWindow: HTMLDialogElement;
   let main: HTMLDivElement;
 
@@ -167,6 +179,11 @@
   $effect(() => {
     if (addOpen) addSheet.showModal();
     else if (addSheet.open) addSheet.close();
+  });
+  $effect(() => {
+    // No sheet when the library isn't on GitHub.
+    if (tokenSheetOpen) tokenSheet?.showModal();
+    else if (tokenSheet?.open) tokenSheet.close();
   });
 
   $effect(() => {
@@ -274,8 +291,35 @@
   }
 
   function save() {
-    if (library.canSaveToRepo) run(() => library.saveToRepo());
-    else download();
+    if (!library.canSaveToRepo) return download();
+    run(async () => {
+      try {
+        await library.saveToRepo();
+      } catch (e) {
+        if (!(e instanceof TokenNeeded)) throw e;
+        tokenMessage = e.message || null;
+        tokenSheetOpen = true;
+      }
+    });
+  }
+
+  function tokenSaved() {
+    tokenSheetOpen = false;
+    save();
+  }
+
+  function saveMenu(event: MouseEvent) {
+    if (!github) return;
+    openMenu(event, [
+      {
+        label: "Change GitHub Token…",
+        action: () => {
+          tokenMessage = null;
+          tokenSheetOpen = true;
+        },
+      },
+      { label: "Forget GitHub Token", disabled: !github.hasToken, action: () => github.forgetToken() },
+    ]);
   }
 
   function download() {
@@ -547,7 +591,7 @@
     }
     if (!(event.metaKey || event.ctrlKey) || event.altKey) return;
     const key = event.key.toLowerCase();
-    const modal = addOpen || infoIds.length > 0;
+    const modal = addOpen || tokenSheetOpen || infoIds.length > 0;
     if (key === "s") {
       event.preventDefault();
       if (library.unsavedChanges > 0) save();
@@ -642,6 +686,7 @@
       unsavedChanges={library.unsavedChanges}
       canSaveToRepo={library.canSaveToRepo}
       onsave={save}
+      onsavemenu={saveMenu}
       ondownload={download}
       onimport={() => fileInput.click()}
       {theme}
@@ -746,7 +791,7 @@
     </div>
     <div class="buttons end">
       {#if library.canSaveToRepo}
-        <button class="aqua narrow" disabled={library.unsavedChanges === 0} onclick={save}>Save</button>
+        <button class="aqua narrow" disabled={library.unsavedChanges === 0} onclick={save} oncontextmenu={saveMenu}>Save</button>
       {/if}
       <button class="aqua narrow" onclick={download}>Export</button>
       <button class="aqua narrow" onclick={() => fileInput.click()}>Import</button>
@@ -786,6 +831,14 @@
     />
   {/if}
 </dialog>
+
+{#if github}
+  <dialog class="sheet" bind:this={tokenSheet} oncancel={() => (tokenSheetOpen = false)} onclose={focusAlbums}>
+    {#if tokenSheetOpen}
+      <GitHubToken {github} message={tokenMessage} ondone={tokenSaved} oncancel={() => (tokenSheetOpen = false)} />
+    {/if}
+  </dialog>
+{/if}
 
 <dialog class="info-window" bind:this={infoWindow} oncancel={() => (infoIds = [])} onclose={focusAlbums}>
   {#if infoAlbums.length > 0}

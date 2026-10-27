@@ -5,7 +5,7 @@
 import { ulid } from "ulid";
 import type { LibraryDB } from "./db.ts";
 import { isLocalCover, isValidCover, isValidSpotifyUri, slugify, type Album, type Genre, type LibraryFile } from "./model.ts";
-import type { LibrarySource } from "./persistence.ts";
+import { SaveConflict, type LibrarySource } from "./persistence.ts";
 import { parseLibraryFile, toLibraryFile } from "./serialize.ts";
 
 export type LibraryStatus =
@@ -239,11 +239,28 @@ export class Library {
     return toLibraryFile(this.albums, this.genres, new Date().toISOString());
   }
 
-  /** Writes library.json to disk (dev server only). */
+  /**
+   * Writes library.json: to disk on the dev server, as a commit on the site.
+   * If the file changed since it was loaded, and is newer than the local
+   * copy's base, this ends in a conflict instead of overwriting it.
+   */
   async saveToRepo(): Promise<void> {
-    if (!this.#source.saveFile) throw new Error("Saving to the repo is only available in dev mode");
+    const save = this.#source.saveFile?.bind(this.#source);
+    if (!save) throw new Error("Saving to the repo isn't available here");
     const file = this.snapshot();
-    await this.#source.saveFile(file);
+    try {
+      await save(file, this.unsavedChanges);
+    } catch (e) {
+      if (!(e instanceof SaveConflict)) throw e;
+      // Fetching again also lets the source write on top of what it got.
+      const current = await this.#source.fetchFile();
+      const base = await this.#db.getMeta<string | null>(BASE_EXPORTED_AT, null);
+      if (current && isNewer(current.exportedAt, base)) {
+        this.status = { kind: "conflict", file: current };
+        return;
+      }
+      await save(file, this.unsavedChanges);
+    }
     await this.markExported(file);
   }
 

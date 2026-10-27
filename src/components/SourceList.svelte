@@ -14,6 +14,7 @@
     unsavedChanges,
     canSaveToRepo,
     onsave,
+    onsavemenu,
     ondownload,
     onimport,
     theme,
@@ -24,9 +25,11 @@
     triageCount: number;
     onadd: () => void;
     unsavedChanges: number;
-    /** Save writes library.json (dev server); otherwise Export downloads it. */
+    /** Save writes library.json (dev server, or a commit on the site); otherwise Export downloads it. */
     canSaveToRepo: boolean;
     onsave: () => void;
+    /** Right-click on Save: the GitHub token's menu, on the site. */
+    onsavemenu: (event: MouseEvent) => void;
     ondownload: () => void;
     onimport: () => void;
     theme: Theme;
@@ -88,8 +91,9 @@
           class="aqua"
           class:default={unsavedChanges > 0}
           onclick={onsave}
+          oncontextmenu={onsavemenu}
           disabled={unsavedChanges === 0}
-          title="Write library.json (⌘S)">Save</button
+          title="Save library.json (⌘S)">Save</button
         >
       {/if}
       <button class="aqua" onclick={ondownload} title="Download library.json">Export</button>

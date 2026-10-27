@@ -8,8 +8,12 @@ import { parseLibraryFile, serializeLibraryFile } from "./serialize.ts";
 export interface LibrarySource {
   /** Returns the persisted library file, or null if there is none. */
   fetchFile(): Promise<LibraryFile | null>;
-  /** Writes the library file to disk. Only available in dev. */
-  saveFile?(file: LibraryFile): Promise<void>;
+  /**
+   * Writes the library file: to disk in dev, as a commit to the data repo
+   * on the site (see github.ts). Throws SaveConflict when the file changed
+   * since it was fetched.
+   */
+  saveFile?(file: LibraryFile, unsavedChanges: number): Promise<void>;
   /**
    * Copies an album's cover from its URL into the library's covers/ folder
    * and returns the file's path ("covers/<album id>.jpg"). Only available in dev.
@@ -17,8 +21,15 @@ export interface LibrarySource {
   keepCover?(albumId: string, url: string): Promise<string>;
 }
 
+/** library.json changed since it was fetched, so saving would overwrite someone else's changes. */
+export class SaveConflict extends Error {
+  constructor() {
+    super("library.json changed since it was loaded");
+  }
+}
+
 const DEV_ENDPOINT = "/__library";
-const LIBRARY_URL: string = import.meta.env.VITE_LIBRARY_URL || `${import.meta.env.BASE_URL}library.json`;
+export const LIBRARY_URL: string = import.meta.env.VITE_LIBRARY_URL || `${import.meta.env.BASE_URL}library.json`;
 
 /**
  * Where a cover shows from. A covers/ file is relative to library.json: the

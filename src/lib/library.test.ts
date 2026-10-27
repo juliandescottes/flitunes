@@ -3,15 +3,21 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { LibraryDB } from "./db.ts";
 import { Library } from "./library.svelte.ts";
 import type { LibraryFile } from "./model.ts";
-import type { LibrarySource } from "./persistence.ts";
+import { SaveConflict, type LibrarySource } from "./persistence.ts";
 
 class MemorySource implements LibrarySource {
   file: LibraryFile | null = null;
   keepCover?: (albumId: string, url: string) => Promise<string>;
+  /** Like the GitHub source: saving fails until the file is fetched again. */
+  stale = false;
+  saves = 0;
   async fetchFile() {
+    this.stale = false;
     return this.file;
   }
   async saveFile(file: LibraryFile) {
+    if (this.stale) throw new SaveConflict();
+    this.saves++;
     this.file = file;
   }
 }
@@ -191,6 +197,35 @@ describe("Library", () => {
     expect(source.file?.albums.map((a) => a.title)).toEqual(["T"]);
     // Reopening with the file we just saved is not a conflict.
     expect((await openLibrary()).status.kind).toBe("ready");
+  });
+
+  it("saves anyway when the file changed but isn't newer than the local copy", async () => {
+    source.file = fileWith("2026-10-01T00:00:00.000Z", ["A"]);
+    const library = await openLibrary();
+    await library.addAlbum({ title: "T", artists: ["A"] });
+    source.stale = true; // e.g. a token pasted after loading the public file
+    await library.saveToRepo();
+    expect(library.status.kind).toBe("ready");
+    expect(library.unsavedChanges).toBe(0);
+    expect(source.file?.albums.map((a) => a.title).sort()).toEqual(["A", "T"]);
+  });
+
+  it("ends in a conflict when saving over a newer file", async () => {
+    source.file = fileWith("2026-10-01T00:00:00.000Z", ["A"]);
+    const library = await openLibrary();
+    await library.addAlbum({ title: "T", artists: ["A"] });
+    source.file = fileWith("2026-10-02T00:00:00.000Z", ["A", "B"]); // saved from another machine
+    source.stale = true;
+    await library.saveToRepo();
+    expect(source.saves).toBe(0);
+    expect(library.status.kind).toBe("conflict");
+    expect(library.unsavedChanges).toBe(1);
+
+    // Keeping the local copy, the next save goes through.
+    await library.resolveConflict("local");
+    await library.saveToRepo();
+    expect(source.file?.albums.map((a) => a.title).sort()).toEqual(["A", "T"]);
+    expect(library.unsavedChanges).toBe(0);
   });
 
   it("loads a newer library.json when there are no local changes", async () => {
