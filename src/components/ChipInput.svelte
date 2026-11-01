@@ -40,6 +40,13 @@
     }
   }
 
+  // Picking an autocomplete suggestion adds it right away. Typing or pasting
+  // a name still waits for Enter or the button (it may be a new one).
+  function oninput(event: Event) {
+    const picked = !(event instanceof InputEvent) || event.inputType === "insertReplacementText";
+    if (picked && suggestions.includes(text.trim())) add();
+  }
+
   function onkeydown(event: KeyboardEvent) {
     if (event.key === "Enter") {
       event.preventDefault();
@@ -63,7 +70,7 @@
       <button type="button" class="remove" aria-label="Remove {labelFor(key)}" onclick={() => (values = values.filter((v) => v !== key))}>×</button>
     </span>
   {/each}
-  <input list={listId} {placeholder} size="10" bind:value={text} {onkeydown} />
+  <input list={listId} {placeholder} size="10" bind:value={text} {oninput} {onkeydown} />
   <datalist id={listId}>
     {#each suggestions as name (name)}<option value={name}></option>{/each}
   </datalist>
