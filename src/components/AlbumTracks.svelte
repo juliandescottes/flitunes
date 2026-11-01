@@ -19,6 +19,7 @@
     isPlaying,
     onplay,
     onback,
+    onmenu,
   }: {
     album: Album;
     /** The album's primary genre name. */
@@ -33,6 +34,8 @@
     /** Plays the album, from a track if given. */
     onplay: (trackUri?: string) => void;
     onback: () => void;
+    /** Right-click on the cover or the album's info: the album menu. */
+    onmenu: (event: MouseEvent) => void;
   } = $props();
 
   let tracks = $state.raw<Track[] | null>(null);
@@ -88,7 +91,9 @@
 </script>
 
 <div class="details" bind:clientWidth={width} style:--cover="{gridCoverSize(width)}px">
-  <header>
+  <!-- The menu is a mouse shortcut: its items have keys (⌘I) or buttons. -->
+  <!-- svelte-ignore a11y_no_static_element_interactions -->
+  <header oncontextmenu={onmenu}>
     <div class="cover">
       {#if album.cover}<img src={coverSrc(album.cover)} alt="" />{:else}<div class="blank" aria-hidden="true">♫</div>{/if}
       <!-- Shown over the cover while hovering it, like the grid. -->
