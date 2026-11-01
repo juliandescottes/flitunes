@@ -71,6 +71,12 @@
     search = "";
     searchInput.focus();
   }
+
+  /** ⌘F: focus the search field, its text selected so typing replaces it. */
+  export function focusSearch() {
+    searchInput.focus();
+    searchInput.select();
+  }
 </script>
 
 <header class="toolbar">
@@ -225,6 +231,7 @@
       <input
         type="search"
         placeholder="Search Library"
+        title="Search the library (⌘F)"
         bind:this={searchInput}
         bind:value={search}
         onkeydown={(e) => e.key === "Escape" && search !== "" && clearSearch()}
