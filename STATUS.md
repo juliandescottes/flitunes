@@ -16,7 +16,8 @@ window, and Get Info editing.
   and colors live in `src/app.css`.
 - Selection: click, ⌘/Ctrl-click to toggle, Shift-click or Shift-arrows for a
   range, ⌘A selects all. Enter or double-click opens the album (its tracks
-  when signed in to Spotify, else the Spotify app), Delete removes.
+  when signed in to Spotify, else the Spotify app), Delete removes. ⌘F goes
+  to the search field.
 - Type-ahead: typing letters in the list or grid jumps to the first album whose
   sorted column starts with them (name when sorted by rating or date added).
 - Get Info (⌘I or right-click): one album → Info and Artwork tabs with

@@ -98,6 +98,7 @@
   let tokenSheet = $state<HTMLDialogElement>();
   let infoWindow: HTMLDialogElement;
   let main: HTMLDivElement;
+  let topBar: TopBar;
 
   const genreNames = $derived(new Map(library.genres.map((g) => [g.id, g.name])));
   const result = $derived(
@@ -606,6 +607,9 @@
     if (key === "s") {
       event.preventDefault();
       if (library.unsavedChanges > 0) save();
+    } else if (key === "f" && !modal) {
+      event.preventDefault();
+      topBar.focusSearch();
     } else if (key === "i" && !modal) {
       event.preventDefault();
       getInfo();
@@ -651,6 +655,7 @@
 
 <div class="window">
   <TopBar
+    bind:this={topBar}
     album={selectedAlbums.length === 1 ? selectedAlbums[0] : null}
     selectedCount={selectedAlbums.length}
     unsavedChanges={library.unsavedChanges}
