@@ -483,9 +483,20 @@
       select([album.id], album.id);
       anchor = album.id;
     }
-    const many = selectedSet.size > 1;
+    albumActions(event, album, selectedAlbums);
+  }
+
+  // The tracks view's album: the same menu, for that album alone (the list
+  // behind it may not show it).
+  function tracksMenu(event: MouseEvent, album: Album) {
+    albumActions(event, album, [album]);
+  }
+
+  /** The album menu, acting on `albums` (the right-clicked `album` and the rest of the selection). */
+  function albumActions(event: MouseEvent, album: Album, albums: Album[]) {
+    const many = albums.length > 1;
     openMenu(event, [
-      { label: many ? "Get Info (Multiple Items)" : "Get Info", action: getInfo },
+      { label: many ? "Get Info (Multiple Items)" : "Get Info", action: () => (infoIds = albums.map((a) => a.id)) },
       ...(spotify.status === "signed-in"
         ? [
             { label: "Play", action: () => playAlbum(album), disabled: many || !album.spotify },
@@ -495,9 +506,9 @@
       { label: "Open in Spotify", action: () => openInSpotifyApp(album), disabled: many || !album.spotify },
       "separator",
       ...(source.kind === "triage"
-        ? [{ label: many ? `Accept ${selectedSet.size} Albums` : "Accept into Library", action: () => accept(selectedAlbums) }]
+        ? [{ label: many ? `Accept ${albums.length} Albums` : "Accept into Library", action: () => accept(albums) }]
         : []),
-      { label: many ? `Delete ${selectedSet.size} Albums` : "Delete from Library", action: () => remove(selectedAlbums) },
+      { label: many ? `Delete ${albums.length} Albums` : "Delete from Library", action: () => remove(albums) },
     ]);
   }
 
@@ -740,6 +751,7 @@
             isPlaying={player.playback?.isPlaying ?? false}
             onplay={(trackUri) => player.play(uri, trackUri)}
             onback={closeTracks}
+            onmenu={(e) => tracksMenu(e, tracksAlbum)}
           />
         {:else if result.albums.length === 0}
           <p class="empty">{source.kind === "triage" && result.total === 0 ? "Nothing left to review." : "No albums match."}</p>
