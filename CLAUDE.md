@@ -4,7 +4,9 @@ Personal, single-user web app to curate a music album library by hand
 (iTunes 10-style browsing by artist, genre, tags, as a UI reference only) and open albums in Spotify.
 Spotify is only a link, never the source of truth.
 
-- Spec & design: `docs/spec.md`
+- Spec & design: `docs/spec.md` (why, principles, roadmap)
+- Feature specs: `docs/specs/` (how the app behaves today, one claim per
+  bullet, verified by the e2e tests; see `docs/specs/README.md`)
 - Roadmap: `PLAN.md`
 - Current state / next step: `STATUS.md` (update it at the end of each work session)
 
@@ -13,11 +15,14 @@ Spotify is only a link, never the source of truth.
 ```sh
 npm run dev      # dev server at http://127.0.0.1:5173 (loopback IP, not localhost)
 npm test         # vitest (unit tests, fake-indexeddb)
+npm run e2e      # Playwright e2e tests (own server on port 5183, Chromium)
+npm run spec-check  # every spec claim has a test, or is listed in docs/specs/untested.txt
 npm run check    # svelte-check (types)
 npm run build    # static build in dist/
 ```
 
-Run `npm test` and `npm run check` before committing.
+Run `npm test`, `npm run check`, `npm run spec-check` and `npm run e2e`
+before committing. CI runs them on pull requests (`.github/workflows/ci.yml`).
 
 Spotify sign-in (optional) needs the client ID of a Spotify app: put
 `VITE_SPOTIFY_CLIENT_ID=<id>` in `.env.local` (git-ignored) for dev. The
@@ -39,10 +44,22 @@ repo (`VITE_LIBRARY_URL`) when it opens, so library pushes need no redeploy
 that browser until Save commits `library.json` to the data repo through the
 GitHub API, with a token pasted once per browser (`src/lib/github.ts`).
 
+## Specs and tests
+
+User-facing behavior is described in `docs/specs/<area>.md`, one claim per
+bullet with an id (`browsing.search`), and verified by Playwright tests in
+`tests/e2e/<area>/`, tagged with the claims they assert. A behavior change
+updates its spec and tests in the same commit. Follow the `e2e-tests` skill
+(`.claude/skills/e2e-tests/SKILL.md`) when writing or reviewing tests.
+
+Unit tests stay for logic that is pure and hard to reach from the UI
+(`library.json` format, validators, route parsing, Spotify auth, GitHub
+conflicts); new UI behavior gets e2e tests rather than unit tests.
+
 ## Testing in the browser
 
-Check UI changes live in a browser (e.g. with firefox-devtools-mcp), not only
-with unit tests.
+Besides the e2e tests, check UI changes live in a browser (e.g. with
+firefox-devtools-mcp) while working on them.
 
 - Use another port, a mock library and a fake Spotify client ID, so the real
   library, the user's dev server (port 5173) and their Spotify account are

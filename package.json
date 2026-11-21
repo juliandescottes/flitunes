@@ -9,9 +9,12 @@
     "build": "vite build",
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json",
-    "test": "vitest run"
+    "test": "vitest run",
+    "e2e": "playwright test",
+    "spec-check": "node scripts/spec-check.ts"
   },
   "devDependencies": {
+    "@playwright/test": "^1.59.1",
     "@sveltejs/vite-plugin-svelte": "^7.3.1",
     "@tsconfig/svelte": "^5.0.8",
     "@types/node": "^26.6.5",

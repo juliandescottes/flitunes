@@ -3,6 +3,7 @@ import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import { defineConfig } from "vite";
+import { configDefaults } from "vitest/config";
 import { libraryFile } from "./vite-plugins/library-file.ts";
 
 // The library lives in its own repo, cloned next to this one by default.
@@ -21,5 +22,7 @@ export default defineConfig({
   },
   test: {
     environment: "node",
+    // The Playwright tests run with `npm run e2e`.
+    exclude: [...configDefaults.exclude, "tests/e2e/**"],
   },
 });
