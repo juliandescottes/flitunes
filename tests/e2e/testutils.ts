@@ -42,18 +42,29 @@ export function daysAgo(days: number): string {
 
 // --- Opening the app ---
 
+type LibraryContent = { genres?: Genre[]; albums: Album[] };
+
+/** A library file, as the dev server serves it. */
+export function libraryFile(library: LibraryContent, exportedAt = "2026-01-01T00:00:00.000Z"): LibraryFile {
+  return { schemaVersion: 1, exportedAt, genres: library.genres ?? [], albums: library.albums };
+}
+
 /**
- * Opens the app on a library, served as library.json. Returns the files the
- * app saved (POSTs to the endpoint), newest last.
+ * Opens the app on a library, served as library.json, at an address ("/"
+ * by default). Returns:
+ * - `saved`: the files the app saved (POSTs to the endpoint), newest last;
+ * - `keptCovers`: the covers the app asked to copy into covers/;
+ * - `serve(file)`: serves another library.json from now on (for reloads).
+ *
+ * Requests to other sites fail, unless the test fakes them with page.route
+ * (fakeOembed, signInToSpotify): nothing leaves the machine.
  */
-export async function openApp(page: Page, library: { genres?: Genre[]; albums: Album[] }) {
-  const file: LibraryFile = {
-    schemaVersion: 1,
-    exportedAt: "2026-01-01T00:00:00.000Z",
-    genres: library.genres ?? [],
-    albums: library.albums,
-  };
+export async function openApp(page: Page, library: LibraryContent | LibraryFile, address = "/") {
+  let file: LibraryFile = "schemaVersion" in library ? library : libraryFile(library);
   const saved: LibraryFile[] = [];
+  const keptCovers: { albumId: string; url: string }[] = [];
+  // Page routes win over context routes: this one catches what tests don't fake.
+  await page.context().route(/^https?:\/\/(?!127\.0\.0\.1:5183\/)/, (route) => route.abort());
   await page.route("**/__library", async (route) => {
     if (route.request().method() === "POST") {
       saved.push(JSON.parse(route.request().postData() ?? "null"));
@@ -62,15 +73,46 @@ export async function openApp(page: Page, library: { genres?: Genre[]; albums: A
       await route.fulfill({ json: file });
     }
   });
-  await page.goto("/");
+  await page.route("**/__library/covers", async (route) => {
+    const request = route.request().postDataJSON() as { albumId: string; url: string };
+    keptCovers.push(request);
+    await route.fulfill({ json: { cover: `covers/${request.albumId}.jpg` } });
+  });
+  await page.route("**/__library/covers/*", (route) => route.fulfill({ status: 404 }));
+  await page.goto(address);
   await expect(page.getByText("Loading…")).toBeHidden();
-  return { saved };
+  return {
+    saved,
+    keptCovers,
+    serve(next: LibraryFile) {
+      file = next;
+    },
+  };
+}
+
+/**
+ * Fakes Spotify's oEmbed lookups (title and cover of a link), by Spotify
+ * id. Unknown ids answer 404. Returns the ids looked up.
+ */
+export async function fakeOembed(page: Page, albums: Record<string, { title: string; cover?: string }>) {
+  const lookedUp: string[] = [];
+  await page.route("https://open.spotify.com/oembed?**", async (route) => {
+    const link = new URL(route.request().url()).searchParams.get("url") ?? "";
+    const id = link.split("/").pop()!;
+    lookedUp.push(id);
+    const info = albums[id];
+    if (!info) return route.fulfill({ status: 404, json: {} });
+    await route.fulfill({ json: { title: info.title, thumbnail_url: info.cover } });
+  });
+  return lookedUp;
 }
 
 // --- Sources, search and filters ---
 
+/** Clicks a source by its name (without the count after it, "Triage" for "Triage 2"). */
 export async function selectSource(page: Page, name: string) {
-  await page.getByRole("navigation", { name: "Sources" }).getByRole("button", { name, exact: true }).click();
+  const sourceName = new RegExp(`^${escapeRegExp(name)}( \\d+)?$`);
+  await page.getByRole("navigation", { name: "Sources" }).getByRole("button", { name: sourceName }).click();
 }
 
 /** The sources listed, in order, a count after the name when there is one ("Triage 2"). */
@@ -298,4 +340,85 @@ export function chipInput(field: Locator): Locator {
 
 function escapeRegExp(text: string): string {
   return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+// --- Sheets (Add to Library, the GitHub token) ---
+
+/** The sheet sliding down from the toolbar, while one is open. */
+export function sheet(page: Page): Locator {
+  return page.locator("dialog.sheet[open]");
+}
+
+export async function openAddSheet(page: Page): Promise<Locator> {
+  await page.getByRole("button", { name: "+ Add Album(s)" }).click();
+  await expect(sheet(page).getByRole("heading", { name: "Add to Library" })).toBeVisible();
+  return sheet(page);
+}
+
+/** The chips of the chip field whose text field has this placeholder ("Add genre", "Add to playlist"). */
+export function chipsWithPlaceholder(scope: Locator, placeholder: "Add genre" | "Add to playlist"): Locator {
+  return scope.locator(".chips", { has: scope.page().getByPlaceholder(placeholder) });
+}
+
+/** Pastes text into a field, through the clipboard, as ⌘V would. */
+export async function pasteInto(field: Locator, text: string) {
+  await field.focus();
+  await field.page().evaluate((t) => navigator.clipboard.writeText(t), text);
+  await field.page().keyboard.press("ControlOrMeta+v");
+}
+
+/** A file to give to a file field, from its text. */
+export function textFile(name: string, text: string) {
+  return { name, mimeType: name.endsWith(".csv") ? "text/csv" : "application/json", buffer: Buffer.from(text) };
+}
+
+/** The number of unsaved changes, as the window title shows it. */
+export async function assertUnsavedChanges(page: Page, count: number) {
+  await expect(page).toHaveTitle(count === 0 ? "FliTunes" : `FliTunes (${count} unsaved)`);
+}
+
+/** The selected source in the source list. */
+export async function assertSelectedSource(page: Page, name: string) {
+  const selected = page.getByRole("navigation", { name: "Sources" }).locator("button[aria-current=true]");
+  await expect(selected).toHaveText(new RegExp(`^\\s*${escapeRegExp(name)}(\\s+\\d+)?\\s*$`));
+}
+
+/** The values of several text fields, in order. */
+export async function assertValues(fields: Locator, values: string[]) {
+  await expect.poll(() => fields.evaluateAll((all) => all.map((f) => (f as HTMLInputElement).value))).toEqual(values);
+}
+
+// --- Spotify: the display while playing, an album's tracks ---
+
+/** The times under the playing track in the display: elapsed, then left ("-9:22"). */
+export async function assertDisplayTimes(page: Page, elapsed: string, left: string) {
+  await expect(page.locator(".lcd-progress > span:not(.bar)")).toHaveText([elapsed, left]);
+}
+
+/** The tracks shown for an album. */
+export function trackList(page: Page, albumTitle: string): Locator {
+  return page.getByRole("grid", { name: `Tracks of ${albumTitle}` });
+}
+
+/**
+ * The rows of an album's track list, each as its cells' text: "#", Name,
+ * Time, Artist, Album, Genre, Year. A disc's row is its one cell ("Disc 2").
+ */
+export async function assertTracks(page: Page, albumTitle: string, rows: string[][]) {
+  const read = () =>
+    trackList(page, albumTitle)
+      .locator("tbody tr")
+      .evaluateAll((trs) => trs.map((tr) => [...tr.querySelectorAll("td")].map((td) => td.textContent!.trim()).filter((t, i) => i > 0 || t !== "")));
+  await expect.poll(read).toEqual(rows);
+}
+
+/** A track's row in an album's track list. */
+export function trackRow(page: Page, albumTitle: string, name: string): Locator {
+  return trackList(page, albumTitle).locator("tbody tr", { has: page.locator("td.name", { hasText: new RegExp(`^${escapeRegExp(name)}$`) }) });
+}
+
+/** The play button of an album's row, which shows while the row is hovered. */
+export async function rowPlayButton(page: Page, title: string): Promise<Locator> {
+  await albumRow(page, title).hover();
+  return albumRow(page, title).locator("td.name").getByRole("button");
 }

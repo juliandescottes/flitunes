@@ -2,8 +2,5 @@
 # This list may only shrink. When you add a test for a claim, remove its
 # id. A new claim without a test must be added here on purpose; run
 # `npm run spec-check -- --update-baseline` to rewrite the list.
-album-editing.artwork
 album-editing.chip-suggestions
-browsing.column-open-album
-browsing.open
-browsing.play-button
+browsing.open-signed-out

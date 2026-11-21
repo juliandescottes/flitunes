@@ -1,6 +1,6 @@
 # Status
 
-_Last updated: 2026-11-21_
+_Last updated: 2026-11-22_
 
 ## Where we are
 
@@ -112,14 +112,19 @@ window, and Get Info editing.
 - Sign-in and playback confirmed with a real Spotify app on 2026-10-21
   (dev, `http://127.0.0.1:5173/`).
 - 163 unit tests pass, `svelte-check` is clean.
-- Specs and e2e tests (branch `e2e-specs-pilot`, piskel's approach):
-  `docs/specs/` describes behavior as claims with ids, Playwright tests in
-  `tests/e2e/<spec>/` tag the claims they verify, `npm run spec-check`
-  fails on a claim with no test unless it's listed in
-  `docs/specs/untested.txt` (which may only shrink). Pilot specs:
-  `browsing.md` and `album-editing.md`, 46 claims, 41 tested by 48 tests;
-  each test serves its own library by intercepting `/__library`. Rules in
-  the `e2e-tests` skill. CI runs everything on pull requests.
+- Specs and e2e tests (branches `e2e-specs-pilot`, then `e2e-specs-rest`,
+  piskel's approach): `docs/specs/` describes behavior as claims with ids,
+  Playwright tests in `tests/e2e/<spec>/` tag the claims they verify,
+  `npm run spec-check` fails on a claim with no test unless it's listed in
+  `docs/specs/untested.txt` (which may only shrink). Nine specs, 103
+  claims, 101 tested by 126 tests in Firefox. Each dev test serves its own
+  library by intercepting `/__library`; Spotify (`tests/e2e/spotify.ts`)
+  and oEmbed are faked with `page.route`; `*.site.spec.ts` tests run
+  against a build of the site with a faked GitHub (`tests/e2e/github.ts`).
+  Untested: picking a chip suggestion (the datalist dropdown is browser
+  chrome) and opening the Spotify app when signed out (no signal in the
+  page). Rules in the `e2e-tests` skill. CI runs everything on pull
+  requests.
 - GitHub Pages: `.github/workflows/pages.yml` tests, builds and deploys on
   every push to `main` (needs Settings → Pages → Source: GitHub Actions).
   Pages is the everywhere-viewer; curation happens locally, then push.
@@ -145,9 +150,11 @@ Installable as an app: `public/manifest.webmanifest` and icons made from the
 favicon. On macOS, with Firefox, it runs as an app through PWAsForFirefox
 (own Dock icon, no browser chrome; installed 2026-10-22).
 
-Specs: write the remaining areas (adding albums, triage, genres, save and
-sync, Spotify with `page.route` fakes, navigation, themes), then trim the
-unit tests the e2e tests cover (`library.test.ts`, `browse.test.ts`).
+Specs: every area has one. Next, trim the unit tests the e2e tests cover
+(`library.test.ts`, `browse.test.ts`), and settle the two _(to confirm)_
+claims: Escape does nothing in a track list that failed or is empty
+(`spotify.tracks-back`), and the GitHub token menu needs unsaved changes
+since Save is disabled without them (`save-and-sync.github-token-menu`).
 
 Next, in order (see `PLAN.md`):
 1. Ownership, the first step towards owning the music (`docs/spec.md` §11):
@@ -183,6 +190,7 @@ and scripts in the git-ignored `import/` folder: see `import/README.md`.
 | 2026-10-21 | Covers kept with the library: original 640px files in `flitunes-library/covers/`, referenced by relative path; the library repo is served by GitHub Pages (Cloudflare Pages is the fallback for speed or a custom domain). |
 | 2026-10-21 | Friends run their own fork (README guide), not one shared site with `?library=<url>`: each needs their own Spotify app anyway. MIT license. |
 | 2026-11-21 | Behavior is specified in `docs/specs/` and verified by Playwright e2e tests tagged with claim ids (piskel's approach); unit tests only for pure logic hard to reach from the UI. |
+| 2026-11-22 | E2e tests run in Firefox. Spotify and GitHub are faked with `page.route`; saving to GitHub is tested against a build of the site (`vite build` + `vite preview`), since the dev server writes the local clone instead. |
 | 2026-10-21 | Long-term direction: own the music (DRM-free purchases) and play it from my own Subsonic server (e.g. Navidrome), FliTunes as the front end, Spotify as the fallback (`docs/spec.md` §11). |
 
 ## Known issues / notes

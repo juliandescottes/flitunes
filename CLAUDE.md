@@ -15,7 +15,7 @@ Spotify is only a link, never the source of truth.
 ```sh
 npm run dev      # dev server at http://127.0.0.1:5173 (loopback IP, not localhost)
 npm test         # vitest (unit tests, fake-indexeddb)
-npm run e2e      # Playwright e2e tests (own server on port 5183, Firefox)
+npm run e2e      # Playwright e2e tests, Firefox (own dev server on 5183, site build on 5184)
 npm run spec-check  # every spec claim has a test, or is listed in docs/specs/untested.txt
 npm run check    # svelte-check (types)
 npm run build    # static build in dist/
@@ -51,6 +51,9 @@ bullet with an id (`browsing.search`), and verified by Playwright tests in
 `tests/e2e/<area>/`, tagged with the claims they assert. A behavior change
 updates its spec and tests in the same commit. Follow the `e2e-tests` skill
 (`.claude/skills/e2e-tests/SKILL.md`) when writing or reviewing tests.
+Spotify and GitHub are faked (`tests/e2e/spotify.ts`, `tests/e2e/github.ts`);
+`*.site.spec.ts` tests run against a build of the site instead of the dev
+server.
 
 Unit tests stay for logic that is pure and hard to reach from the UI
 (`library.json` format, validators, route parsing, Spotify auth, GitHub

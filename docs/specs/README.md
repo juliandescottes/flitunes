@@ -13,7 +13,9 @@ document (why, principles, roadmap); these files say what the app does.
   "fix" either one: if unsure, ask.
 - Every claim has an id, and e2e tests reference the ids they verify (see
   [Claim ids](#claim-ids)).
-- The e2e tests for `<spec>.md` live in `tests/e2e/<spec>/`.
+- The e2e tests for `<spec>.md` live in `tests/e2e/<spec>/`. Tests of the
+  static site (saving to GitHub) are named `*.site.spec.ts`: they run
+  against a build of the site, with GitHub faked.
 
 ## Index
 
@@ -21,11 +23,13 @@ document (why, principles, roadmap); these files say what the app does.
 | --- | --- |
 | [browsing.md](browsing.md) | Sources, column browser, search, link filter, views, sorting, selection, type-ahead |
 | [album-editing.md](album-editing.md) | Get Info (one album, several albums), genre and playlist chips, ratings, deleting albums |
-
-Not written yet: adding albums (Add, Add Several, Import CSV), triage,
-genres (rename, merge, delete), save and sync (dev server, GitHub,
-conflicts, export and import), Spotify (sign-in, playback, tracks),
-navigation (address, Back and Forward), themes.
+| [adding-albums.md](adding-albums.md) | Add to Library, Add Several, Import CSV |
+| [triage.md](triage.md) | Reviewing imported albums: accept or delete |
+| [genres.md](genres.md) | Renaming, merging and deleting genres |
+| [save-and-sync.md](save-and-sync.md) | Unsaved changes, Save, Export, Import, newer `library.json`, saving to GitHub from the site |
+| [spotify.md](spotify.md) | Sign-in, playback, devices, the display while playing, album tracks |
+| [navigation.md](navigation.md) | The address, Back and Forward |
+| [themes.md](themes.md) | Color themes |
 
 ## Claim ids
 

@@ -19,7 +19,7 @@ list or a grid of covers.
   When no album has a playlist, the section says "Tag albums to make
   playlists."
 - `browsing.source-resets-columns` Selecting a source resets the column
-  browser to All in every column.
+  browser to All in every column, and keeps the search.
 
 ### Column browser
 
@@ -87,7 +87,7 @@ list or a grid of covers.
 - `browsing.display` The display at the top shows the selected album's
   title, artists and year; with several selected, how many; with none,
   "FliTunes" and the number of unsaved changes. While Spotify plays, it
-  shows the track instead (see the Spotify spec, not written yet).
+  shows the track instead (see [spotify.now-playing](spotify.md)).
 
 ### Selection
 
@@ -107,13 +107,14 @@ list or a grid of covers.
 ### Opening albums
 
 - `browsing.open` Double-clicking an album, or `Enter` with one album
-  selected, opens it: its track list while signed in to Spotify (albums
-  only, not playlists), otherwise the Spotify app. An album without a
-  Spotify link does nothing.
+  selected, opens it: signed in to Spotify, its tracks (see
+  [spotify.tracks](spotify.md)), or it plays when it's linked to a
+  playlist.
+- `browsing.open-signed-out` Signed out, opening an album opens it in the
+  Spotify app. An album without a Spotify link does nothing.
 - `browsing.play-button` Albums with a Spotify link have a play button,
-  in the Name column of the list and over the cover in the grid. It plays
-  the album while signed in to Spotify, otherwise opens it in the Spotify
-  app.
+  in the Name column of the list and over the cover in the grid: Play
+  while signed in to Spotify, Open in Spotify otherwise.
 
 ## UI and shortcuts
 
