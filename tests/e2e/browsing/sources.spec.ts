@@ -8,6 +8,8 @@ import {
   genre,
   openApp,
   pickInColumn,
+  searchField,
+  searchFor,
   selectSource,
 } from "../testutils.ts";
 
@@ -69,7 +71,7 @@ test("Without playlists, the section says how to make one", { tag: ["@browsing.p
   await expect(page.getByText("Tag albums to make playlists.")).toBeVisible();
 });
 
-test("Selecting a source resets the column browser", { tag: ["@browsing.source-resets-columns"] }, async ({ page }) => {
+test("Selecting a source resets the column browser, and keeps the search", { tag: ["@browsing.source-resets-columns"] }, async ({ page }) => {
   await openApp(page, {
     genres: [JAZZ, ROCK],
     albums: [
@@ -90,4 +92,10 @@ test("Selecting a source resets the column browser", { tag: ["@browsing.source-r
   await assertColumnPick(page, "Artists", "All (2 Artists)");
   await assertColumnPick(page, "Albums", "All (2 Albums)");
   await assertShownAlbums(page, ["Ege Bamyasi", "Blue Train"]);
+
+  // A search stays when the source changes.
+  await searchFor(page, "can");
+  await selectSource(page, "Music");
+  await expect(searchField(page)).toHaveValue("can");
+  await assertShownAlbums(page, ["Ege Bamyasi"]);
 });
