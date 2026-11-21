@@ -15,7 +15,7 @@ Spotify is only a link, never the source of truth.
 ```sh
 npm run dev      # dev server at http://127.0.0.1:5173 (loopback IP, not localhost)
 npm test         # vitest (unit tests, fake-indexeddb)
-npm run e2e      # Playwright e2e tests (own server on port 5183, Chromium)
+npm run e2e      # Playwright e2e tests (own server on port 5183, Firefox)
 npm run spec-check  # every spec claim has a test, or is listed in docs/specs/untested.txt
 npm run check    # svelte-check (types)
 npm run build    # static build in dist/
