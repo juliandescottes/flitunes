@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { album, clickAlbum, fakeOembed, infoField, openApp, openGetInfo } from "../testutils.ts";
+import { album, assertListCover, clickAlbum, fakeOembed, infoField, openApp, openGetInfo } from "../testutils.ts";
 
 const KIND_OF_BLUE = "1weenld61qoidwYuZ1GESA";
 
@@ -42,6 +42,7 @@ test("The Artwork tab edits, removes or fetches the cover", { tag: ["@album-edit
 
   // Applied: the new cover is copied into the library, and the album points to the file.
   await expect.poll(() => keptCovers.map((c) => c.url)).toEqual(["https://i.scdn.co/image/ab67616d0000b273kindofblue"]);
+  await assertListCover(page, "Kind of Blue", new RegExp(`/__library/covers/${keptCovers[0].albumId}\\.jpg$`));
   info = await openGetInfo(page);
   await info.getByRole("tab", { name: "Artwork" }).click();
   await expect(infoField(info, "Cover URL")).toHaveValue(`covers/${keptCovers[0].albumId}.jpg`);

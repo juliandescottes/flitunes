@@ -422,3 +422,8 @@ export async function rowPlayButton(page: Page, title: string): Promise<Locator>
   await albumRow(page, title).hover();
   return albumRow(page, title).locator("td.name").getByRole("button");
 }
+
+/** The address of an album's cover in the Album List view, once it matches. */
+export async function assertListCover(page: Page, title: string, src: RegExp) {
+  await expect(albumRow(page, title).locator("td.name img")).toHaveAttribute("src", src);
+}
