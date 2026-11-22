@@ -7,6 +7,7 @@ import {
   assertColumn,
   assertColumnPick,
   assertDisplay,
+  assertListCover,
   assertSelectedAlbums,
   assertSelectedSource,
   assertShownAlbums,
@@ -160,6 +161,7 @@ test(
 
     // The cover was copied, and the album now points to the file.
     await expect.poll(() => keptCovers.map((c) => c.url)).toEqual(["https://i.scdn.co/image/ab67616d0000b273mezzanine"]);
+    await assertListCover(page, "Mezzanine", new RegExp(`/__library/covers/${keptCovers[0].albumId}\\.jpg$`));
     const info = await openGetInfo(page);
     await expect(infoField(info, "Spotify")).toHaveValue(`https://open.spotify.com/album/${MEZZANINE}`);
     await info.getByRole("tab", { name: "Artwork" }).click();
