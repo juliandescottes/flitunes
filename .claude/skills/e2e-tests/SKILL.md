@@ -47,7 +47,8 @@ await assertColumn(page, "Albums", ["All (2 Albums)", "Bitches Brew", "Kind of B
 - Each test file declares its library at the top with `album()` and `genre()`, and opens the app on it with `openApp(page, library)`. The library is served by intercepting `/__library`, and each test gets a fresh browser context, so IndexedDB starts empty. `openApp` returns the files the app saved, for tests about Save.
 - Use real-looking albums (artist, title, year), a handful per library, and only the fields the test needs. Use `daysAgo(n)` for dates added.
 - Pick data that tells the rule apart from a plausible bug: if breaking the rule wouldn't change the result, the test can't fail. "cafe" matches an unfolded "Café" anyway (NFKD splits the accent off), so the accent test searches "francoise" for "Françoise".
-- Never touch the real library, the user's dev server (port 5173) or their Spotify account. The config runs its own server on port 5183 with a fake Spotify client ID and a library path that doesn't exist. Fake Spotify and GitHub with `page.route`, and sign in by putting tokens in `localStorage` with `page.addInitScript`, which runs before the app.
+- Never touch the real library, the user's dev server (port 5173) or their Spotify account. The config runs its own server on port 5183 with a fake Spotify client ID and a library path that doesn't exist, and requests to other sites fail unless a test fakes them.
+- Fake Spotify and GitHub with the helpers rather than new `page.route` code: `FakeSpotify` and `signInToSpotify` in `spotify.ts`, `fakeOembed` in `testutils.ts`, `FakeGitHub` and `openSite` in `github.ts` (for `*.site.spec.ts` tests, which run against a build of the site). Extend them when a test needs more.
 
 ## Interacting with the app
 
@@ -55,6 +56,7 @@ await assertColumn(page, "Albums", ["All (2 Albums)", "Bitches Brew", "Kind of B
 - Find elements by role and accessible name (`getByRole`, `getByLabel`): the app is meant to be accessible, and a test that can't find an element this way often points to a real accessibility gap. When a name is missing, add an `aria-label` to the component rather than a test-only attribute. Class selectors are a last resort and stay inside `testutils.ts` helpers (the display, the Get Info title bar).
 - Mouse down is what selects in the list and the columns, and the Rating cell's stars stop it: click an album on its Artist cell (`clickAlbum`).
 - Answer `confirm()` with `answerConfirm(page)`, started before the action, and check its message.
+- Before a keyboard shortcut, put the focus where the user's would be (`focusMainView`, `clickAlbum`): a button you just clicked keeps the focus, and `Enter` would press it instead of reaching the shortcut.
 - When a test uses modifier keys, say what each one does in a comment. Use `ControlOrMeta` for `⌘`.
 
 ## Asserting
